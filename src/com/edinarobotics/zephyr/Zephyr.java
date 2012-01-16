@@ -8,6 +8,7 @@
 package com.edinarobotics.zephyr;
 
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SimpleRobot;
 
 /**
@@ -29,6 +30,13 @@ public class Zephyr extends SimpleRobot {
      * This function is called once each time the robot enters operator control.
      */
     public void operatorControl() {
-
+        Joystick joystick = new Joystick(1);
+        Components components = Components.getInstance();
+        while(this.isOperatorControl()&&this.isEnabled()){
+           components.leftJaguar.set(joystick.getRawAxis(2));
+           components.rightJaguar.set(joystick.getRawAxis(5));
+        }
+        components.leftJaguar.set(0);
+        components.rightJaguar.set(0);
     }
 }
