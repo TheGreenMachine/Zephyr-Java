@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class Gamepad extends Joystick{
     public static final int LEFT_X_AXIS = 1;
-    public static final int LEFT_Y_AXIS = 2;
+    public static final int LEFT_Y_AXIS = 5;
     public static final int RIGHT_X_AXIS = 3;
-    public static final int RIGHT_Y_AXIS = 5;
+    public static final int RIGHT_Y_AXIS = 2;
     
     public static final int LEFT_BUMPER = 5;
     public static final int LEFT_TRIGGER = 7;
