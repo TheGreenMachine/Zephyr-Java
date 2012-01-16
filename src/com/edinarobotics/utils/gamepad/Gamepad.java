@@ -47,4 +47,8 @@ public class Gamepad extends Joystick{
     public double getRightY(){
         return this.getRawAxis(RIGHT_Y_AXIS);
     }
+    
+    public GamepadResult getJoysticks(){
+        return new GamepadResult(getLeftX(),getLeftY(),getRightX(),getRightY());
+    }
 }
