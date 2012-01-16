@@ -9,7 +9,6 @@ package com.edinarobotics.zephyr;
 
 
 import com.edinarobotics.utils.gamepad.Gamepad;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SimpleRobot;
 
 /**
