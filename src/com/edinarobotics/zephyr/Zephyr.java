@@ -31,10 +31,12 @@ public class Zephyr extends SimpleRobot {
      */
     public void operatorControl() {
         Gamepad gamepad1 = new Gamepad(1);
+        Gamepad gamepad2 = new Gamepad(2);
         Components components = Components.getInstance();
         while(this.isOperatorControl()&&this.isEnabled()){
            components.leftJaguar.set(gamepad1.getLeftY());
            components.rightJaguar.set(gamepad1.getRightY());
+           components.shooterJaguar.set(gamepad2.getLeftY());
         }
         components.leftJaguar.set(0);
         components.rightJaguar.set(0);
