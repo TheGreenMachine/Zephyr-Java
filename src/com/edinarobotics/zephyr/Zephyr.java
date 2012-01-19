@@ -82,6 +82,7 @@ public class Zephyr extends SimpleRobot {
                                                       Relay.Value.kForward));
         robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, "Shooter Val:");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, Double.toString(shooterSpeed));
+        robotParts.textOutput.updateLCD();
     }
     
     private void stop(){
