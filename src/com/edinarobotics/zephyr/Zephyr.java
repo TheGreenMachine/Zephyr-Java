@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj.SimpleRobot;
  * directory.
  */
 public class Zephyr extends SimpleRobot {
+    private double leftDrive;
+    private double rightDrive;
+    
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
@@ -34,11 +37,20 @@ public class Zephyr extends SimpleRobot {
         Gamepad gamepad2 = new Gamepad(2);
         Components components = Components.getInstance();
         while(this.isOperatorControl()&&this.isEnabled()){
-           components.leftJaguar.set(gamepad1.getLeftY());
-           components.rightJaguar.set(gamepad1.getRightY());
-           components.shooterJaguar.set(gamepad2.getLeftY());
+           leftDrive = gamepad1.getLeftY();
+           rightDrive = gamepad1.getRightY();
+           mechanismSet();
         }
-        components.leftJaguar.set(0);
-        components.rightJaguar.set(0);
+        stop();
+    }
+    
+    private void mechanismSet(){
+        Components.getInstance().driveControl.tankDrive(leftDrive, rightDrive);
+    }
+    
+    private void stop(){
+        leftDrive = 0;
+        rightDrive = 0;
+        mechanismSet();
     }
 }
