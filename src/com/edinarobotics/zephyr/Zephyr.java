@@ -9,6 +9,8 @@ package com.edinarobotics.zephyr;
 
 
 import com.edinarobotics.utils.gamepad.Gamepad;
+import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.SimpleRobot;
 
 /**
@@ -19,8 +21,10 @@ import edu.wpi.first.wpilibj.SimpleRobot;
  * directory.
  */
 public class Zephyr extends SimpleRobot {
-    private double leftDrive;
-    private double rightDrive;
+    private double leftDrive = 0;
+    private double rightDrive = 0;
+    private double shooterSpeed = 0;
+    private boolean ballLoaderUp = false;
     
     /**
      * This function is called once each time the robot enters autonomous mode.
@@ -39,13 +43,19 @@ public class Zephyr extends SimpleRobot {
         while(this.isOperatorControl()&&this.isEnabled()){
            leftDrive = gamepad1.getLeftY();
            rightDrive = gamepad1.getRightY();
+           shooterSpeed = gamepad2.getLeftY();
+           ballLoaderUp = gamepad1.getRawButton(Gamepad.RIGHT_TRIGGER);
            mechanismSet();
         }
         stop();
     }
     
     private void mechanismSet(){
-        Components.getInstance().driveControl.tankDrive(leftDrive, rightDrive);
+        Components robotParts = Components.getInstance();
+        robotParts.driveControl.tankDrive(leftDrive, rightDrive);
+        robotParts.shooterJaguar.set(shooterSpeed);
+        robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
+                                                      Relay.Value.kForward));
     }
     
     private void stop(){
