@@ -9,6 +9,7 @@ package com.edinarobotics.zephyr;
 
 
 import com.edinarobotics.utils.gamepad.Gamepad;
+import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.SimpleRobot;
@@ -25,6 +26,8 @@ public class Zephyr extends SimpleRobot {
     private double rightDrive = 0;
     private double shooterSpeed = 0;
     private boolean ballLoaderUp = false;
+    
+    private final double SHOOTER_SPEED_STEP = 0.0005;
     
     /**
      * This function is called once each time the robot enters autonomous mode.
@@ -43,7 +46,24 @@ public class Zephyr extends SimpleRobot {
         while(this.isOperatorControl()&&this.isEnabled()){
            leftDrive = gamepad1.getLeftY();
            rightDrive = gamepad1.getRightY();
-           shooterSpeed = gamepad2.getLeftY();
+           if(gamepad1.getRawButton(Gamepad.RIGHT_BUMPER)){
+               shooterSpeed -= SHOOTER_SPEED_STEP;
+               if(shooterSpeed<=-1){
+                   shooterSpeed = -1;//Max speed is reverse 1 (-1).
+               }
+           }
+           else if(gamepad1.getRawButton(Gamepad.LEFT_BUMPER)){
+               shooterSpeed += SHOOTER_SPEED_STEP;
+               if(shooterSpeed>=0){
+                   shooterSpeed = 0;
+               }
+           }
+           if(gamepad1.getRawButton(Gamepad.BUTTON_1)){
+               shooterSpeed = -1; //Max is -1
+           }
+           else if(gamepad1.getRawButton(Gamepad.BUTTON_2)){
+               shooterSpeed = 0;
+           }
            ballLoaderUp = gamepad1.getRawButton(Gamepad.RIGHT_TRIGGER);
            mechanismSet();
         }
@@ -56,11 +76,15 @@ public class Zephyr extends SimpleRobot {
         robotParts.shooterJaguar.set(shooterSpeed);
         robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
                                                       Relay.Value.kForward));
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, "Shooter Val:");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, Double.toString(shooterSpeed));
     }
     
     private void stop(){
         leftDrive = 0;
         rightDrive = 0;
+        shooterSpeed = 0;
+        ballLoaderUp = false;
         mechanismSet();
     }
 }
