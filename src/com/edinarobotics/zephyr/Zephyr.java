@@ -47,21 +47,25 @@ public class Zephyr extends SimpleRobot {
            leftDrive = gamepad1.getLeftY();
            rightDrive = gamepad1.getRightY();
            if(gamepad1.getRawButton(Gamepad.RIGHT_BUMPER)){
+               //Step speed of shooter up.
                shooterSpeed -= SHOOTER_SPEED_STEP;
                if(shooterSpeed<=-1){
                    shooterSpeed = -1;//Max speed is reverse 1 (-1).
                }
            }
            else if(gamepad1.getRawButton(Gamepad.LEFT_BUMPER)){
+               //Step speed of shooter down.
                shooterSpeed += SHOOTER_SPEED_STEP;
                if(shooterSpeed>=0){
                    shooterSpeed = 0;
                }
            }
            if(gamepad1.getRawButton(Gamepad.BUTTON_1)){
+               //Jump shooter speed to max.
                shooterSpeed = -1; //Max is -1
            }
            else if(gamepad1.getRawButton(Gamepad.BUTTON_2)){
+               //Jump shooter speed to min.
                shooterSpeed = 0;
            }
            ballLoaderUp = gamepad1.getRawButton(Gamepad.RIGHT_TRIGGER);
