@@ -34,6 +34,7 @@ public class Components {
         shooterJaguar = new Jaguar(SHOOTER_JAGUAR_PORT);
         driveControl = new RobotDrive(leftJaguar,rightJaguar);
         compressor  = new Compressor(COMPRESSOR_PRESSURE_SENSOR,COMPRESSOR_SPIKE);
+        compressor.start();
         ballLoadPiston = new Relay(BALL_LOAD_PISTON_SPIKE);
         textOutput = DriverStationLCD.getInstance();
     }
