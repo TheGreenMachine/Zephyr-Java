@@ -5,6 +5,7 @@
 package com.edinarobotics.zephyr;
 
 import edu.wpi.first.wpilibj.Jaguar;
+import edu.wpi.first.wpilibj.RobotDrive;
 
 /**
  *
@@ -19,11 +20,13 @@ public class Components {
     public Jaguar leftJaguar;
     public Jaguar rightJaguar;
     public Jaguar shooterJaguar;
+    public RobotDrive driveControl;
     
     private Components(){
         leftJaguar = new Jaguar(LEFT_JAGUAR_PORT);
         rightJaguar = new Jaguar(RIGHT_JAGUAR_PORT);
         shooterJaguar = new Jaguar(SHOOTER_JAGUAR_PORT);
+        driveControl = new RobotDrive(leftJaguar,rightJaguar);
     }
     
     public static Components getInstance(){
