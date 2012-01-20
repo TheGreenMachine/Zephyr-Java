@@ -46,7 +46,7 @@ public class Zephyr extends SimpleRobot {
         Components components = Components.getInstance();
         while(this.isOperatorControl()&&this.isEnabled()){
            leftDrive = gamepad1.getLeftY();
-           rightDrive = gamepad1.getRightY();
+           rightDrive = gamepad1.getRightY()*-1;
            if(gamepad1.getRawButton(Gamepad.RIGHT_BUMPER)){
                //Step speed of shooter up.
                shooterSpeed -= SHOOTER_SPEED_STEP;
