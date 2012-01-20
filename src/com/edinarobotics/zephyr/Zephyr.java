@@ -9,6 +9,7 @@ package com.edinarobotics.zephyr;
 
 
 import com.edinarobotics.utils.gamepad.Gamepad;
+import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
@@ -87,8 +88,8 @@ public class Zephyr extends SimpleRobot {
         robotParts.shooterJaguar.set(shooterSpeed);
         robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
                                                       Relay.Value.kForward));
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, "Shooter Val:");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, Double.toString(shooterSpeed));
+        String shooterPowerString = "Shooter: "+shooterSpeed;
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
         robotParts.textOutput.updateLCD();
     }
     
