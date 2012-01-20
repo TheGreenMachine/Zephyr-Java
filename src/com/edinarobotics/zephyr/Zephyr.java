@@ -9,10 +9,8 @@ package com.edinarobotics.zephyr;
 
 
 import com.edinarobotics.utils.gamepad.Gamepad;
-import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.SimpleRobot;
 
 /**
