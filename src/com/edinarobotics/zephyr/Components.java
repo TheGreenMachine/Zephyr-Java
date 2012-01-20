@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.RobotDrive;
  */
 public class Components {
     //PORT NUMBERS HERE!
-    private static final int LEFT_JAGUAR_PORT = 1;
-    private static final int RIGHT_JAGUAR_PORT = 2;
+    private static final int LEFT_JAGUAR_PORT = 2;
+    private static final int RIGHT_JAGUAR_PORT = 1;
     private static final int SHOOTER_JAGUAR_PORT = 3;
     private static final int COMPRESSOR_PRESSURE_SENSOR = 1;
     private static final int COMPRESSOR_SPIKE = 1;
