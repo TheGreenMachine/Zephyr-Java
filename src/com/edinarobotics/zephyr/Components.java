@@ -1,5 +1,6 @@
 package com.edinarobotics.zephyr;
 
+import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Jaguar;
@@ -17,6 +18,7 @@ public class Components {
     private static final int COMPRESSOR_PRESSURE_SENSOR = 1;
     private static final int COMPRESSOR_SPIKE = 1;
     private static final int BALL_LOAD_PISTON_SPIKE = 2;
+    private static final int SONAR = 1;
     
     private static Components instance;
     public Jaguar leftJaguar;
@@ -25,6 +27,7 @@ public class Components {
     public RobotDrive driveControl;
     public Compressor compressor;
     public Relay ballLoadPiston;
+    public AnalogChannel sonar;
     
     public DriverStationLCD textOutput;
     
@@ -37,6 +40,7 @@ public class Components {
         compressor.start();
         ballLoadPiston = new Relay(BALL_LOAD_PISTON_SPIKE);
         textOutput = DriverStationLCD.getInstance();
+        sonar = new AnalogChannel(SONAR);
     }
     
     public static Components getInstance(){
