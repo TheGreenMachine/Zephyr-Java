@@ -8,7 +8,11 @@
 package com.edinarobotics.zephyr;
 
 
+import com.edinarobotics.utils.gamepad.FilterSet;
 import com.edinarobotics.utils.gamepad.Gamepad;
+import com.edinarobotics.utils.gamepad.GamepadResult;
+import com.edinarobotics.utils.gamepad.filters.DeadzoneFilter;
+import com.edinarobotics.utils.gamepad.filters.ScalingFilter;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
@@ -41,12 +45,16 @@ public class Zephyr extends SimpleRobot {
      * This function is called once each time the robot enters operator control.
      */
     public void operatorControl() {
+        FilterSet filters = new FilterSet();
+        filters.addFilter(new DeadzoneFilter(.05));
+        filters.addFilter(new ScalingFilter());
         Gamepad gamepad1 = new Gamepad(1);
         Gamepad gamepad2 = new Gamepad(2);
         Components components = Components.getInstance();
         while(this.isOperatorControl()&&this.isEnabled()){
-           leftDrive = gamepad1.getLeftY();
-           rightDrive = gamepad1.getRightY()*-1;
+           GamepadResult joystick = filters.filter(gamepad1.getJoysticks());
+           leftDrive = joystick.getLeftY();
+           rightDrive = joystick.getRightY()*-1;
            if(gamepad1.getRawButton(Gamepad.RIGHT_BUMPER)){
                //Step speed of shooter up.
                shooterSpeed -= SHOOTER_SPEED_STEP;
