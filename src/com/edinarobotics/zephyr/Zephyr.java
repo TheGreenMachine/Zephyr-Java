@@ -85,7 +85,7 @@ public class Zephyr extends SimpleRobot {
            ballLoaderUp = gamepad1.getRawButton(Gamepad.RIGHT_TRIGGER);
            mechanismSet();
         }
-        stop();
+        //stop();
     }
     
     private void mechanismSet(){
