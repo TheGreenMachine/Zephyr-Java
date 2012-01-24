@@ -40,7 +40,6 @@ public class FIRFilter {
         double[] tempArray = new double[values.length];
         for(int index = 1; index < tempArray.length; index++)
         {
-            
            tempArray[index] = values[index-1];
         }
         tempArray[0] = 0.0;
