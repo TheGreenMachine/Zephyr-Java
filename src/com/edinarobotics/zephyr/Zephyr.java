@@ -16,6 +16,7 @@ import com.edinarobotics.utils.gamepad.filters.ScalingFilter;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
+import com.edinarobotics.utils.sensors.FIRFilter;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -25,15 +26,19 @@ import edu.wpi.first.wpilibj.SimpleRobot;
  * directory.
  */
 public class Zephyr extends SimpleRobot {
+    //Driving Variables
     private double leftDrive = 0;
     private double rightDrive = 0;
+   
+    //Shooter Variables
     private double shooterSpeed = 0;
-    private boolean ballLoaderUp = false;
-    
+    private boolean ballLoaderUp = false; 
+    private final double SHOOTER_SPEED_STEP = 0.0005;
     private double lastManualSpeed = 0;
     
-    private final double SHOOTER_SPEED_STEP = 0.0005;
-    
+    //Sensor Variables
+     private double filteringWeights[] = {.67, 17, .16};
+     FIRFilter firFiltering = new FIRFilter(filteringWeights);
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
@@ -95,7 +100,7 @@ public class Zephyr extends SimpleRobot {
         robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
                                                       Relay.Value.kForward));
         String shooterPowerString = "Shooter: "+shooterSpeed;
-        String sonarValue = "Sonar reads: " + (robotParts.sonar.getValue());
+        String sonarValue = "Sonar reads: " + firFiltering.filter(robotParts.sonar.getValue());
         robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, sonarValue);
         robotParts.textOutput.updateLCD();
