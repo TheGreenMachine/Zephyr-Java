@@ -95,7 +95,9 @@ public class Zephyr extends SimpleRobot {
         robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
                                                       Relay.Value.kForward));
         String shooterPowerString = "Shooter: "+shooterSpeed;
+        String sonarValue = "Sonar reads: " + (robotParts.sonar.getValue());
         robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, sonarValue);
         robotParts.textOutput.updateLCD();
     }
     
