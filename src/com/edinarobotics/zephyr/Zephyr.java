@@ -38,7 +38,7 @@ public class Zephyr extends SimpleRobot {
     
     //Sensor Variables
      private double filteringWeights[] = {.67, 17, .16};
-     FIRFilter firFiltering = new FIRFilter(filteringWeights);
+     private FIRFilter firFiltering = new FIRFilter(filteringWeights);
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
