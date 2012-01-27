@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
  */
 public class Components {
     //PORT NUMBERS HERE!
+    // ALL CAPS RAGE
     private static final int LEFT_JAGUAR_PORT = 2;
     private static final int RIGHT_JAGUAR_PORT = 1;
     private static final int SHOOTER_JAGUAR_PORT = 3;
@@ -42,7 +43,10 @@ public class Components {
         textOutput = DriverStationLCD.getInstance();
         sonar = new AnalogChannel(SONAR);
     }
-    
+
+    /**
+     * Creates an instance of the Components class
+     */
     public static Components getInstance(){
         if(instance == null){
             instance = new Components();

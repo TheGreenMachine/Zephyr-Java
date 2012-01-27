@@ -22,6 +22,7 @@ public class GamepadResult {
         this.ly = ly;
         this.rx = rx;
         this.ry = ry;
+        
     }
     
     public double getLeftX(){
