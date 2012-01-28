@@ -6,15 +6,15 @@ import com.edinarobotics.zephyr.Zephyr;
  * This class idles {@link Zephyr} in a stopped state.
  * It calls {@link Zephyr#stop()} forever.
  */
-public class IdleStep extends AutonomousStep
+public class IdleStopStep extends AutonomousStep
 {
     Zephyr robot;
 
     /**
-     * Constructs a new IdleStep for the given {@link Zephyr}.
+     * Constructs a new IdleStopStep for the given {@link Zephyr}.
      * @param robot {@link Zephyr}.
      */
-    public IdleStep(Zephyr robot)
+    public IdleStopStep(Zephyr robot)
     {
         this.robot = robot;
     }
