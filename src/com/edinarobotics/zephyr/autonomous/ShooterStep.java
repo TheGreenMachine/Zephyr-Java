@@ -34,15 +34,19 @@ public class ShooterStep extends AutonomousStep{
     
     public void run()
     {
-        System.out.println(time.get());
+         if(3.5<time.get())
+        {
+            robot.ballLoaderUp= false;
+            robot.mechanismSet();
+            isFinished = true;
+        }
         if(3.0<=time.get()){
             robot.ballLoaderUp = true;
             robot.mechanismSet();
-        }
+        }        
         else{
             robot.mechanismSet();
         }
-        
     }
     public boolean isFinished()
     {
