@@ -57,4 +57,8 @@ public class ShooterStep extends AutonomousStep{
         return isFinished;
     }
     
+    public void stop(){
+        robot.shooterSpeed = 0;
+        robot.mechanismSet();
+    }
 }
