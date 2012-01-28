@@ -23,7 +23,9 @@ public class ToggleHelper {
         if(!latestState){
             toggleReady = true;
         }
-        else if(latestState&& toggleReady){
+
+        else if(latestState && toggleReady){
+
             toggleReady = false;
             return true;
         }
