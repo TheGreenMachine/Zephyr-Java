@@ -2,10 +2,13 @@ package com.edinarobotics.zephyr;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  *
@@ -31,8 +34,12 @@ public class Components {
     public AnalogChannel sonar;
     
     public DriverStationLCD textOutput;
+    public DriverStationEnhancedIO cypress;
+
+    public Timer timer;
     
-    private Components(){
+    private Components()
+    {
         leftJaguar = new Jaguar(LEFT_JAGUAR_PORT);
         rightJaguar = new Jaguar(RIGHT_JAGUAR_PORT);
         shooterJaguar = new Jaguar(SHOOTER_JAGUAR_PORT);
@@ -42,6 +49,8 @@ public class Components {
         ballLoadPiston = new Relay(BALL_LOAD_PISTON_SPIKE);
         textOutput = DriverStationLCD.getInstance();
         sonar = new AnalogChannel(SONAR);
+        cypress = DriverStation.getInstance().getEnhancedIO();
+        timer = new Timer();
     }
 
     /**
