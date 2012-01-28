@@ -49,7 +49,7 @@ public class Zephyr extends SimpleRobot {
      */
     public void autonomous() {
         AutonomousStep[] steps = new AutonomousStep[2];
-        steps[0] = new ShooterStep(this);
+        steps[0] = new ShooterStep(0.8,this);
         steps[1] = new IdleStep(this);
         AutonomousManager manager = new AutonomousManager(steps, this);
         manager.start();
