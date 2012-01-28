@@ -48,10 +48,9 @@ public class Zephyr extends SimpleRobot {
      * This function is called once each time the robot enters autonomous mode.
      */
     public void autonomous() {
-        AutonomousStep[] steps = new AutonomousStep[3];
+        AutonomousStep[] steps = new AutonomousStep[2];
         steps[0] = new ShooterStep(this);
-        steps[1] = new DriveStep(this);
-        steps[2] = new IdleStep(this);
+        steps[1] = new IdleStep(this);
         AutonomousManager manager = new AutonomousManager(steps, this);
         manager.start();
     }

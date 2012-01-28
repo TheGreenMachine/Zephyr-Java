@@ -24,7 +24,7 @@ public class DriveStep extends AutonomousStep{
    {
        robot.leftDrive = .5;
        robot.rightDrive = .5;
-       for(int x = 0; x<2000; x++)
+       for(int x = 0; x<1000; x++)
        {
            robot.mechanismSet();
            Timer.delay(.001);
