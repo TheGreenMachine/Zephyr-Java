@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.edinarobotics.zephyr.autonomous;
 import com.edinarobotics.utils.autonomous.*;
 import com.edinarobotics.zephyr.Zephyr;
