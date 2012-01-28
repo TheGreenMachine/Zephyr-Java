@@ -39,6 +39,10 @@ public class Zephyr extends SimpleRobot {
     //Sensor Variables
      private double filteringWeights[] = {.67, 17, .16};
      private FIRFilter firFiltering = new FIRFilter(filteringWeights);
+     
+     //Camera Variables
+     double cameraSetX;
+     double cameraSetY;
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
@@ -87,6 +91,8 @@ public class Zephyr extends SimpleRobot {
            else if(gamepad1.getRawButton(Gamepad.BUTTON_3)){
                shooterSpeed = lastManualSpeed;
            }
+           cameraSetX = components.cameraServoHorizontal.get()+gamepad1.getD_PadX()*.01;
+           cameraSetY = components.cameraServoHorizontal.get()+gamepad1.getD_PadY()*.01;
            ballLoaderUp = gamepad1.getRawButton(Gamepad.RIGHT_TRIGGER);
            mechanismSet();
         }
@@ -98,11 +104,17 @@ public class Zephyr extends SimpleRobot {
         robotParts.shooterJaguar.set(shooterSpeed);
         robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
                                                       Relay.Value.kForward));
+        robotParts.cameraServoHorizontal.set(cameraSetX);
+        robotParts.cameraServoVertical.set(cameraSetY);
         String shooterPowerString = "Shooter: "+shooterSpeed;
         String sonarValue = "Sonar reads: " + firFiltering.filter(robotParts.sonar.getValue());
+        String servoPositions = "X-Axis Servo: "+ robotParts.cameraServoHorizontal.get()+
+                                " Y-Axis Servo: "+robotParts.cameraServoVertical.get();
         robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, sonarValue);
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, servoPositions);
         robotParts.textOutput.updateLCD();
+        
     }
     
     private void stop(){

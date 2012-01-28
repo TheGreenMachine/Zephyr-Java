@@ -48,9 +48,9 @@ public class Components {
         textOutput = DriverStationLCD.getInstance();
         sonar = new AnalogChannel(SONAR);
         cameraServoHorizontal = new Servo(CAMERA_SERVO_HORIZONTAL);
-        cameraServoHorizontal.set(0);
+        //cameraServoHorizontal.set(0);
         cameraServoVertical = new Servo(CAMERA_SERVO_VERTICAL);
-        cameraServoVertical.set(0);
+        //cameraServoVertical.set(0);
     }
 
     /**
