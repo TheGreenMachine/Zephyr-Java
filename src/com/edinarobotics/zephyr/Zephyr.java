@@ -27,12 +27,12 @@ import com.edinarobotics.utils.sensors.FIRFilter;
  */
 public class Zephyr extends SimpleRobot {
     //Driving Variables
-    private double leftDrive = 0;
-    private double rightDrive = 0;
+    public double leftDrive = 0;
+    public double rightDrive = 0;
    
     //Shooter Variables
-    private double shooterSpeed = 0;
-    private boolean ballLoaderUp = false; 
+    public double shooterSpeed = 0;
+    public boolean ballLoaderUp = false;
     private final double SHOOTER_SPEED_STEP = 0.0005;
     private double lastManualSpeed = 0;
     
@@ -92,7 +92,7 @@ public class Zephyr extends SimpleRobot {
         }
     }
     
-    private void mechanismSet(){
+    public void mechanismSet(){
         Components robotParts = Components.getInstance();
         robotParts.driveControl.tankDrive(leftDrive, rightDrive);
         robotParts.shooterJaguar.set(shooterSpeed);
@@ -105,7 +105,7 @@ public class Zephyr extends SimpleRobot {
         robotParts.textOutput.updateLCD();
     }
     
-    private void stop(){
+    public void stop(){
         leftDrive = 0;
         rightDrive = 0;
         shooterSpeed = 0;
