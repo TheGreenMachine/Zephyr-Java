@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Servo;
 
 /**
  *
@@ -20,6 +21,8 @@ public class Components {
     private static final int COMPRESSOR_SPIKE = 1;
     private static final int BALL_LOAD_PISTON_SPIKE = 2;
     private static final int SONAR = 1;
+    private static final int CAMERA_SERVO_HORIZONTAL = 8;
+    private static final int CAMERA_SERVO_VERTICAL = 7;
     
     private static Components instance;
     public Jaguar leftJaguar;
@@ -29,6 +32,8 @@ public class Components {
     public Compressor compressor;
     public Relay ballLoadPiston;
     public AnalogChannel sonar;
+    public Servo cameraServoHorizontal;
+    public Servo cameraServoVertical;
     
     public DriverStationLCD textOutput;
     
@@ -42,6 +47,10 @@ public class Components {
         ballLoadPiston = new Relay(BALL_LOAD_PISTON_SPIKE);
         textOutput = DriverStationLCD.getInstance();
         sonar = new AnalogChannel(SONAR);
+        cameraServoHorizontal = new Servo(CAMERA_SERVO_HORIZONTAL);
+        cameraServoHorizontal.set(0);
+        cameraServoVertical = new Servo(CAMERA_SERVO_VERTICAL);
+        cameraServoVertical.set(0);
     }
 
     /**
