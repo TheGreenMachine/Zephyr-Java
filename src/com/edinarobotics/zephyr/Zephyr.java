@@ -91,8 +91,10 @@ public class Zephyr extends SimpleRobot {
            else if(gamepad1.getRawButton(Gamepad.BUTTON_3)){
                shooterSpeed = lastManualSpeed;
            }
-           cameraSetX = components.cameraServoHorizontal.get()+gamepad1.getD_PadX()*.01;
-           cameraSetY = components.cameraServoHorizontal.get()+gamepad1.getD_PadY()*.01;
+           cameraSetX = components.cameraServoHorizontal.get()+gamepad1.getD_PadX()*.1;
+           System.out.println(gamepad1.getD_PadX());
+           cameraSetY = components.cameraServoHorizontal.get()+gamepad1.getD_PadY()*.1;
+           System.out.println(gamepad1.getD_PadY());
            ballLoaderUp = gamepad1.getRawButton(Gamepad.RIGHT_TRIGGER);
            mechanismSet();
         }
