@@ -20,10 +20,10 @@ public class ToggleHelper {
      * @return {@code true} if the value is toggled, {@code false} otherwise.
      */
     public boolean isToggled(boolean latestState){
-        if(latestState == false){
+        if(!latestState){
             toggleReady = true;
         }
-        else if(latestState == true && toggleReady){
+        else if(latestState&& toggleReady){
             toggleReady = false;
             return true;
         }

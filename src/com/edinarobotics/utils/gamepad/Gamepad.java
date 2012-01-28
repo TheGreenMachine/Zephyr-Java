@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Joystick;
 /**
  * Represents a gamepad with two joysticks and several buttons.
  * Makes interacting with a gamepad easier.
+ * Returns results through a GamepadResult.
  */
 public class Gamepad extends Joystick{
     public static final int LEFT_X_AXIS = 1;
