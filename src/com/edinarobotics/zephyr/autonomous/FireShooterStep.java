@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.edinarobotics.zephyr.autonomous;
 
 import com.edinarobotics.utils.autonomous.AutonomousStep;
@@ -9,8 +5,8 @@ import com.edinarobotics.zephyr.Zephyr;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
- *
- * @author Danny
+ * An autonomous step that warms up the shooter to a specific speed and then
+ * fires a ball.
  */
 public class FireShooterStep extends AutonomousStep{
     private static final double SHOOTER_WARMUP_DELAY = 3;
@@ -20,7 +16,13 @@ public class FireShooterStep extends AutonomousStep{
     Zephyr robot;
     Timer time;
     boolean isFinished;
-   
+    
+    /**
+     * Constructs a FireShooterStep that fires the shooter at the specified
+     * speed.
+     * @param shooterSpeed the speed for the shooter (a positive value).
+     * @param robot {@link Zephyr}.
+     */
     public FireShooterStep(double shooterSpeed,Zephyr robot)
     {
         this.shooterSpeed = shooterSpeed;
