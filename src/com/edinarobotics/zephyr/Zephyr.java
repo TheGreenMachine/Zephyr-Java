@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import com.edinarobotics.utils.sensors.FIRFilter;
 import com.edinarobotics.zephyr.autonomous.DriveStep;
-import com.edinarobotics.zephyr.autonomous.IdleStep;
+import com.edinarobotics.zephyr.autonomous.IdleStopStep;
 import com.edinarobotics.zephyr.autonomous.FireShooterStep;
 
 /**
@@ -50,7 +50,7 @@ public class Zephyr extends SimpleRobot {
     public void autonomous() {
         AutonomousStep[] steps = new AutonomousStep[2];
         steps[0] = new FireShooterStep(0.8,this);
-        steps[1] = new IdleStep(this);
+        steps[1] = new IdleStopStep(this);
         AutonomousManager manager = new AutonomousManager(steps, this);
         manager.start();
     }
