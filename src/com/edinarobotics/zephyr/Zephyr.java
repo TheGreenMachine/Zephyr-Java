@@ -8,6 +8,8 @@
 package com.edinarobotics.zephyr;
 
 
+import com.edinarobotics.utils.autonomous.AutonomousManager;
+import com.edinarobotics.utils.autonomous.AutonomousStep;
 import com.edinarobotics.utils.gamepad.FilterSet;
 import com.edinarobotics.utils.gamepad.Gamepad;
 import com.edinarobotics.utils.gamepad.GamepadResult;
@@ -17,6 +19,9 @@ import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import com.edinarobotics.utils.sensors.FIRFilter;
+import com.edinarobotics.zephyr.autonomous.DriveStep;
+import com.edinarobotics.zephyr.autonomous.IdleStep;
+import com.edinarobotics.zephyr.autonomous.ShooterStep;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -43,7 +48,12 @@ public class Zephyr extends SimpleRobot {
      * This function is called once each time the robot enters autonomous mode.
      */
     public void autonomous() {
-        
+        AutonomousStep[] steps = new AutonomousStep[3];
+        steps[0] = new ShooterStep(this);
+        steps[1] = new DriveStep(this);
+        steps[2] = new IdleStep(this);
+        AutonomousManager manager = new AutonomousManager(steps, this);
+        manager.start();
     }
 
     /**
