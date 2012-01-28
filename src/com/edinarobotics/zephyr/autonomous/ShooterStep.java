@@ -13,13 +13,17 @@ import edu.wpi.first.wpilibj.Timer;
  * @author Danny
  */
 public class ShooterStep extends AutonomousStep{
+    private static final double SHOOTER_WARMUP_DELAY = 3;
+    private static final double SHOOTER_PISTON_UP_TIME = 0.5;
     
+    double shooterSpeed;
     Zephyr robot;
     Timer time;
     boolean isFinished;
    
-    public ShooterStep(Zephyr robot)
+    public ShooterStep(double shooterSpeed,Zephyr robot)
     {
+        this.shooterSpeed = shooterSpeed;
         this.robot = robot;
         time = new Timer();
         isFinished = false;
@@ -27,27 +31,27 @@ public class ShooterStep extends AutonomousStep{
     
     public void start()
     {
-        robot.shooterSpeed = -0.80;
+        robot.shooterSpeed = -shooterSpeed;
         robot.mechanismSet();
         time.start();
     }
     
     public void run()
     {
-         if(3.5<time.get())
-        {
-            robot.ballLoaderUp= false;
+        if(time.get() >= SHOOTER_WARMUP_DELAY+SHOOTER_PISTON_UP_TIME){
+            robot.ballLoaderUp = false;
             robot.mechanismSet();
             isFinished = true;
         }
-        if(3.0<=time.get()){
+        else if(time.get() >= SHOOTER_WARMUP_DELAY){
             robot.ballLoaderUp = true;
             robot.mechanismSet();
-        }        
+        }
         else{
             robot.mechanismSet();
         }
     }
+    
     public boolean isFinished()
     {
         return isFinished;
