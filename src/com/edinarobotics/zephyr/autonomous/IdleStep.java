@@ -8,17 +8,16 @@ import com.edinarobotics.utils.autonomous.*;
 import com.edinarobotics.zephyr.Zephyr;
 
 /**
- *
- * @author GreenMachine
+ * This class idles {@link Zephyr} in a stopped state.
+ * It calls {@link Zephyr#stop()} forever.
  */
 public class IdleStep extends AutonomousStep
 {
-    // Instantiate a robot
-    Zephyr robot = new Zephyr();
+    Zephyr robot;
 
     /**
-     * Pass in the robot
-     * @param robot
+     * Constructs a new IdleStep for the given {@link Zephyr}.
+     * @param robot {@link Zephyr}.
      */
     public IdleStep(Zephyr robot)
     {
@@ -26,7 +25,7 @@ public class IdleStep extends AutonomousStep
     }
     
     /**
-     * This method will stop moving the robot as the final step
+     * Calls {@link Zephyr#stop()} each time it is called.
      */
     public void run()
     {
@@ -34,8 +33,8 @@ public class IdleStep extends AutonomousStep
     }
 
     /**
-     * Never returns a true because this is the final step
-     * @return (@code false)
+     * Returns {@code false}. This step runs forever.
+     * @return {@code false}
      */
     public boolean isFinished()
     {
