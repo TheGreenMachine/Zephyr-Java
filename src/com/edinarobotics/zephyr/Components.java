@@ -23,6 +23,9 @@ public class Components {
     private static final int COMPRESSOR_SPIKE = 1;
     private static final int BALL_LOAD_PISTON_SPIKE = 2;
     private static final int SONAR = 1;
+
+    public static final int CYPRESS_AUTO_SWITCH_ONE_IN = 1;
+    public static final int CYPRESS_AUTO_SWITCH_TWO_IN = 2;
     
     private static Components instance;
     public Jaguar leftJaguar;
