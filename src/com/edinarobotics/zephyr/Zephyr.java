@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.SimpleRobot;
 import com.edinarobotics.utils.sensors.FIRFilter;
 import com.edinarobotics.zephyr.autonomous.DriveStep;
 import com.edinarobotics.zephyr.autonomous.IdleStep;
-import com.edinarobotics.zephyr.autonomous.ShooterStep;
+import com.edinarobotics.zephyr.autonomous.FireShooterStep;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -49,7 +49,7 @@ public class Zephyr extends SimpleRobot {
      */
     public void autonomous() {
         AutonomousStep[] steps = new AutonomousStep[2];
-        steps[0] = new ShooterStep(0.8,this);
+        steps[0] = new FireShooterStep(0.8,this);
         steps[1] = new IdleStep(this);
         AutonomousManager manager = new AutonomousManager(steps, this);
         manager.start();
