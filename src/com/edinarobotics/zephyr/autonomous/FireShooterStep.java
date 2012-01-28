@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
  *
  * @author Danny
  */
-public class ShooterStep extends AutonomousStep{
+public class FireShooterStep extends AutonomousStep{
     private static final double SHOOTER_WARMUP_DELAY = 3;
     private static final double SHOOTER_PISTON_UP_TIME = 0.5;
     
@@ -21,7 +21,7 @@ public class ShooterStep extends AutonomousStep{
     Timer time;
     boolean isFinished;
    
-    public ShooterStep(double shooterSpeed,Zephyr robot)
+    public FireShooterStep(double shooterSpeed,Zephyr robot)
     {
         this.shooterSpeed = shooterSpeed;
         this.robot = robot;
