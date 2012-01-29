@@ -34,7 +34,11 @@ public class FIRFilter {
         }
         return FIRValue;
         
-    } 
+    }
+    
+    /**
+     * Shifts the array down one
+     */
     private void shiftArray()
     {
         double[] tempArray = new double[values.length];

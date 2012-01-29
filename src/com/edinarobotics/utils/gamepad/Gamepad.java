@@ -13,6 +13,9 @@ public class Gamepad extends Joystick{
     public static final int RIGHT_X_AXIS = 3;
     public static final int RIGHT_Y_AXIS = 4;
     
+    public static final int DPAD_X = 5;
+    public static final int DPAD_Y = 6;
+    
     public static final int LEFT_BUMPER = 5;
     public static final int LEFT_TRIGGER = 7;
     public static final int RIGHT_BUMPER = 6;
@@ -45,17 +48,18 @@ public class Gamepad extends Joystick{
         return this.getRawAxis(RIGHT_Y_AXIS);
     }
     
-    public GamepadResult getJoysticks(){
-        return new GamepadResult(getLeftX(),getLeftY(),getRightX(),getRightY());
-    }
-    
     public double getD_PadX()
     {
-        return this.getRawAxis(5);
+        return this.getRawAxis(DPAD_X);
     }
     
     public double getD_PadY()
     {
-        return this.getRawAxis(6);
+        return this.getRawAxis(DPAD_Y);
     }
+    
+    public GamepadResult getJoysticks(){
+        return new GamepadResult(getLeftX(),getLeftY(),getRightX(),getRightY());
+    }
+
 }

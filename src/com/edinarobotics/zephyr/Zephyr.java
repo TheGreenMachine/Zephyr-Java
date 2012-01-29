@@ -46,60 +46,105 @@ public class Zephyr extends SimpleRobot {
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
-    public void autonomous() {
-        
-    }
+    public void autonomous() {}
 
     /**
      * This function is called once each time the robot enters operator control.
      */
-    public void operatorControl() {
+    public void operatorControl() 
+    {
+        // Filters for Gamepads
         FilterSet filters = new FilterSet();
         filters.addFilter(new DeadzoneFilter(.05));
         filters.addFilter(new ScalingFilter());
-        Gamepad gamepad1 = new Gamepad(1);
+        
+        // Gamepads
+        Gamepad driveGamepad = new Gamepad(1);
         Gamepad gamepad2 = new Gamepad(2);
+        
+        // Initiate components
         Components components = Components.getInstance();
-        while(this.isOperatorControl()&&this.isEnabled()){
-           GamepadResult joystick = filters.filter(gamepad1.getJoysticks());
+        
+        while(this.isOperatorControl()&&this.isEnabled())
+        {
+            // Filter the joysticks on the gamepads according to the filters
+            // initialized
+           GamepadResult joystick = filters.filter(driveGamepad.getJoysticks());
+           
+           // Set values for the drive speeds of the robot
            leftDrive = joystick.getLeftY();
            rightDrive = joystick.getRightY()*-1;
-           if(gamepad1.getRawButton(Gamepad.RIGHT_BUMPER)){
+           
+           // If the right bumper on the driveGamepad is pushed, speed up the
+           // shooter
+           if(driveGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
+           {
                //Step speed of shooter up.
                shooterSpeed -= SHOOTER_SPEED_STEP;
-               if(shooterSpeed<=-1){
-                   shooterSpeed = -1;//Max speed is reverse 1 (-1).
+               
+               // Limit the speed of the shooter to not exceed -1
+               if(shooterSpeed <= -1)
+               {
+                   shooterSpeed = -1;
                }
+               
+               // Store the speed of the shooter to a second variable
                lastManualSpeed = shooterSpeed;
            }
-           else if(gamepad1.getRawButton(Gamepad.LEFT_BUMPER)){
+           
+           // If the left bumper on the driveGamepad is pushed, slow down the
+           // shooter
+           else if(driveGamepad.getRawButton(Gamepad.LEFT_BUMPER))
+           {
                //Step speed of shooter down.
                shooterSpeed += SHOOTER_SPEED_STEP;
-               if(shooterSpeed>=0){
+               
+               // Limit the speed of the shooter to not go past 0
+               if(shooterSpeed>=0)
+               {
                    shooterSpeed = 0;
                }
+               
+               // Store the speed of the shooter to a second variable
                lastManualSpeed = shooterSpeed;
            }
-           if(gamepad1.getRawButton(Gamepad.BUTTON_1)){
-               //Jump shooter speed to max.
-               shooterSpeed = -1; //Max is -1
+           
+           // Jump shooter speed to max if button 1 on the driveGamepad is
+           // pushed
+           if(driveGamepad.getRawButton(Gamepad.BUTTON_1))
+           {
+               // Max is -1
+               shooterSpeed = -1;
            }
-           else if(gamepad1.getRawButton(Gamepad.BUTTON_2)){
-               //Jump shooter speed to min.
+           
+           // Jump shooter speed to the min if button 2 on the driveGamepad is
+           // pushed
+           else if(driveGamepad.getRawButton(Gamepad.BUTTON_2))
+           {
+               // Min is 0
                shooterSpeed = 0;
            }
-           else if(gamepad1.getRawButton(Gamepad.BUTTON_3)){
+           
+           // Jump shooter speed to the last manually set speed if button 3 on 
+           // the driveGamepad is pushed
+           else if(driveGamepad.getRawButton(Gamepad.BUTTON_3))
+           {
                shooterSpeed = lastManualSpeed;
            }
-           cameraSetX = components.cameraServoHorizontal.get()+gamepad1.getD_PadX()*.1;
-           System.out.println(gamepad1.getD_PadX());
-           cameraSetY = components.cameraServoHorizontal.get()+gamepad1.getD_PadY()*.1;
-           System.out.println(gamepad1.getD_PadY());
-           ballLoaderUp = gamepad1.getRawButton(Gamepad.RIGHT_TRIGGER);
+           
+           // Set the camera servo positions
+           cameraSetX = components.cameraServoHorizontal.get() + driveGamepad.getD_PadX() * .1;
+           System.out.println(driveGamepad.getD_PadX());
+           cameraSetY = components.cameraServoHorizontal.get() + driveGamepad.getD_PadY() * .1;
+           System.out.println(driveGamepad.getD_PadY());
+           ballLoaderUp = driveGamepad.getRawButton(Gamepad.RIGHT_TRIGGER);
            mechanismSet();
         }
     }
     
+    /**
+     * Updates all parts of the robot to avoid safety timeouts
+     */
     private void mechanismSet(){
         Components robotParts = Components.getInstance();
         robotParts.driveControl.tankDrive(leftDrive, rightDrive);
@@ -119,6 +164,9 @@ public class Zephyr extends SimpleRobot {
         
     }
     
+    /**
+     * Stop the robot from moving
+     */
     private void stop(){
         leftDrive = 0;
         rightDrive = 0;
