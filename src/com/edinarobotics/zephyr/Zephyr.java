@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import com.edinarobotics.utils.sensors.FIRFilter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -151,15 +152,10 @@ public class Zephyr extends SimpleRobot {
                                                       Relay.Value.kForward));
         robotParts.cameraServoHorizontal.set(cameraSetX);
         robotParts.cameraServoVertical.set(cameraSetY);
-        String shooterPowerString = "Shooter: "+shooterSpeed;
-        String sonarValue = "Sonar reads: " + firFiltering.filter(robotParts.sonar.getValue());
-        String servoPositions = "X-Axis Servo: "+ robotParts.cameraServoHorizontal.get()+
-                                " Y-Axis Servo: "+robotParts.cameraServoVertical.get();
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, sonarValue);
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, servoPositions);
-        robotParts.textOutput.updateLCD();
-        
+        SmartDashboard.putDouble("Shooter:",shooterSpeed);
+        SmartDashboard.putInt("Sonar:", (int)firFiltering.filter(robotParts.sonar.getValue()));
+        SmartDashboard.putDouble("X-Axis Camera Servo:", robotParts.cameraServoHorizontal.get());
+        SmartDashboard.putDouble("Y-Axis Camera Servo:", robotParts.cameraServoVertical.get());
     }
     
     /**
