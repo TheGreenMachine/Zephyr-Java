@@ -37,8 +37,7 @@ public class Zephyr extends SimpleRobot {
     private double lastManualSpeed = 0;
     
     //Sensor Variables
-     private double filteringWeights[] = {.67, 17, .16};
-     private FIRFilter firFiltering = new FIRFilter(filteringWeights);
+     private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
      
      //Camera Variables
      double cameraSetX;
@@ -154,7 +153,7 @@ public class Zephyr extends SimpleRobot {
         robotParts.cameraServoHorizontal.set(cameraSetX);
         robotParts.cameraServoVertical.set(cameraSetY);
         String shooterPowerString = "Shooter: "+shooterSpeed;
-        String sonarValue = "Sonar reads: " + firFiltering.filter(robotParts.sonar.getValue());
+        String sonarValue = "Sonar reads: " + (int) firFiltering.filter(robotParts.sonar.getValue());
         String servoPositions = "X-Axis Servo: "+ robotParts.cameraServoHorizontal.get()+
                                 " Y-Axis Servo: "+robotParts.cameraServoVertical.get();
         robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
