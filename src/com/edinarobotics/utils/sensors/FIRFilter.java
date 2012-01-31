@@ -6,7 +6,7 @@ import com.sun.squawk.util.MathUtils;
  * takes a series of values and smooths them using FIR filtering
  * 
  */
-public class FIRFilter {
+public class FIRFilter implements FilterDouble{
     private double[] tapWeights;
     private double[] values;
     /**
