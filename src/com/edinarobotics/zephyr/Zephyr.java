@@ -13,6 +13,7 @@ import com.edinarobotics.utils.gamepad.Gamepad;
 import com.edinarobotics.utils.gamepad.GamepadResult;
 import com.edinarobotics.utils.gamepad.filters.DeadzoneFilter;
 import com.edinarobotics.utils.gamepad.filters.ScalingFilter;
+import com.edinarobotics.utils.sensors.AveragingFilter;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
@@ -37,7 +38,7 @@ public class Zephyr extends SimpleRobot {
     private double lastManualSpeed = 0;
     
     //Sensor Variables
-     private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
+     private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(2000);
      
      //Camera Variables
      double cameraSetX;
@@ -151,7 +152,8 @@ public class Zephyr extends SimpleRobot {
         robotParts.cameraServoHorizontal.set(cameraSetX);
         robotParts.cameraServoVertical.set(cameraSetY);
         String shooterPowerString = "Shooter: "+shooterSpeed;
-        String sonarValue = "Sonar reads: " + (int) firFiltering.filter(robotParts.sonar.getValue());
+        System.out.println(robotParts.sonar.getValue());
+        String sonarValue = "Sonar reads: " + (int) firFiltering.filter(AveragingFilter.filter(robotParts.sonar.getValue()));
         String servoPositions = "X-Axis Servo: "+ robotParts.cameraServoHorizontal.get()+
                                 " Y-Axis Servo: "+robotParts.cameraServoVertical.get();
         robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
