@@ -38,11 +38,12 @@ public class Zephyr extends SimpleRobot {
     private double lastManualSpeed = 0;
     
     //Sensor Variables
-     private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(200);
+     private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
      private FIRFilter secondFIRFiltering = FIRFilter.autoWeightedFilter(200);
      //Camera Variables
      double cameraSetX;
      double cameraSetY;
+     double CAMERA_STEP = .005;
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
@@ -133,8 +134,8 @@ public class Zephyr extends SimpleRobot {
            }
            
            // Set the camera servo positions
-           cameraSetX = components.cameraServoHorizontal.get() + driveGamepad.getD_PadX() * .1;
-           cameraSetY = components.cameraServoHorizontal.get() + driveGamepad.getD_PadY() * .1;
+           cameraSetX = components.cameraServoHorizontal.get() + driveGamepad.getD_PadX() * CAMERA_STEP;
+           cameraSetY = components.cameraServoHorizontal.get() + driveGamepad.getD_PadY() * CAMERA_STEP;
            ballLoaderUp = driveGamepad.getRawButton(Gamepad.RIGHT_TRIGGER);
            mechanismSet();
         }
@@ -153,10 +154,11 @@ public class Zephyr extends SimpleRobot {
         robotParts.cameraServoVertical.set(cameraSetY);
         String shooterPowerString = "Shooter: "+shooterSpeed;
         System.out.println(robotParts.sonar.getValue());
-        int sonarVal = (int) robotParts.sonar.getValue()/10;
-        String sonarValue = "Sonar reads: " + sonarVal*10;
+        int sonarVal = (int) firFiltering.filter(robotParts.sonar.getValue());
+        String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
         String servoPositions = "X-Axis Servo: "+ robotParts.cameraServoHorizontal.get()+
                                 " Y-Axis Servo: "+robotParts.cameraServoVertical.get();
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser3,1, "                                                              ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, sonarValue);
         robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, servoPositions);
