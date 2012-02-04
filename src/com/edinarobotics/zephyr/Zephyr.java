@@ -76,9 +76,9 @@ public class Zephyr extends SimpleRobot {
            leftDrive = joystick.getLeftY();
            rightDrive = joystick.getRightY();
            
-           // If the right bumper on the driveGamepad is pushed, speed up the
+           // If the right bumper on the shootGamepad is pushed, speed up the
            // shooter
-           if(driveGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
+           if(shootGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
            {
                //Step speed of shooter up.
                shooterSpeed -= SHOOTER_SPEED_STEP;
@@ -93,9 +93,9 @@ public class Zephyr extends SimpleRobot {
                lastManualSpeed = shooterSpeed;
            }
            
-           // If the left bumper on the driveGamepad is pushed, slow down the
+           // If the left bumper on the shootGamepad is pushed, slow down the
            // shooter
-           else if(driveGamepad.getRawButton(Gamepad.LEFT_BUMPER))
+           else if(shootGamepad.getRawButton(Gamepad.LEFT_BUMPER))
            {
                //Step speed of shooter down.
                shooterSpeed += SHOOTER_SPEED_STEP;
@@ -110,25 +110,25 @@ public class Zephyr extends SimpleRobot {
                lastManualSpeed = shooterSpeed;
            }
            
-           // Jump shooter speed to max if button 1 on the driveGamepad is
+           // Jump shooter speed to max if button 1 on the shootGamepad is
            // pushed
-           if(driveGamepad.getRawButton(Gamepad.BUTTON_1))
+           if(shootGamepad.getRawButton(Gamepad.BUTTON_1))
            {
                // Max is -1
                shooterSpeed = -1;
            }
            
-           // Jump shooter speed to the min if button 2 on the driveGamepad is
+           // Jump shooter speed to the min if button 2 on the shootGamepad is
            // pushed
-           else if(driveGamepad.getRawButton(Gamepad.BUTTON_2))
+           else if(shootGamepad.getRawButton(Gamepad.BUTTON_2))
            {
                // Min is 0
                shooterSpeed = 0;
            }
            
            // Jump shooter speed to the last manually set speed if button 3 on 
-           // the driveGamepad is pushed
-           else if(driveGamepad.getRawButton(Gamepad.BUTTON_3))
+           // the shootGamepad is pushed
+           else if(shootGamepad.getRawButton(Gamepad.BUTTON_3))
            {
                shooterSpeed = lastManualSpeed;
            }
@@ -136,7 +136,7 @@ public class Zephyr extends SimpleRobot {
            // Set the camera servo positions
            cameraSetX = components.cameraServoHorizontal.get() + driveGamepad.getD_PadX() * CAMERA_STEP;
            cameraSetY = components.cameraServoHorizontal.get() + driveGamepad.getD_PadY() * CAMERA_STEP;
-           ballLoaderUp = driveGamepad.getRawButton(Gamepad.RIGHT_TRIGGER);
+           ballLoaderUp = shootGamepad.getRawButton(Gamepad.RIGHT_TRIGGER);
            mechanismSet();
         }
     }
