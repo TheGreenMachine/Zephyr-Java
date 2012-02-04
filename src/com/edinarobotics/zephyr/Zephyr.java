@@ -74,8 +74,19 @@ public class Zephyr extends SimpleRobot {
            GamepadResult joystick = filters.filter(driveGamepad.getJoysticks());
            
            // Set values for the drive speeds of the robot
-           leftDrive = joystick.getLeftY();
-           rightDrive = joystick.getRightY();
+           //Using 0.9 as comparison value to avoid floating point problems
+           //Shouldn't ever be an issue but just in case
+           if(Math.abs(driveGamepad.getDPadY())<=0.9){
+               //Normal joystick drive. D-pad is not 1 or -1
+               leftDrive = joystick.getLeftY();
+               rightDrive = joystick.getRightY();
+           }
+           else{
+               //Single direction, forward/backward drive with the d-pad.
+               double oneStickDriveValue = driveGamepad.getDPadY() * ONE_STICK_MULTIPLIER;
+               leftDrive = oneStickDriveValue;
+               rightDrive = oneStickDriveValue;
+           }
            
            // If the right bumper on the shootGamepad is pushed, speed up the
            // shooter
