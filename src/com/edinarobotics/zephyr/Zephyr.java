@@ -74,7 +74,7 @@ public class Zephyr extends SimpleRobot {
            
            // Set values for the drive speeds of the robot
            leftDrive = joystick.getLeftY();
-           rightDrive = joystick.getRightY()*-1;
+           rightDrive = joystick.getRightY();
            
            // If the right bumper on the driveGamepad is pushed, speed up the
            // shooter
@@ -146,7 +146,7 @@ public class Zephyr extends SimpleRobot {
      */
     private void mechanismSet(){
         Components robotParts = Components.getInstance();
-        robotParts.driveControl.tankDrive(leftDrive, rightDrive);
+        robotParts.driveControl.tankDrive(leftDrive, -1*rightDrive);
         robotParts.shooterJaguar.set(shooterSpeed);
         robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
                                                       Relay.Value.kForward));
