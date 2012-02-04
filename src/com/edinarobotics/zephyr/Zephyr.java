@@ -61,7 +61,7 @@ public class Zephyr extends SimpleRobot {
         
         // Gamepads
         Gamepad driveGamepad = new Gamepad(1);
-        Gamepad gamepad2 = new Gamepad(2);
+        Gamepad shootGamepad = new Gamepad(2);
         
         // Initiate components
         Components components = Components.getInstance();
