@@ -134,8 +134,8 @@ public class Zephyr extends SimpleRobot {
            }
            
            // Set the camera servo positions
-           cameraSetX = components.cameraServoHorizontal.get() + driveGamepad.getD_PadX() * CAMERA_STEP;
-           cameraSetY = components.cameraServoHorizontal.get() + driveGamepad.getD_PadY() * CAMERA_STEP;
+           cameraSetX = components.cameraServoHorizontal.get() + driveGamepad.getDPadX() * CAMERA_STEP;
+           cameraSetY = components.cameraServoHorizontal.get() + driveGamepad.getDPadY() * CAMERA_STEP;
            ballLoaderUp = shootGamepad.getRawButton(Gamepad.RIGHT_TRIGGER);
            mechanismSet();
         }
