@@ -30,6 +30,7 @@ public class Zephyr extends SimpleRobot {
     //Driving Variables
     private double leftDrive = 0;
     private double rightDrive = 0;
+    private final double ONE_STICK_MULTIPLIER = 0.5;
    
     //Shooter Variables
     private double shooterSpeed = 0;
