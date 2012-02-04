@@ -69,15 +69,14 @@ public class Zephyr extends SimpleRobot {
         
         while(this.isOperatorControl()&&this.isEnabled())
         {
-            // Filter the joysticks on the gamepads according to the filters
-            // initialized
-           GamepadResult joystick = filters.filter(driveGamepad.getJoysticks());
-           
            // Set values for the drive speeds of the robot
            //Using 0.9 as comparison value to avoid floating point problems
            //Shouldn't ever be an issue but just in case
            if(Math.abs(driveGamepad.getDPadY())<=0.9){
                //Normal joystick drive. D-pad is not 1 or -1
+               // Filter the joysticks on the gamepads according to the filters
+               // initialized
+               GamepadResult joystick = filters.filter(driveGamepad.getJoysticks());
                leftDrive = joystick.getLeftY();
                rightDrive = joystick.getRightY();
            }
