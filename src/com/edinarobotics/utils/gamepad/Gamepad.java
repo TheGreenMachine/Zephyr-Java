@@ -5,12 +5,16 @@ import edu.wpi.first.wpilibj.Joystick;
 /**
  * Represents a gamepad with two joysticks and several buttons.
  * Makes interacting with a gamepad easier.
+ * Returns results through a GamepadResult.
  */
 public class Gamepad extends Joystick{
     public static final int LEFT_X_AXIS = 1;
     public static final int LEFT_Y_AXIS = 2;
     public static final int RIGHT_X_AXIS = 3;
     public static final int RIGHT_Y_AXIS = 4;
+    
+    public static final int DPAD_X = 5;
+    public static final int DPAD_Y = 6;
     
     public static final int LEFT_BUMPER = 5;
     public static final int LEFT_TRIGGER = 7;
@@ -44,7 +48,18 @@ public class Gamepad extends Joystick{
         return this.getRawAxis(RIGHT_Y_AXIS);
     }
     
+    public double getDPadX()
+    {
+        return this.getRawAxis(DPAD_X);
+    }
+    
+    public double getDPadY()
+    {
+        return this.getRawAxis(DPAD_Y);
+    }
+    
     public GamepadResult getJoysticks(){
         return new GamepadResult(getLeftX(),getLeftY(),getRightX(),getRightY());
     }
+
 }

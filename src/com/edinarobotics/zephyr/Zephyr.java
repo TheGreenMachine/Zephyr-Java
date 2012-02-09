@@ -15,6 +15,7 @@ import com.edinarobotics.utils.gamepad.Gamepad;
 import com.edinarobotics.utils.gamepad.GamepadResult;
 import com.edinarobotics.utils.gamepad.filters.DeadzoneFilter;
 import com.edinarobotics.utils.gamepad.filters.ScalingFilter;
+import com.edinarobotics.utils.sensors.AveragingFilter;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
@@ -34,6 +35,7 @@ public class Zephyr extends SimpleRobot {
     //Driving Variables
     public double leftDrive = 0;
     public double rightDrive = 0;
+    private final double ONE_STICK_MULTIPLIER = 0.5;
    
     //Shooter Variables
     public double shooterSpeed = 0;
@@ -42,8 +44,12 @@ public class Zephyr extends SimpleRobot {
     private double lastManualSpeed = 0;
     
     //Sensor Variables
-     private double filteringWeights[] = {.67, 17, .16};
-     private FIRFilter firFiltering = new FIRFilter(filteringWeights);
+     private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
+     //Camera Variables
+     double cameraSetX;
+     double cameraSetY;
+     double CAMERA_STEP = .005;
+     
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
@@ -58,63 +64,134 @@ public class Zephyr extends SimpleRobot {
     /**
      * This function is called once each time the robot enters operator control.
      */
-    public void operatorControl() {
+    public void operatorControl() 
+    {
+        // Filters for Gamepads
         FilterSet filters = new FilterSet();
         filters.addFilter(new DeadzoneFilter(.05));
         filters.addFilter(new ScalingFilter());
-        Gamepad gamepad1 = new Gamepad(1);
-        Gamepad gamepad2 = new Gamepad(2);
+        
+        // Gamepads
+        Gamepad driveGamepad = new Gamepad(1);
+        Gamepad shootGamepad = new Gamepad(2);
+        
+        // Initiate components
         Components components = Components.getInstance();
-        while(this.isOperatorControl()&&this.isEnabled()){
-           GamepadResult joystick = filters.filter(gamepad1.getJoysticks());
-           leftDrive = joystick.getLeftY();
-           rightDrive = joystick.getRightY()*-1;
-           if(gamepad1.getRawButton(Gamepad.RIGHT_BUMPER)){
+        
+        while(this.isOperatorControl()&&this.isEnabled())
+        {
+           // Set values for the drive speeds of the robot
+           //Using 0.9 as comparison value to avoid floating point problems
+           //Shouldn't ever be an issue but just in case
+           if(Math.abs(driveGamepad.getDPadY())<=0.9){
+               //Normal joystick drive. D-pad is not 1 or -1
+               // Filter the joysticks on the gamepads according to the filters
+               // initialized
+               GamepadResult joystick = filters.filter(driveGamepad.getJoysticks());
+               leftDrive = joystick.getLeftY();
+               rightDrive = joystick.getRightY();
+           }
+           else{
+               //Single direction, forward/backward drive with the d-pad.
+               double oneStickDriveValue = driveGamepad.getDPadY() * ONE_STICK_MULTIPLIER;
+               leftDrive = oneStickDriveValue;
+               rightDrive = oneStickDriveValue;
+           }
+           
+           // If the right bumper on the shootGamepad is pushed, speed up the
+           // shooter
+           if(shootGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
+           {
                //Step speed of shooter up.
-               shooterSpeed -= SHOOTER_SPEED_STEP;
-               if(shooterSpeed<=-1){
-                   shooterSpeed = -1;//Max speed is reverse 1 (-1).
+               shooterSpeed += SHOOTER_SPEED_STEP;
+               
+               // Limit the speed of the shooter to not exceed -1
+               if(shooterSpeed >= 1)
+               {
+                   shooterSpeed = 1;
                }
+               
+               // Store the speed of the shooter to a second variable
                lastManualSpeed = shooterSpeed;
            }
-           else if(gamepad1.getRawButton(Gamepad.LEFT_BUMPER)){
+           
+           // If the left bumper on the shootGamepad is pushed, slow down the
+           // shooter
+           else if(shootGamepad.getRawButton(Gamepad.LEFT_BUMPER))
+           {
                //Step speed of shooter down.
-               shooterSpeed += SHOOTER_SPEED_STEP;
-               if(shooterSpeed>=0){
+               shooterSpeed -= SHOOTER_SPEED_STEP;
+               
+               // Limit the speed of the shooter to not go past 0
+               if(shooterSpeed<=0)
+               {
                    shooterSpeed = 0;
                }
+               
+               // Store the speed of the shooter to a second variable
                lastManualSpeed = shooterSpeed;
            }
-           if(gamepad1.getRawButton(Gamepad.BUTTON_1)){
-               //Jump shooter speed to max.
-               shooterSpeed = -1; //Max is -1
+           
+           // Jump shooter speed to max if button 1 on the shootGamepad is
+           // pushed
+           if(shootGamepad.getRawButton(Gamepad.BUTTON_1))
+           {
+               // Max is 1
+               shooterSpeed = 1;
            }
-           else if(gamepad1.getRawButton(Gamepad.BUTTON_2)){
-               //Jump shooter speed to min.
+           
+           // Jump shooter speed to the min if button 2 on the shootGamepad is
+           // pushed
+           else if(shootGamepad.getRawButton(Gamepad.BUTTON_2))
+           {
+               // Min is 0
                shooterSpeed = 0;
            }
-           else if(gamepad1.getRawButton(Gamepad.BUTTON_3)){
+           
+           // Jump shooter speed to the last manually set speed if button 3 on 
+           // the shootGamepad is pushed
+           else if(shootGamepad.getRawButton(Gamepad.BUTTON_3))
+           {
                shooterSpeed = lastManualSpeed;
            }
-           ballLoaderUp = gamepad1.getRawButton(Gamepad.RIGHT_TRIGGER);
+           
+           // Set the camera servo positions
+           cameraSetX = components.cameraServoHorizontal.get() + driveGamepad.getDPadX() * CAMERA_STEP;
+           cameraSetY = components.cameraServoHorizontal.get() + driveGamepad.getDPadY() * CAMERA_STEP;
+           ballLoaderUp = shootGamepad.getRawButton(Gamepad.RIGHT_TRIGGER);
            mechanismSet();
         }
     }
     
-    public void mechanismSet(){
+    /**
+     * Updates all parts of the robot to avoid safety timeouts
+     */
+    private void mechanismSet(){
         Components robotParts = Components.getInstance();
-        robotParts.driveControl.tankDrive(leftDrive, rightDrive);
-        robotParts.shooterJaguar.set(shooterSpeed);
+        robotParts.driveControl.tankDrive(leftDrive, -1*rightDrive);
+        robotParts.shooterLeftJaguar.set(shooterSpeed);
+        robotParts.shooterRightJaguar.set(shooterSpeed);
         robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
                                                       Relay.Value.kForward));
+        robotParts.cameraServoHorizontal.set(cameraSetX);
+        robotParts.cameraServoVertical.set(cameraSetY);
         String shooterPowerString = "Shooter: "+shooterSpeed;
-        String sonarValue = "Sonar reads: " + firFiltering.filter(robotParts.sonar.getValue());
+        int sonarVal = (int) firFiltering.filter(robotParts.sonar.getValue());
+        String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
+        String servoPositions = "X-Axis Servo: "+ robotParts.cameraServoHorizontal.get()+
+                                " Y-Axis Servo: "+robotParts.cameraServoVertical.get();
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser3,1, "                                                              ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, sonarValue);
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, servoPositions);
         robotParts.textOutput.updateLCD();
+        
     }
     
-    public void stop(){
+    /**
+     * Stop the robot from moving
+     */
+    private void stop(){
         leftDrive = 0;
         rightDrive = 0;
         shooterSpeed = 0;

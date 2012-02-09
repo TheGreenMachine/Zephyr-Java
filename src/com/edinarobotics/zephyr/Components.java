@@ -9,49 +9,95 @@ import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Servo;
 
 /**
  *
  */
 public class Components {
-    //PORT NUMBERS HERE!
-    // ALL CAPS RAGE
-    private static final int LEFT_JAGUAR_PORT = 2;
+    // Port Numbers
+    //Jaguars
     private static final int RIGHT_JAGUAR_PORT = 1;
-    private static final int SHOOTER_JAGUAR_PORT = 3;
-    private static final int COMPRESSOR_PRESSURE_SENSOR = 1;
+    private static final int LEFT_JAGUAR_PORT = 2;
+    private static final int SHOOTER_LEFT_JAGUAR_PORT = 3;
+    private static final int SHOOTER_RIGHT_JAGUAR_PORT = 4;
+    private static final int SHOOTER_ROTATOR_JAGUAR_PORT = 5;
+    //Relays
     private static final int COMPRESSOR_SPIKE = 1;
     private static final int BALL_LOAD_PISTON_SPIKE = 2;
+    private static final int SUPER_SHIFTERS_SPIKE = 3;
+    private static final int BALL_COLL_ROTATE_SPIKE = 4;
+    private static final int BALL_COLL_LIFT_SPIKE = 5;
+    private static final int CONV_MOVE_SPIKE = 6;
+    //Servos
+    private static final int CAMERA_SERVO_VERTICAL = 7;
+    private static final int CAMERA_SERVO_HORIZONTAL = 8;
+    //Analog Input
     private static final int SONAR = 1;
-
+    //Digital Input
+    private static final int COMPRESSOR_PRESSURE_SENSOR = 1;
+    //Cypress
     public static final int CYPRESS_AUTO_SWITCH_ONE_IN = 1;
     public static final int CYPRESS_AUTO_SWITCH_TWO_IN = 2;
     
+/******************************************************************************/
+    
+    // Robot Items
     private static Components instance;
+    //RobotDrive
+    public RobotDrive driveControl;
+    //Jaguars
     public Jaguar leftJaguar;
     public Jaguar rightJaguar;
-    public Jaguar shooterJaguar;
-    public RobotDrive driveControl;
-    public Compressor compressor;
+    public Jaguar shooterLeftJaguar;
+    public Jaguar shooterRightJaguar;
+    public Jaguar shooterRotator;
+    //Relays
     public Relay ballLoadPiston;
-    public AnalogChannel sonar;
-    
+    public Relay superShifters;
+    public Relay collectorRotate;
+    public Relay liftCollector;
+    public Relay conveyorMove;
+    //Servos
+    public Servo cameraServoHorizontal;
+    public Servo cameraServoVertical;
+    //Analog Input
+    public AnalogChannel sonar;      
+    //Misc
+    public Compressor compressor;
+    public Jaguar shooterRotateJaguar;
     public DriverStationLCD textOutput;
     public DriverStationEnhancedIO cypress;
-
     public Timer timer;
     
+    /**
+     * Instantiates all components of the robot
+     */
     private Components()
     {
+        //Robot Drive
+        driveControl = new RobotDrive(leftJaguar,rightJaguar);
+        //Jaguars
         leftJaguar = new Jaguar(LEFT_JAGUAR_PORT);
         rightJaguar = new Jaguar(RIGHT_JAGUAR_PORT);
-        shooterJaguar = new Jaguar(SHOOTER_JAGUAR_PORT);
-        driveControl = new RobotDrive(leftJaguar,rightJaguar);
-        compressor  = new Compressor(COMPRESSOR_PRESSURE_SENSOR,COMPRESSOR_SPIKE);
-        compressor.start();
+        shooterLeftJaguar = new Jaguar(SHOOTER_LEFT_JAGUAR_PORT);
+        shooterRightJaguar = new Jaguar(SHOOTER_RIGHT_JAGUAR_PORT);
+        shooterRotator = new Jaguar(SHOOTER_ROTATOR_JAGUAR_PORT);
+        //Relays
         ballLoadPiston = new Relay(BALL_LOAD_PISTON_SPIKE);
-        textOutput = DriverStationLCD.getInstance();
+        superShifters = new Relay(SUPER_SHIFTERS_SPIKE);
+	collectorRotate = new Relay(BALL_COLL_ROTATE_SPIKE);
+	liftCollector = new Relay(BALL_COLL_LIFT_SPIKE);
+	conveyorMove = new Relay(CONV_MOVE_SPIKE);
+        //Servos
+        cameraServoHorizontal = new Servo(CAMERA_SERVO_HORIZONTAL);
+        cameraServoVertical = new Servo(CAMERA_SERVO_VERTICAL);
+        //Analog Inputs
         sonar = new AnalogChannel(SONAR);
+        //Misc
+        compressor = new Compressor(COMPRESSOR_PRESSURE_SENSOR,COMPRESSOR_SPIKE);
+        compressor.start();
+        textOutput = DriverStationLCD.getInstance();
         cypress = DriverStation.getInstance().getEnhancedIO();
         timer = new Timer();
     }

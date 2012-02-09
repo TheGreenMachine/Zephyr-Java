@@ -1,10 +1,12 @@
 package com.edinarobotics.utils.sensors;
 
+import com.sun.squawk.util.MathUtils;
+
 /**
  * takes a series of values and smooths them using FIR filtering
  * 
  */
-public class FIRFilter {
+public class FIRFilter implements FilterDouble{
     private double[] tapWeights;
     private double[] values;
     /**
@@ -16,6 +18,22 @@ public class FIRFilter {
         this.tapWeights = tapWeights;
         values = new double[this.tapWeights.length];
     }
+    /**
+     * Generates an FIRFilter with size taps as determined by the formula 2k/(n^2+n)
+     * where n = size
+     * @param size, the number of taps to be included in the filter
+     * @return an FIRFilter object
+     */
+    public static FIRFilter autoWeightedFilter(int size)
+    {
+        double[] tempValues = new double[size];
+        for(int x = 0; x<tempValues.length; x++)
+        {
+            tempValues[x] = (2*(size-x))/(MathUtils.pow(size, 2)+size);
+        }
+        return new FIRFilter(tempValues);
+    }
+    
     /**
      * Performs FIR smoothing on values[]
      * @param currentVal is the newest value
@@ -34,7 +52,11 @@ public class FIRFilter {
         }
         return FIRValue;
         
-    } 
+    }
+    
+    /**
+     * Shifts the array down one
+     */
     private void shiftArray()
     {
         double[] tempArray = new double[values.length];
