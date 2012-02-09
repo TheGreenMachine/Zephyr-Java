@@ -80,6 +80,7 @@ public class Zephyr extends SimpleRobot {
         
         while(this.isOperatorControl()&&this.isEnabled())
         {
+           //************GAMEPAD 1****************************************//
            // Set values for the drive speeds of the robot
            //Using 0.9 as comparison value to avoid floating point problems
            //Shouldn't ever be an issue but just in case
@@ -98,6 +99,7 @@ public class Zephyr extends SimpleRobot {
                rightDrive = oneStickDriveValue;
            }
            
+           //******************GAMEPAD 2*********************************//
            // If the right bumper on the shootGamepad is pushed, speed up the
            // shooter
            if(shootGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
