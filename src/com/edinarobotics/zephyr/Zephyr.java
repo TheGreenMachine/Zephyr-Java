@@ -46,9 +46,9 @@ public class Zephyr extends SimpleRobot {
     //Sensor Variables
      private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
      //Camera Variables
-     double cameraSetX;
-     double cameraSetY;
-     double CAMERA_STEP = .005;
+     public double cameraSetX;
+     public double cameraSetY;
+     private double CAMERA_STEP = .005;
      
     /**
      * This function is called once each time the robot enters autonomous mode.
