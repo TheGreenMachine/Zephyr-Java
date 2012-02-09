@@ -33,7 +33,7 @@ public class FireShooterStep extends AutonomousStep{
     
     public void start()
     {
-        robot.shooterSpeed = -shooterSpeed;
+        robot.shooterSpeed = shooterSpeed;
         robot.mechanismSet();
         time.start();
     }
