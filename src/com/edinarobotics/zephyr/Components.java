@@ -65,7 +65,6 @@ public class Components {
     public AnalogChannel sonar;      
     //Misc
     public Compressor compressor;
-    public Jaguar shooterRotateJaguar;
     public DriverStationLCD textOutput;
     public DriverStationEnhancedIO cypress;
     public Timer timer;
