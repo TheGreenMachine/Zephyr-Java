@@ -13,14 +13,13 @@ import com.edinarobotics.utils.autonomous.AutonomousStep;
 import com.edinarobotics.utils.gamepad.FilterSet;
 import com.edinarobotics.utils.gamepad.Gamepad;
 import com.edinarobotics.utils.gamepad.GamepadResult;
+import com.edinarobotics.utils.gamepad.ToggleHelper;
 import com.edinarobotics.utils.gamepad.filters.DeadzoneFilter;
 import com.edinarobotics.utils.gamepad.filters.ScalingFilter;
-import com.edinarobotics.utils.sensors.AveragingFilter;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import com.edinarobotics.utils.sensors.FIRFilter;
-import com.edinarobotics.zephyr.autonomous.DriveStep;
 import com.edinarobotics.zephyr.autonomous.IdleStopStep;
 import com.edinarobotics.zephyr.autonomous.FireShooterStep;
 
@@ -49,7 +48,12 @@ public class Zephyr extends SimpleRobot {
      public double cameraSetX;
      public double cameraSetY;
      private double CAMERA_STEP = .005;
-     
+     //Collector Variables
+     public int collectorLift = 0;
+     public boolean collectorSpin = false;
+     public boolean convMove = false;
+
+     public boolean shifters = false;
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
@@ -77,7 +81,7 @@ public class Zephyr extends SimpleRobot {
         
         // Initiate components
         Components components = Components.getInstance();
-        
+        ToggleHelper button3 = new ToggleHelper();
         while(this.isOperatorControl()&&this.isEnabled())
         {
            //************GAMEPAD 1****************************************//
@@ -99,6 +103,35 @@ public class Zephyr extends SimpleRobot {
                rightDrive = oneStickDriveValue;
            }
            
+           if(driveGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
+           {
+               collectorLift = 1;
+           }
+           else if(driveGamepad.getRawButton(Gamepad.RIGHT_TRIGGER))
+           {
+               collectorLift = -1;
+           }
+           else{
+               collectorLift = 0;
+           }
+           if(driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER))
+           {
+               collectorSpin = true;
+           }
+           else{
+               collectorSpin = false;
+           }
+            if(driveGamepad.getRawButton(Gamepad.LEFT_BUMPER))
+           {
+               convMove = true;
+           }
+           else{
+               convMove = false;
+           }
+           if(button3.isToggled(driveGamepad.getRawButton(Gamepad.BUTTON_3)))
+           {
+               shifters = !shifters;
+           }
            //******************GAMEPAD 2*********************************//
            // If the right bumper on the shootGamepad is pushed, speed up the
            // shooter
@@ -175,6 +208,20 @@ public class Zephyr extends SimpleRobot {
         robotParts.shooterRightJaguar.set(shooterSpeed);
         robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
                                                       Relay.Value.kForward));
+        robotParts.superShifters.set((shifters?Relay.Value.kReverse:Relay.Value.kOff));
+        robotParts.conveyorMove.set((convMove?Relay.Value.kReverse:Relay.Value.kOff));
+        robotParts.collectorRotate.set((collectorSpin?Relay.Value.kReverse:Relay.Value.kOff));
+        if(collectorLift == 1)
+        {
+            robotParts.liftCollector.set(Relay.Value.kForward);
+        }
+        else if(collectorLift == -1)
+        {
+            robotParts.liftCollector.set(Relay.Value.kReverse);
+        }
+        else{
+            robotParts.liftCollector.set(Relay.Value.kOff);
+        }
         robotParts.cameraServoHorizontal.set(cameraSetX);
         robotParts.cameraServoVertical.set(cameraSetY);
         String shooterPowerString = "Shooter: "+shooterSpeed;
