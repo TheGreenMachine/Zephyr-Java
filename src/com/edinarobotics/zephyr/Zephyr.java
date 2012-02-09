@@ -40,6 +40,7 @@ public class Zephyr extends SimpleRobot {
     //Shooter Variables
     public double shooterSpeed = 0;
     public boolean ballLoaderUp = false;
+    public double shooterRotateSpeed = 0;
     private final double SHOOTER_SPEED_STEP = 0.0005;
     private double lastManualSpeed = 0;
     
@@ -119,7 +120,7 @@ public class Zephyr extends SimpleRobot {
            
            // If the left bumper on the shootGamepad is pushed, slow down the
            // shooter
-           else if(shootGamepad.getRawButton(Gamepad.LEFT_BUMPER))
+           else if(shootGamepad.getRawButton(Gamepad.RIGHT_TRIGGER))
            {
                //Step speed of shooter down.
                shooterSpeed -= SHOOTER_SPEED_STEP;
@@ -141,8 +142,12 @@ public class Zephyr extends SimpleRobot {
                // Max is 1
                shooterSpeed = 1;
            }
-           
-           // Jump shooter speed to the min if button 2 on the shootGamepad is
+           // Jump shooter speed to 50% if button 3 on the shootGamepad is
+           // pushed
+           else if(shootGamepad.getRawButton(Gamepad.BUTTON_3)){
+               shooterSpeed = 0.5;
+           }
+           // Jump shooter speed to the min if button 3 on the shootGamepad is
            // pushed
            else if(shootGamepad.getRawButton(Gamepad.BUTTON_2))
            {
@@ -150,17 +155,13 @@ public class Zephyr extends SimpleRobot {
                shooterSpeed = 0;
            }
            
-           // Jump shooter speed to the last manually set speed if button 3 on 
-           // the shootGamepad is pushed
-           else if(shootGamepad.getRawButton(Gamepad.BUTTON_3))
-           {
-               shooterSpeed = lastManualSpeed;
-           }
+           shooterRotateSpeed = filters.filter(shootGamepad.getJoysticks()).getRightX();
            
            // Set the camera servo positions
-           cameraSetX = components.cameraServoHorizontal.get() + driveGamepad.getDPadX() * CAMERA_STEP;
-           cameraSetY = components.cameraServoHorizontal.get() + driveGamepad.getDPadY() * CAMERA_STEP;
-           ballLoaderUp = shootGamepad.getRawButton(Gamepad.RIGHT_TRIGGER);
+           cameraSetX = components.cameraServoHorizontal.get() + shootGamepad.getDPadX() * CAMERA_STEP;
+           cameraSetY = components.cameraServoHorizontal.get() + shootGamepad.getDPadY() * CAMERA_STEP;
+           ballLoaderUp = shootGamepad.getRawButton(Gamepad.LEFT_TRIGGER) || 
+                          shootGamepad.getRawButton(Gamepad.LEFT_BUMPER);
            mechanismSet();
         }
     }
@@ -177,6 +178,7 @@ public class Zephyr extends SimpleRobot {
                                                       Relay.Value.kForward));
         robotParts.cameraServoHorizontal.set(cameraSetX);
         robotParts.cameraServoVertical.set(cameraSetY);
+        robotParts.shooterRotator.set(shooterRotateSpeed);
         String shooterPowerString = "Shooter: "+shooterSpeed;
         int sonarVal = (int) firFiltering.filter(robotParts.sonar.getValue());
         String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
