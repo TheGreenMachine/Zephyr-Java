@@ -40,7 +40,6 @@ public class Zephyr extends SimpleRobot {
     
     //Sensor Variables
      private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
-     private FIRFilter secondFIRFiltering = FIRFilter.autoWeightedFilter(200);
      //Camera Variables
      double cameraSetX;
      double cameraSetY;
@@ -158,7 +157,7 @@ public class Zephyr extends SimpleRobot {
     private void mechanismSet(){
         Components robotParts = Components.getInstance();
         robotParts.driveControl.tankDrive(leftDrive, -1*rightDrive);
-        robotParts.shooterJaguar.set(shooterSpeed);
+        robotParts.setShooter(shooterSpeed);
         robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
                                                       Relay.Value.kForward));
         robotParts.cameraServoHorizontal.set(cameraSetX);
