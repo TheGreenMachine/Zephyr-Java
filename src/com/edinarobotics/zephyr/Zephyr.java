@@ -166,7 +166,7 @@ public class Zephyr extends SimpleRobot {
     /**
      * Updates all parts of the robot to avoid safety timeouts
      */
-    private void mechanismSet(){
+    public void mechanismSet(){
         Components robotParts = Components.getInstance();
         robotParts.driveControl.tankDrive(leftDrive, -1*rightDrive);
         robotParts.shooterLeftJaguar.set(shooterSpeed);
@@ -191,7 +191,7 @@ public class Zephyr extends SimpleRobot {
     /**
      * Stop the robot from moving
      */
-    private void stop(){
+    public void stop(){
         leftDrive = 0;
         rightDrive = 0;
         shooterSpeed = 0;
