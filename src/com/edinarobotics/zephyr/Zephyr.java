@@ -91,12 +91,12 @@ public class Zephyr extends SimpleRobot {
            if(shootGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
            {
                //Step speed of shooter up.
-               shooterSpeed -= SHOOTER_SPEED_STEP;
+               shooterSpeed += SHOOTER_SPEED_STEP;
                
                // Limit the speed of the shooter to not exceed -1
-               if(shooterSpeed <= -1)
+               if(shooterSpeed >= 1)
                {
-                   shooterSpeed = -1;
+                   shooterSpeed = 1;
                }
                
                // Store the speed of the shooter to a second variable
@@ -108,10 +108,10 @@ public class Zephyr extends SimpleRobot {
            else if(shootGamepad.getRawButton(Gamepad.LEFT_BUMPER))
            {
                //Step speed of shooter down.
-               shooterSpeed += SHOOTER_SPEED_STEP;
+               shooterSpeed -= SHOOTER_SPEED_STEP;
                
                // Limit the speed of the shooter to not go past 0
-               if(shooterSpeed>=0)
+               if(shooterSpeed<=0)
                {
                    shooterSpeed = 0;
                }
@@ -124,8 +124,8 @@ public class Zephyr extends SimpleRobot {
            // pushed
            if(shootGamepad.getRawButton(Gamepad.BUTTON_1))
            {
-               // Max is -1
-               shooterSpeed = -1;
+               // Max is 1
+               shooterSpeed = 1;
            }
            
            // Jump shooter speed to the min if button 2 on the shootGamepad is
