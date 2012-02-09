@@ -101,9 +101,4 @@ public class Components {
         }
         return instance;
     }
-    void setShooter(double speed){
-        shooterLeftJaguar.set(speed);
-        shooterRightJaguar.set(speed);
-    }
-
 }

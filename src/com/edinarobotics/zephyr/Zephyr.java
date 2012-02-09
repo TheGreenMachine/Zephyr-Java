@@ -157,7 +157,8 @@ public class Zephyr extends SimpleRobot {
     private void mechanismSet(){
         Components robotParts = Components.getInstance();
         robotParts.driveControl.tankDrive(leftDrive, -1*rightDrive);
-        robotParts.setShooter(shooterSpeed);
+        robotParts.shooterLeftJaguar.set(shooterSpeed);
+        robotParts.shooterRightJaguar.set(shooterSpeed);
         robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
                                                       Relay.Value.kForward));
         robotParts.cameraServoHorizontal.set(cameraSetX);
