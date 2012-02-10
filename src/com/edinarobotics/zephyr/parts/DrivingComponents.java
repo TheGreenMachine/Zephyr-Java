@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj.Relay;
  * super shifters
  */
 public class DrivingComponents {
-    Jaguar leftMotors;
-    Jaguar rightMotors;
-    Relay shifters;
+    private Jaguar leftMotors;
+    private Jaguar rightMotors;
+    private Relay shifters;
     /*
      * Intializes leftMotors, rightMotors and shifters with left, right, and shifters
      */

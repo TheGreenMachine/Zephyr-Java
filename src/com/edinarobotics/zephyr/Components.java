@@ -1,15 +1,15 @@
 package com.edinarobotics.zephyr;
 
+import com.edinarobotics.utils.sensors.FIRFilter;
+import com.edinarobotics.zephyr.parts.CollectorComponents;
 import com.edinarobotics.zephyr.parts.DrivingComponents;
 import com.edinarobotics.zephyr.parts.ShooterComponents;
+import com.edinarobotics.zephyr.parts.SonarComponents;
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import edu.wpi.first.wpilibj.DriverStationLCD;
-import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Servo;
 
@@ -48,15 +48,10 @@ public class Components {
     private static Components instance;
     public ShooterComponents shooter;
     public DrivingComponents drive;
-    //Relays
-    public Relay collectorRotate;
-    public Relay liftCollector;
-    public Relay conveyorMove;
-    //Servos
-    public Servo cameraServoHorizontal;
+    public CollectorComponents collector;
+    public SonarComponents sonar;
     public Servo cameraServoVertical;
-    //Analog Input
-    public AnalogChannel sonar;      
+     
     //Misc
     public Compressor compressor;
     public DriverStationLCD textOutput;
@@ -72,14 +67,12 @@ public class Components {
         shooter = new ShooterComponents(SHOOTER_LEFT_JAGUAR_PORT, SHOOTER_RIGHT_JAGUAR_PORT,
                                             SHOOTER_ROTATOR_JAGUAR_PORT, BALL_LOAD_PISTON_SPIKE);
         drive = new DrivingComponents(LEFT_JAGUAR_PORT, RIGHT_JAGUAR_PORT, SUPER_SHIFTERS_SPIKE);
-	collectorRotate = new Relay(BALL_COLL_ROTATE_SPIKE);
-	liftCollector = new Relay(BALL_COLL_LIFT_SPIKE);
-	conveyorMove = new Relay(CONV_MOVE_SPIKE);
+	collector = new CollectorComponents(BALL_COLL_ROTATE_SPIKE, BALL_COLL_LIFT_SPIKE,
+                                                CONV_MOVE_SPIKE);
         //Servos
-        cameraServoHorizontal = new Servo(CAMERA_SERVO_HORIZONTAL);
         cameraServoVertical = new Servo(CAMERA_SERVO_VERTICAL);
         //Analog Inputs
-        sonar = new AnalogChannel(SONAR);
+        sonar = new SonarComponents(SONAR, FIRFilter.autoWeightedFilter(20));
         //Misc
         compressor = new Compressor(COMPRESSOR_PRESSURE_SENSOR,COMPRESSOR_SPIKE);
         compressor.start();
