@@ -32,6 +32,7 @@ public class SetDriveSpeedStep extends AutonomousStep{
     public void start(){
         robot.leftDrive = leftSpeed;
         robot.rightDrive = rightSpeed;
+        robot.mechanismSet();
     }
     
     /**
