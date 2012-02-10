@@ -203,13 +203,15 @@ public class Zephyr extends SimpleRobot {
      * Updates all parts of the robot to avoid safety timeouts
      */
     public void mechanismSet(){
+        //Driving Assignments
         Components robotParts = Components.getInstance();
-        robotParts.driveControl.tankDrive(leftDrive, -1*rightDrive);
-        robotParts.shooterLeftJaguar.set(shooterSpeed);
-        robotParts.shooterRightJaguar.set(shooterSpeed);
-        robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
-                                                      Relay.Value.kForward));
-        robotParts.superShifters.set((shifters?Relay.Value.kReverse:Relay.Value.kOff));
+        robotParts.drive.setDrivingSpeed(-1*leftDrive, -1*rightDrive);
+        robotParts.drive.shift(shifters);
+        //Shooter Assignments
+        robotParts.shooter.setSpeed(shooterSpeed);
+        robotParts.shooter.firePiston(ballLoaderUp);
+        robotParts.shooter.rotate(shooterRotateSpeed);
+        //
         robotParts.conveyorMove.set((convMove?Relay.Value.kReverse:Relay.Value.kOff));
         robotParts.collectorRotate.set((collectorSpin?Relay.Value.kReverse:Relay.Value.kOff));
         if(collectorLift == 1)
@@ -225,7 +227,6 @@ public class Zephyr extends SimpleRobot {
         }
         robotParts.cameraServoHorizontal.set(cameraSetX);
         robotParts.cameraServoVertical.set(cameraSetY);
-        robotParts.shooterRotator.set(shooterRotateSpeed);
         String shooterPowerString = "Shooter: "+shooterSpeed;
         int sonarVal = (int) firFiltering.filter(robotParts.sonar.getValue());
         String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
