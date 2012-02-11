@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import com.edinarobotics.utils.sensors.FIRFilter;
 import com.edinarobotics.zephyr.autonomous.IdleStopStep;
-import com.edinarobotics.zephyr.autonomous.FireShooterStep;
 
 /**
  * The VM is configured to automatically run this class, and to call the
