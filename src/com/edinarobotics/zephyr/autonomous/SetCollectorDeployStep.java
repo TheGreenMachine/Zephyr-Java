@@ -34,7 +34,8 @@ public class SetCollectorDeployStep extends AutonomousStep{
      * @param deployDirection the direction to which the collector deploy motor
      * should be set. Should be set with the constants {@link #DEPLOY_DOWN},
      * {@link #DEPLOY_UP}, and {@link #DEPLOY_STOP}.
-     * @param robot 
+     * @param robot the {@link Zephyr} object to use to set the collector
+     * deploy state.
      */
     public SetCollectorDeployStep(int deployDirection, Zephyr robot){
         this.deployDirection = deployDirection;
