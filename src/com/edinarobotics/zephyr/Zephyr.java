@@ -190,8 +190,7 @@ public class Zephyr extends SimpleRobot {
            shooterRotateSpeed = filters.filter(shootGamepad.getJoysticks()).getRightX();
            
            // Set the camera servo positions
-           cameraSetX = components.cameraServoHorizontal.get() + shootGamepad.getDPadX() * CAMERA_STEP;
-           cameraSetY = components.cameraServoHorizontal.get() + shootGamepad.getDPadY() * CAMERA_STEP;
+           cameraSetY = components.cameraServoVertical.get() + shootGamepad.getDPadY() * CAMERA_STEP;
            ballLoaderUp = shootGamepad.getRawButton(Gamepad.LEFT_TRIGGER) || 
                           shootGamepad.getRawButton(Gamepad.LEFT_BUMPER);
            mechanismSet();
@@ -202,34 +201,25 @@ public class Zephyr extends SimpleRobot {
      * Updates all parts of the robot to avoid safety timeouts
      */
     public void mechanismSet(){
+        //Driving Assignments
         Components robotParts = Components.getInstance();
-        robotParts.driveControl.tankDrive(leftDrive, -1*rightDrive);
-        robotParts.shooterLeftJaguar.set(shooterSpeed);
-        robotParts.shooterRightJaguar.set(shooterSpeed);
-        robotParts.ballLoadPiston.set((ballLoaderUp ? Relay.Value.kReverse :
-                                                      Relay.Value.kForward));
-        robotParts.superShifters.set((shifters?Relay.Value.kReverse:Relay.Value.kOff));
-        robotParts.conveyorMove.set((convMove?Relay.Value.kReverse:Relay.Value.kOff));
-        robotParts.collectorRotate.set((collectorSpin?Relay.Value.kReverse:Relay.Value.kOff));
-        if(collectorLift == 1)
-        {
-            robotParts.liftCollector.set(Relay.Value.kForward);
-        }
-        else if(collectorLift == -1)
-        {
-            robotParts.liftCollector.set(Relay.Value.kReverse);
-        }
-        else{
-            robotParts.liftCollector.set(Relay.Value.kOff);
-        }
-        robotParts.cameraServoHorizontal.set(cameraSetX);
+        robotParts.drive.setDrivingSpeed(-1*leftDrive, -1*rightDrive);
+        robotParts.drive.shift(shifters);
+        //Shooter Assignments
+        robotParts.shooter.setSpeed(shooterSpeed);
+        robotParts.shooter.firePiston(ballLoaderUp);
+        robotParts.shooter.rotate(shooterRotateSpeed);
+        //Collector Assignments
+        robotParts.collector.conveyorMove(convMove);
+        robotParts.collector.collect(collectorSpin);
+        robotParts.collector.lift(collectorLift);
+        //Servo Assignments
         robotParts.cameraServoVertical.set(cameraSetY);
-        robotParts.shooterRotator.set(shooterRotateSpeed);
+        //Sonar Processing
         String shooterPowerString = "Shooter: "+shooterSpeed;
-        int sonarVal = (int) firFiltering.filter(robotParts.sonar.getValue());
+        int sonarVal = (int) robotParts.sonar.getFilteredValue();
         String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
-        String servoPositions = "X-Axis Servo: "+ robotParts.cameraServoHorizontal.get()+
-                                " Y-Axis Servo: "+robotParts.cameraServoVertical.get();
+        String servoPositions = "Y-Axis Servo: "+robotParts.cameraServoVertical.get();
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3,1, "                                                              ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, sonarValue);
