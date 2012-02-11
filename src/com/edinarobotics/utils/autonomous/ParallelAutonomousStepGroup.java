@@ -55,10 +55,11 @@ public class ParallelAutonomousStepGroup extends AutonomousStep{
      * otherwise.
      */
     public boolean isFinished(){
-        boolean result = true;
         for(int i=0; i<steps.length; i++){
-            result &= steps[i].isFinished();
+            if(!steps[i].isFinished()){
+                return false;
+            }
         }
-        return result;
+        return true;
     }
 }
