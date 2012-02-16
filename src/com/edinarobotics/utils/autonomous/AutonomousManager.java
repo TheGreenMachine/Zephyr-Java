@@ -1,5 +1,6 @@
 package com.edinarobotics.utils.autonomous;
 
+import com.edinarobotics.utils.autonomous.conditions.AutonomousCondition;
 import edu.wpi.first.wpilibj.RobotBase;
 import java.util.Vector;
 
@@ -9,7 +10,7 @@ import java.util.Vector;
  */
 public class AutonomousManager {
     private AutonomousStep[] autonomousSteps;
-    private RobotBase robot;
+    private BooleanCondition runCondition;
     
     /**
      * Constructs an AutonomousManager using the given steps.
@@ -18,7 +19,18 @@ public class AutonomousManager {
      * used to check whether or not this robot is in autonomous.
      */
     public AutonomousManager(AutonomousStep[] steps, RobotBase robot){
-        this.robot = robot;
+        this(steps, new AutonomousCondition(robot));
+    }
+    
+    /**
+     * Constructs an AutonomousManager using the given steps.
+     * @param steps The steps that this AutonomousManager will run.
+     * @param runCondition The {@link BooleanCondition} that will be used
+     * the test whether or not this AutonomousManager should continue running
+     * in {@link #start()}.
+     */
+    public AutonomousManager(AutonomousStep[] steps, BooleanCondition runCondition){
+        this.runCondition = runCondition;
         autonomousSteps = steps;
     }
     
@@ -55,7 +67,7 @@ public class AutonomousManager {
     public void start(){
         int currentStep = 0;
         autonomousSteps[currentStep].start();
-        while(robot.isEnabled() && robot.isAutonomous()){
+        while(runCondition.get()){
             //Autonomous loop
             if(!autonomousSteps[currentStep].isFinished()){
                 //Step not finished, call run().
