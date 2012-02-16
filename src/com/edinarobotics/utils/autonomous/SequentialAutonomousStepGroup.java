@@ -53,6 +53,8 @@ public class SequentialAutonomousStepGroup extends AutonomousStep{
         if(currentStep<steps.length){
             steps[currentStep].stop();
         }
+        //Reset the step group so that it can be reused.
+        currentStep = -1;
     }
     
     /**
