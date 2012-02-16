@@ -6,6 +6,7 @@ package com.edinarobotics.utils.autonomous;
  */
 public class ParallelAutonomousStepGroup extends AutonomousStep{
     private AutonomousStep[] steps;
+    private boolean[] stepsFinished;
     
     /**
      * Constructs a ParallelAutonomousStepGroup that will run the given steps
@@ -14,6 +15,7 @@ public class ParallelAutonomousStepGroup extends AutonomousStep{
      */
     public ParallelAutonomousStepGroup(AutonomousStep[] steps){
         this.steps = steps;
+        this.stepsFinished = new boolean[steps.length];
     }
     
     /**
@@ -35,6 +37,11 @@ public class ParallelAutonomousStepGroup extends AutonomousStep{
             if(!steps[i].isFinished()){
                 steps[i].run();
             }
+            if(steps[i].isFinished() && (!stepsFinished[i])){
+                //Call stop() on the step as soon as it's finished
+                steps[i].stop();
+                stepsFinished[i] = true;
+            }
         }
     }
     
@@ -44,8 +51,13 @@ public class ParallelAutonomousStepGroup extends AutonomousStep{
      */
     public void stop(){
         for(int i=0; i<steps.length; i++){
-            steps[i].stop();
+            if(!stepsFinished[i]){
+                //Stop all steps that have not been stopped
+                steps[i].stop();
+            }
         }
+        //Reset the steps array so that this step can be reused
+        stepsFinished = new boolean[steps.length];
     }
     
     /**
