@@ -14,12 +14,13 @@ public class AutonomousStepFactory {
     }
     
     public AutonomousStep getShooterFireStep(double shooterSpeed, int numShots){
+        final double PISTON_SET_DELAY = 0.5;
         //Steps to bring the piston up and down
         AutonomousStep[] fireSteps = new AutonomousStep[4];
         fireSteps[0] = new ShooterPistonControlStep(true, robot);
-        fireSteps[1] = new IdleWaitStep(0.5, robot);
+        fireSteps[1] = new IdleWaitStep(PISTON_SET_DELAY, robot);
         fireSteps[2] = new ShooterPistonControlStep(false, robot);
-        fireSteps[3] = new IdleWaitStep(0.5, robot);
+        fireSteps[3] = new IdleWaitStep(PISTON_SET_DELAY, robot);
         
         AutonomousStep[] steps = new AutonomousStep[3];
         //Start the shooter
