@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import com.edinarobotics.utils.sensors.FIRFilter;
 import com.edinarobotics.zephyr.autonomous.IdleStopStep;
+import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
+import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -67,6 +69,51 @@ public class Zephyr extends SimpleRobot {
      * This function is called once each time the robot enters autonomous mode.
      */
     public void autonomous() {
+        //Cypress switch constants
+        final int POSITION_LEFT_SWITCH = 5;
+        final int POSITION_RIGHT_SWITCH = 3;
+        final int COLLECT_SWITCH = 1;
+        final int SHOOTING_DELAY_1 = 4;
+        final int SHOOTING_DELAY_2 = 2;
+        
+        //Autonomous constants
+        final int NO_AUTONOMOUS = 0;
+        final int KEY_LEFT = 1;
+        final int KEY_RIGHT = 2;
+        final int KEY_MIDDLE = 3;
+        final int DELAY_MULTIPLIER = 3;
+        Components parts = Components.getInstance();
+        DriverStationEnhancedIO cypress = parts.cypress;
+        //Autonomous config values
+        int shootingDelayValue = 1;
+        boolean driveToCollect = false;
+        int keyPosition = KEY_MIDDLE;
+        
+        //Determine shooting delay value
+        try{
+            shootingDelayValue = ((cypress.getDigital(SHOOTING_DELAY_2)?1:0)<<1)+
+                                 (cypress.getDigital(SHOOTING_DELAY_1)?1:0);
+        }catch (EnhancedIOException ex){
+            ex.printStackTrace();
+        }
+        shootingDelayValue *= DELAY_MULTIPLIER;
+        
+        //Determine if we should collect
+        try{
+            driveToCollect = cypress.getDigital(COLLECT_SWITCH);
+        }catch(EnhancedIOException ex){
+            ex.printStackTrace();
+        }
+        
+        //Determine position on the key
+        try{
+            keyPosition = ((cypress.getDigital(POSITION_RIGHT_SWITCH)?1:0)<<1)+
+                          (cypress.getDigital(POSITION_LEFT_SWITCH)?1:0);
+        }catch(EnhancedIOException ex){
+            ex.printStackTrace();
+        }
+        
+        //Create autonomous program
         AutonomousStep[] steps = new AutonomousStep[1];
         steps[0] = new IdleStopStep(this);
         AutonomousManager manager = new AutonomousManager(steps, this);
