@@ -23,6 +23,7 @@ import com.edinarobotics.utils.sensors.FIRFilter;
 import com.edinarobotics.zephyr.autonomous.AutonomousStepFactory;
 import com.edinarobotics.zephyr.autonomous.IdleStopStep;
 import com.edinarobotics.zephyr.autonomous.IdleWaitStep;
+import com.edinarobotics.zephyr.parts.CypressComponents;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 import edu.wpi.first.wpilibj.Timer;
@@ -86,7 +87,7 @@ public class Zephyr extends SimpleRobot {
         final int KEY_MIDDLE = 3;
         final int DELAY_MULTIPLIER = 3;
         Components parts = Components.getInstance();
-        DriverStationEnhancedIO cypress = parts.cypress;
+        CypressComponents cypress = parts.cypress;
         
         //Autonomous program constants
         final double LEFT_KEY_SHOOTER_SPEED = 1;
@@ -99,28 +100,16 @@ public class Zephyr extends SimpleRobot {
         int keyPosition = KEY_MIDDLE;
         
         //Determine shooting delay value
-        try{
-            shootingDelayValue = ((cypress.getDigital(SHOOTING_DELAY_2)?1:0)<<1)+
-                                 (cypress.getDigital(SHOOTING_DELAY_1)?1:0);
-        }catch (EnhancedIOException ex){
-            ex.printStackTrace();
-        }
-        shootingDelayValue *= DELAY_MULTIPLIER;
+        shootingDelayValue = (((cypress.getDigital(SHOOTING_DELAY_2)?1:0)<<1)+
+                             (cypress.getDigital(SHOOTING_DELAY_1)?1:0))*
+                             DELAY_MULTIPLIER;
         
         //Determine if we should collect
-        try{
-            driveToCollect = cypress.getDigital(COLLECT_SWITCH);
-        }catch(EnhancedIOException ex){
-            ex.printStackTrace();
-        }
+        driveToCollect = cypress.getDigital(COLLECT_SWITCH);
         
         //Determine position on the key
-        try{
-            keyPosition = ((cypress.getDigital(POSITION_RIGHT_SWITCH)?1:0)<<1)+
-                          (cypress.getDigital(POSITION_LEFT_SWITCH)?1:0);
-        }catch(EnhancedIOException ex){
-            ex.printStackTrace();
-        }
+        keyPosition = ((cypress.getDigital(POSITION_RIGHT_SWITCH)?1:0)<<1)+
+                      (cypress.getDigital(POSITION_LEFT_SWITCH)?1:0);
         
         //Create autonomous program
         AutonomousStepFactory stepFactory = new AutonomousStepFactory(this);
