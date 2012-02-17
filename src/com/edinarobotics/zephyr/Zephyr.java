@@ -54,6 +54,15 @@ public class Zephyr extends SimpleRobot {
      public boolean convMove = false;
 
      public boolean shifters = false;
+     
+     /**
+      * This function initializes the robot by constructing objects for each
+      * of its components and starting the compressor.
+      */
+     protected void robotInit(){
+         Components.getInstance();
+     }
+     
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
