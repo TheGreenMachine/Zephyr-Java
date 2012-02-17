@@ -2,13 +2,12 @@ package com.edinarobotics.zephyr;
 
 import com.edinarobotics.utils.sensors.FIRFilter;
 import com.edinarobotics.zephyr.parts.CollectorComponents;
+import com.edinarobotics.zephyr.parts.CypressComponents;
 import com.edinarobotics.zephyr.parts.DrivingComponents;
 import com.edinarobotics.zephyr.parts.ShooterComponents;
 import com.edinarobotics.zephyr.parts.SonarComponents;
-import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Servo;
@@ -55,7 +54,7 @@ public class Components {
     //Misc
     public Compressor compressor;
     public DriverStationLCD textOutput;
-    public DriverStationEnhancedIO cypress;
+    public CypressComponents cypress;
     public Timer timer;
     
     /**
@@ -77,7 +76,7 @@ public class Components {
         compressor = new Compressor(COMPRESSOR_PRESSURE_SENSOR,COMPRESSOR_SPIKE);
         compressor.start();
         textOutput = DriverStationLCD.getInstance();
-        cypress = DriverStation.getInstance().getEnhancedIO();
+        cypress = new CypressComponents();
         timer = new Timer();
     }
 
