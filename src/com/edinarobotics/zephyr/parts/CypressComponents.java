@@ -32,4 +32,18 @@ public class CypressComponents {
             return false;
         }
     }
+    
+    /**
+     * Returns the state of all digital inputs on the DriverStationEnhancedIO
+     * set. Defaults to {@code 0}.
+     * @return The state of all inputs on the DriverStationEnhancedIO board
+     * or {@code 0} if any exception occurs while fetching.
+     */
+    public short getDigitals(){
+        try{
+            return cypress.getDigitals();
+        }catch(Exception e){
+            return 0;
+        }
+    }
 }
