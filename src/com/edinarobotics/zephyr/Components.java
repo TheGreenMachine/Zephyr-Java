@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Gyro;
 
 /**
  *
@@ -35,6 +36,7 @@ public class Components {
     private static final int CAMERA_SERVO_HORIZONTAL = 8;
     //Analog Input
     private static final int SONAR = 1;
+    private static final int GYRO = 2;
     //Digital Input
     private static final int COMPRESSOR_PRESSURE_SENSOR = 1;
     //Cypress
@@ -50,6 +52,7 @@ public class Components {
     public CollectorComponents collector;
     public SonarComponents sonar;
     public Servo cameraServoVertical;
+    public Gyro gyro;
      
     //Misc
     public Compressor compressor;
@@ -72,6 +75,7 @@ public class Components {
         cameraServoVertical = new Servo(CAMERA_SERVO_VERTICAL);
         //Analog Inputs
         sonar = new SonarComponents(SONAR, FIRFilter.autoWeightedFilter(20));
+        gyro = new Gyro(GYRO);
         //Misc
         compressor = new Compressor(COMPRESSOR_PRESSURE_SENSOR,COMPRESSOR_SPIKE);
         compressor.start();
