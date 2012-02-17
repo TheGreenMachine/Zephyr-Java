@@ -25,6 +25,7 @@ import com.edinarobotics.zephyr.autonomous.IdleStopStep;
 import com.edinarobotics.zephyr.autonomous.IdleWaitStep;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -271,6 +272,7 @@ public class Zephyr extends SimpleRobot {
            ballLoaderUp = shootGamepad.getRawButton(Gamepad.LEFT_TRIGGER) || 
                           shootGamepad.getRawButton(Gamepad.LEFT_BUMPER);
            mechanismSet();
+           Timer.delay(0.005);
         }
     }
     

@@ -2,6 +2,7 @@ package com.edinarobotics.utils.autonomous;
 
 import com.edinarobotics.utils.autonomous.conditions.AutonomousCondition;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import java.util.Vector;
 
 /**
@@ -84,6 +85,7 @@ public class AutonomousManager {
                 autonomousSteps[currentStep].start();
             }
             //End of autonomous loop
+            Timer.delay(0.005);
         }
         autonomousSteps[currentStep].stop();
     }
