@@ -20,7 +20,9 @@ import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import com.edinarobotics.utils.sensors.FIRFilter;
+import com.edinarobotics.zephyr.autonomous.AutonomousStepFactory;
 import com.edinarobotics.zephyr.autonomous.IdleStopStep;
+import com.edinarobotics.zephyr.autonomous.IdleWaitStep;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 
@@ -84,6 +86,12 @@ public class Zephyr extends SimpleRobot {
         final int DELAY_MULTIPLIER = 3;
         Components parts = Components.getInstance();
         DriverStationEnhancedIO cypress = parts.cypress;
+        
+        //Autonomous program constants
+        final double LEFT_KEY_SHOOTER_SPEED = 1;
+        final double RIGHT_KEY_SHOOTER_SPEED = 1;
+        final double MIDDLE_KEY_SHOOTER_SPEED = 1;
+        
         //Autonomous config values
         int shootingDelayValue = 1;
         boolean driveToCollect = false;
@@ -114,8 +122,22 @@ public class Zephyr extends SimpleRobot {
         }
         
         //Create autonomous program
-        AutonomousStep[] steps = new AutonomousStep[1];
-        steps[0] = new IdleStopStep(this);
+        AutonomousStepFactory stepFactory = new AutonomousStepFactory(this);
+        //Create our pre-shooting delay step
+        AutonomousStep shootDelayStep = new IdleWaitStep(shootingDelayValue, this);
+        
+        //Create out shooting step
+        AutonomousStep shootStep;
+        switch(keyPosition){
+            case KEY_LEFT: shootStep = stepFactory.getShooterFireStep(LEFT_KEY_SHOOTER_SPEED, 2); break;
+            case KEY_RIGHT: shootStep = stepFactory.getShooterFireStep(RIGHT_KEY_SHOOTER_SPEED, 2); break;
+            case KEY_MIDDLE: shootStep = stepFactory.getShooterFireStep(MIDDLE_KEY_SHOOTER_SPEED, 2); break;
+            default: shootStep = new IdleWaitStep(0, this);
+        }
+        AutonomousStep[] steps = new AutonomousStep[3];
+        steps[0] = shootDelayStep;
+        steps[1] = shootStep;
+        steps[2] = new IdleStopStep(this);
         AutonomousManager manager = new AutonomousManager(steps, this);
         manager.start();
     }
