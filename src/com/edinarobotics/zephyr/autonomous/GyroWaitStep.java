@@ -17,6 +17,8 @@ public class GyroWaitStep extends AutonomousStep{
      * Constructs a new GyroWaitStep that will wait for the robot to have
      * turned a certain number of degrees given by {@code angle}.
      * @param angle The angle in degrees to wait for (can be negative).
+     * Positive angles make the robot turn clockwise. Negative angles represent
+     * counterclockwise turns.
      * @param gyro The {@link Gyro} sensor to use to measure turned degrees.
      * @param robot The robot that is turning, used to call
      * {@link Zephyr#mechanismSet()} to keep components alive.
