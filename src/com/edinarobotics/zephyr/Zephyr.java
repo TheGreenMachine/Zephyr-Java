@@ -239,7 +239,7 @@ public class Zephyr extends SimpleRobot {
             cameraSetY = components.cameraServoVertical.get() + shootGamepad.getDPadY() * CAMERA_STEP;
             
             //Shared Features
-            convMove = driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER) && 
+            convMove = driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER) ||
                        shootGamepad.getRawButton(Gamepad.LEFT_BUMPER);
             
             mechanismSet();
