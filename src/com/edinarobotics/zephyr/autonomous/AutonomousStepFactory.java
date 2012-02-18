@@ -14,6 +14,7 @@ public class AutonomousStepFactory {
     }
     
     public AutonomousStep getShooterFireStep(double shooterSpeed, int numShots){
+        final double SHOOTER_WARMUP_DELAY = 2;
         final double PISTON_SET_DELAY = 0.5;
         final double BALL_LOAD_DELAY = 1;
         //Steps to bring the piston up and down
@@ -26,13 +27,15 @@ public class AutonomousStepFactory {
         fireSteps[5] = new IdleWaitStep(BALL_LOAD_DELAY, robot);
         fireSteps[6] = new SetConveyorStep(false, robot);
         
-        AutonomousStep[] steps = new AutonomousStep[3];
+        AutonomousStep[] steps = new AutonomousStep[4];
         //Start the shooter
         steps[0] = new SetShooterSpeedStep(shooterSpeed, robot);
+        //Wait for the shooter to warm up
+        steps[1] = new IdleWaitStep(SHOOTER_WARMUP_DELAY, robot);
         //Fire the piston several times
-        steps[1] = new ForLoopStep(new SequentialAutonomousStepGroup(fireSteps), numShots);
+        steps[2] = new ForLoopStep(new SequentialAutonomousStepGroup(fireSteps), numShots);
         //Stop the shooter
-        steps[2] = new SetShooterSpeedStep(0, robot);
+        steps[3] = new SetShooterSpeedStep(0, robot);
         
         return new SequentialAutonomousStepGroup(steps);
     }
