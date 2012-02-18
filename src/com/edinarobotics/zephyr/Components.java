@@ -27,8 +27,8 @@ public class Components {
     private static final int BALL_COLL_LIFT_JAGUAR = 6;
     //Relays
     private static final int COMPRESSOR_SPIKE = 1;
-    private static final int BALL_LOAD_PISTON_SPIKE = 2;
-    private static final int SUPER_SHIFTERS_SPIKE = 3;
+    private static final int BALL_LOAD_PISTON_SPIKE = 3;
+    private static final int SUPER_SHIFTERS_SPIKE = 2;
     private static final int BALL_COLL_ROTATE_SPIKE = 4;
     private static final int CONV_MOVE_SPIKE = 6;
     //Servos
