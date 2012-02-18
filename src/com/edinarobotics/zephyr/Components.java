@@ -28,7 +28,7 @@ public class Components {
     private static final int BALL_LOAD_PISTON_SPIKE = 2;
     private static final int SUPER_SHIFTERS_SPIKE = 3;
     private static final int BALL_COLL_ROTATE_SPIKE = 4;
-    private static final int BALL_COLL_LIFT_SPIKE = 5;
+    private static final int BALL_COLL_LIFT_JAGUAR = 6;
     private static final int CONV_MOVE_SPIKE = 6;
     //Servos
     private static final int CAMERA_SERVO_VERTICAL = 7;
@@ -66,7 +66,7 @@ public class Components {
         shooter = new ShooterComponents(SHOOTER_LEFT_JAGUAR_PORT, SHOOTER_RIGHT_JAGUAR_PORT,
                                             SHOOTER_ROTATOR_JAGUAR_PORT, BALL_LOAD_PISTON_SPIKE);
         drive = new DrivingComponents(LEFT_JAGUAR_PORT, RIGHT_JAGUAR_PORT, SUPER_SHIFTERS_SPIKE);
-	collector = new CollectorComponents(BALL_COLL_ROTATE_SPIKE, BALL_COLL_LIFT_SPIKE,
+	collector = new CollectorComponents(BALL_COLL_ROTATE_SPIKE, BALL_COLL_LIFT_JAGUAR,
                                                 CONV_MOVE_SPIKE);
         //Servos
         cameraServoVertical = new Servo(CAMERA_SERVO_VERTICAL);
