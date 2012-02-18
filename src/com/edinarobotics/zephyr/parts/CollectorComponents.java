@@ -16,6 +16,9 @@ public class CollectorComponents {
     public static final int COLLECTOR_LIFT_STOP = 0;
     public static final int DEPLOY_UP_SIGN = 1;
     public static final int DEPLOY_DOWN_SIGN = -1;
+    public static final int CONVEYOR_UP = 1;
+    public static final int CONVEYOR_DOWN = -1;
+    public static final int CONVEYOR_STOP = 0;
     
     private static final double DEFAULT_DEPLOY_MULTIPLIER = 0.9;
     
@@ -73,7 +76,30 @@ public class CollectorComponents {
      * {@code true} turns the conveyor belt on, {@code false} turns it off.
      */
     public void conveyorMove(boolean conveyorState){
-        conveyor.set((conveyorState?Relay.Value.kReverse:Relay.Value.kOff));
+        if(conveyorState){
+            conveyorMove(CONVEYOR_UP);
+        }
+        else{
+            conveyorMove(CONVEYOR_STOP);
+        }
+    }
+    
+    /**
+     * Sets the direction of of the internal conveyor belt of the robot.
+     * @param conveyorState The direction that the conveyor will now move.
+     * Should be one of {@link #CONVEYOR_DOWN}, {@link #CONVEYOR_UP} or
+     * {@link #CONVEYOR_STOP}.
+     */
+    public void conveyorMove(int conveyorState){
+        if(conveyorState == CONVEYOR_UP){
+            conveyor.set(Relay.Value.kReverse);
+        }
+        else if(conveyorState == CONVEYOR_DOWN){
+            conveyor.set(Relay.Value.kForward);
+        }
+        else{
+            conveyor.set(Relay.Value.kOff);
+        }
     }
     
 }
