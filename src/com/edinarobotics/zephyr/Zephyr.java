@@ -23,6 +23,7 @@ import com.edinarobotics.utils.sensors.FIRFilter;
 import com.edinarobotics.zephyr.autonomous.AutonomousStepFactory;
 import com.edinarobotics.zephyr.autonomous.IdleStopStep;
 import com.edinarobotics.zephyr.autonomous.IdleWaitStep;
+import com.edinarobotics.zephyr.parts.CollectorComponents;
 import com.edinarobotics.zephyr.parts.CypressComponents;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
@@ -57,7 +58,7 @@ public class Zephyr extends SimpleRobot {
      //Collector Variables
      public double collectorLift = 0;
      public boolean collectorSpin = false;
-     public boolean convMove = false;
+     public int convMove = 0;
      private final double COLLECTOR_LIFT_DOWN = -0.25;
      private final double COLLECTOR_LIFT_UP = 0.9;
      private final double COLLECTOR_LIFT_STOP = 0;
@@ -92,9 +93,9 @@ public class Zephyr extends SimpleRobot {
         CypressComponents cypress = parts.cypress;
         
         //Autonomous program constants
-        final double LEFT_KEY_SHOOTER_SPEED = 1;
-        final double RIGHT_KEY_SHOOTER_SPEED = 1;
-        final double MIDDLE_KEY_SHOOTER_SPEED = 1;
+        final double LEFT_KEY_SHOOTER_SPEED = 0.6;
+        final double RIGHT_KEY_SHOOTER_SPEED = 0.6;
+        final double MIDDLE_KEY_SHOOTER_SPEED = 0.6;
         
         //Autonomous config values
         int shootingDelayValue = 1;
@@ -190,7 +191,7 @@ public class Zephyr extends SimpleRobot {
             
             //Gamepad 2*********************************************************
             //Control firing piston
-            ballLoaderUp = shootGamepad.getRawButton(Gamepad.LEFT_TRIGGER);
+            ballLoaderUp = shootGamepad.getRawButton(Gamepad.LEFT_BUMPER);
             //Shooter speed control
             // If the right bumper on the shootGamepad is pushed, speed up the
             // shooter
@@ -239,8 +240,15 @@ public class Zephyr extends SimpleRobot {
             cameraSetY = components.cameraServoVertical.get() + shootGamepad.getDPadY() * CAMERA_STEP;
             
             //Shared Features
-            convMove = driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER) ||
-                       shootGamepad.getRawButton(Gamepad.LEFT_BUMPER);
+            if(shootGamepad.getRawButton(Gamepad.BUTTON_9)){
+                convMove = CollectorComponents.CONVEYOR_DOWN;
+            }
+            else{
+                convMove = (driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER) ||
+                        shootGamepad.getRawButton(Gamepad.LEFT_TRIGGER)?
+                        CollectorComponents.CONVEYOR_UP:
+                        CollectorComponents.CONVEYOR_STOP);
+            }
             
             mechanismSet();
             Timer.delay(0.005);
