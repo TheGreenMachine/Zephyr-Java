@@ -29,7 +29,7 @@ public class DrivingComponents {
      */
     public void setDrivingSpeed(double left, double right){
         leftMotors.set(left);
-        rightMotors.set(right);
+        rightMotors.set(-1*right);
     }
     /**
      * shift the shifters.
