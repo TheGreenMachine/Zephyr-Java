@@ -188,13 +188,6 @@ public class Zephyr extends SimpleRobot {
            else{
                collectorSpin = false;
            }
-            if(driveGamepad.getRawButton(Gamepad.LEFT_BUMPER))
-           {
-               convMove = true;
-           }
-           else{
-               convMove = false;
-           }
            if(button3.isToggled(driveGamepad.getRawButton(Gamepad.BUTTON_3)))
            {
                shifters = !shifters;
@@ -254,12 +247,14 @@ public class Zephyr extends SimpleRobot {
                shooterSpeed = 0;
            }
            
+           //Move the conveyor belt when the left bumper is pressed
+           convMove = shootGamepad.getRawButton(Gamepad.LEFT_BUMPER);
+           
            shooterRotateSpeed = filters.filter(shootGamepad.getJoysticks()).getRightX();
            
            // Set the camera servo positions
            cameraSetY = components.cameraServoVertical.get() + shootGamepad.getDPadY() * CAMERA_STEP;
-           ballLoaderUp = shootGamepad.getRawButton(Gamepad.LEFT_TRIGGER) || 
-                          shootGamepad.getRawButton(Gamepad.LEFT_BUMPER);
+           ballLoaderUp = shootGamepad.getRawButton(Gamepad.LEFT_TRIGGER);
            mechanismSet();
            Timer.delay(0.005);
         }
