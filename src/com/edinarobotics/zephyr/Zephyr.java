@@ -58,7 +58,9 @@ public class Zephyr extends SimpleRobot {
      public double collectorLift = 0;
      public boolean collectorSpin = false;
      public boolean convMove = false;
-
+     private final double COLLECTOR_LIFT_DOWN = -0.25;
+     private final double COLLECTOR_LIFT_UP = 0.9;
+     private final double COLLECTOR_LIFT_STOP = 0;
      public boolean shifters = false;
      
      /**
@@ -137,10 +139,13 @@ public class Zephyr extends SimpleRobot {
      */
     public void operatorControl() 
     {
-        // Filters for Gamepads
-        FilterSet filters = new FilterSet();
-        filters.addFilter(new DeadzoneFilter(.05));
-        filters.addFilter(new ScalingFilter());
+        FilterSet driveFilters = new FilterSet();
+        driveFilters.addFilter(new DeadzoneFilter(0.5));
+        driveFilters.addFilter(new ScalingFilter());
+        
+        FilterSet shootFilters = new FilterSet();
+        shootFilters.addFilter(new DeadzoneFilter(0.5));
+        shootFilters.addFilter(new ScalingFilter());
         
         // Gamepads
         Gamepad driveGamepad = new Gamepad(1);
@@ -148,115 +153,97 @@ public class Zephyr extends SimpleRobot {
         
         // Initiate components
         Components components = Components.getInstance();
+        ToggleHelper shifterHelper = new ToggleHelper();
         ToggleHelper button3 = new ToggleHelper();
         while(this.isOperatorControl()&&this.isEnabled())
         {
-           //************GAMEPAD 1****************************************//
-           // Set values for the drive speeds of the robot
-           //Using 0.9 as comparison value to avoid floating point problems
-           //Shouldn't ever be an issue but just in case
-           if(Math.abs(driveGamepad.getDPadY())<=0.9){
-               //Normal joystick drive. D-pad is not 1 or -1
-               // Filter the joysticks on the gamepads according to the filters
-               // initialized
-               GamepadResult joystick = filters.filter(driveGamepad.getJoysticks());
-               leftDrive = joystick.getLeftY();
-               rightDrive = joystick.getRightY();
-           }
-           else{
-               //Single direction, forward/backward drive with the d-pad.
-               double oneStickDriveValue = driveGamepad.getDPadY() * ONE_STICK_MULTIPLIER;
-               leftDrive = oneStickDriveValue;
-               rightDrive = oneStickDriveValue;
-           }
-           
-           if(driveGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
-           {
-               collectorLift = 1;
-           }
-           else if(driveGamepad.getRawButton(Gamepad.RIGHT_TRIGGER))
-           {
-               collectorLift = -1;
-           }
-           else{
-               collectorLift = 0;
-           }
-           if(driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER))
-           {
-               collectorSpin = true;
-           }
-           else{
-               collectorSpin = false;
-           }
-           if(button3.isToggled(driveGamepad.getRawButton(Gamepad.BUTTON_3)))
-           {
-               shifters = !shifters;
-           }
-           //******************GAMEPAD 2*********************************//
-           // If the right bumper on the shootGamepad is pushed, speed up the
-           // shooter
-           if(shootGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
-           {
-               //Step speed of shooter up.
-               shooterSpeed += SHOOTER_SPEED_STEP;
-               
-               // Limit the speed of the shooter to not exceed -1
-               if(shooterSpeed >= 1)
-               {
-                   shooterSpeed = 1;
-               }
-               
-               // Store the speed of the shooter to a second variable
-               lastManualSpeed = shooterSpeed;
-           }
-           
-           // If the left bumper on the shootGamepad is pushed, slow down the
-           // shooter
-           else if(shootGamepad.getRawButton(Gamepad.RIGHT_TRIGGER))
-           {
-               //Step speed of shooter down.
-               shooterSpeed -= SHOOTER_SPEED_STEP;
-               
-               // Limit the speed of the shooter to not go past 0
-               if(shooterSpeed<=0)
-               {
-                   shooterSpeed = 0;
-               }
-               
-               // Store the speed of the shooter to a second variable
-               lastManualSpeed = shooterSpeed;
-           }
-           
-           // Jump shooter speed to max if button 1 on the shootGamepad is
-           // pushed
-           if(shootGamepad.getRawButton(Gamepad.BUTTON_1))
-           {
-               // Max is 1
-               shooterSpeed = 1;
-           }
-           // Jump shooter speed to 50% if button 3 on the shootGamepad is
-           // pushed
-           else if(shootGamepad.getRawButton(Gamepad.BUTTON_3)){
-               shooterSpeed = 0.5;
-           }
-           // Jump shooter speed to the min if button 3 on the shootGamepad is
-           // pushed
-           else if(shootGamepad.getRawButton(Gamepad.BUTTON_2))
-           {
-               // Min is 0
-               shooterSpeed = 0;
-           }
-           
-           //Move the conveyor belt when the left bumper is pressed
-           convMove = shootGamepad.getRawButton(Gamepad.LEFT_BUMPER);
-           
-           shooterRotateSpeed = filters.filter(shootGamepad.getJoysticks()).getRightX();
-           
-           // Set the camera servo positions
-           cameraSetY = components.cameraServoVertical.get() + shootGamepad.getDPadY() * CAMERA_STEP;
-           ballLoaderUp = shootGamepad.getRawButton(Gamepad.LEFT_TRIGGER);
-           mechanismSet();
-           Timer.delay(0.005);
+            //Gamepad 1*********************************************************
+            //Control collector brushes
+            collectorSpin = driveGamepad.getRawButton(Gamepad.LEFT_BUMPER);
+            //
+            if(shifterHelper.isToggled(driveGamepad.getRawButton(Gamepad.BUTTON_3))){
+                shifters =! shifters;
+            }
+            //Control collector deployment
+            if(driveGamepad.getRawButton(Gamepad.RIGHT_TRIGGER)){
+                collectorLift = COLLECTOR_LIFT_DOWN;
+            }
+            else if(driveGamepad.getRawButton(Gamepad.RIGHT_BUMPER)){
+                collectorLift = COLLECTOR_LIFT_UP;
+            }
+            else{
+                collectorLift = COLLECTOR_LIFT_STOP;
+            }
+            //Driving with joysticks
+            if(Math.abs(driveGamepad.getDPadY()) <= 0.9){
+                //D-Pad not in use, normal joystick drive.
+                GamepadResult joystick = driveFilters.filter(driveGamepad.getJoysticks());
+                leftDrive = joystick.getLeftY();
+                rightDrive = joystick.getRightY();
+            }
+            else{
+                //D-Pad is in use, use one-joystick drive
+                double oneStickValue = driveGamepad.getDPadY() * ONE_STICK_MULTIPLIER;
+                leftDrive = oneStickValue;
+                rightDrive = oneStickValue;
+            }
+            
+            //Gamepad 2*********************************************************
+            //Control firing piston
+            ballLoaderUp = shootGamepad.getRawButton(Gamepad.LEFT_TRIGGER);
+            //Shooter speed control
+            // If the right bumper on the shootGamepad is pushed, speed up the
+            // shooter
+            if(shootGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
+            {
+                //Step speed of shooter up.
+                shooterSpeed += SHOOTER_SPEED_STEP;
+                
+                // Limit the speed of the shooter to not exceed -1
+                if(shooterSpeed >= 1)
+                {
+                    shooterSpeed = 1;
+                }
+                
+                // Store the speed of the shooter to a second variable
+                lastManualSpeed = shooterSpeed;
+            }
+            
+            // If the left bumper on the shootGamepad is pushed, slow down the
+            // shooter
+            else if(shootGamepad.getRawButton(Gamepad.RIGHT_TRIGGER))
+            {
+                //Step speed of shooter down.
+                shooterSpeed -= SHOOTER_SPEED_STEP;
+                
+                // Limit the speed of the shooter to not go past 0
+                if(shooterSpeed<=0)
+                {
+                    shooterSpeed = 0;
+                }
+                
+                // Store the speed of the shooter to a second variable
+                lastManualSpeed = shooterSpeed;
+            }
+            else if(shootGamepad.getRawButton(Gamepad.BUTTON_1)){
+                shooterSpeed = 1;
+            }
+            else if(shootGamepad.getRawButton(Gamepad.BUTTON_2)){
+                shooterSpeed = 0;
+            }
+            else if(shootGamepad.getRawButton(Gamepad.BUTTON_3)){
+                shooterSpeed = 0.5;
+            }
+            shooterRotateSpeed = shootFilters.filter(shootGamepad.getJoysticks()).getRightX();
+            
+            cameraSetY = components.cameraServoVertical.get() + shootGamepad.getDPadY() * CAMERA_STEP;
+            
+            //Shared Features
+            convMove = driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER) && 
+                       shootGamepad.getRawButton(Gamepad.LEFT_BUMPER);
+            
+            mechanismSet();
+            Timer.delay(0.005);
         }
     }
     
