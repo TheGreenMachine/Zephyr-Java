@@ -271,7 +271,7 @@ public class Zephyr extends SimpleRobot {
     public void mechanismSet(){
         //Driving Assignments
         Components robotParts = Components.getInstance();
-        robotParts.drive.setDrivingSpeed(-1*leftDrive, -1*rightDrive);
+        robotParts.drive.setDrivingSpeed(leftDrive, rightDrive);
         robotParts.drive.shift(shifters);
         //Shooter Assignments
         robotParts.shooter.setSpeed(shooterSpeed);

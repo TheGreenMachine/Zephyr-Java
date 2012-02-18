@@ -1,14 +1,23 @@
 package com.edinarobotics.zephyr.parts;
 
+import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Relay;
 
 /**
  *Wraps the conveyor belt, collector lifter and spinner into a class.
  */
 public class CollectorComponents {
-    private Relay collectorLift;
+    private Jaguar collectorLift;
     private Relay collectorSpin;
     private Relay conveyor;
+    
+    public static final int COLLECTOR_LIFT_UP = 1;
+    public static final int COLLECTOR_LIFT_DOWN = -1;
+    public static final int COLLECTOR_LIFT_STOP = 0;
+    public static final int DEPLOY_UP_SIGN = 1;
+    public static final int DEPLOY_DOWN_SIGN = -1;
+    
+    private static final double DEFAULT_DEPLOY_MULTIPLIER = 0.5;
     
     /**
      * Constructs a CollectorComponents using the given channels for its
@@ -20,7 +29,7 @@ public class CollectorComponents {
      * belt within the collector.
      */
     public CollectorComponents(int lift, int spin, int conveyor){
-        collectorLift = new Relay(lift);
+        collectorLift = new Jaguar(lift);
         collectorSpin = new Relay(spin);
         this.conveyor = new Relay(conveyor);
     }
@@ -34,10 +43,18 @@ public class CollectorComponents {
      */
     public void lift(int liftDirection){
         switch(liftDirection){
-                case 1:collectorLift.set(Relay.Value.kForward); break;
-                case -1: collectorLift.set(Relay.Value.kReverse); break;
-                default: collectorLift.set(Relay.Value.kOff); break;
+                case 1: lift(DEFAULT_DEPLOY_MULTIPLIER); break;
+                case -1: lift(DEFAULT_DEPLOY_MULTIPLIER); break;
+                default: lift(DEFAULT_DEPLOY_MULTIPLIER); break;
         }
+    }
+    
+    /**
+     * Sets the collector deploy deploy motor to the given power [-1,1].
+     * @param power The power to which the deployment motor should be set.
+     */
+    public void lift(double power){
+        collectorLift.set(power);
     }
     
     /**
