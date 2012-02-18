@@ -17,7 +17,7 @@ public class CollectorComponents {
     public static final int DEPLOY_UP_SIGN = 1;
     public static final int DEPLOY_DOWN_SIGN = -1;
     
-    private static final double DEFAULT_DEPLOY_MULTIPLIER = 0.5;
+    private static final double DEFAULT_DEPLOY_MULTIPLIER = 0.9;
     
     /**
      * Constructs a CollectorComponents using the given channels for its
