@@ -26,8 +26,8 @@ public class ShooterComponents {
      * sets the shooterLeftJaguar to speed and shooterRightJaguar to -speed
      */
     public void setSpeed(double speed){
-        shooterLeftJaguar.set(speed);
-        shooterRightJaguar.set(-speed);
+        shooterLeftJaguar.set(-speed);
+        shooterRightJaguar.set(speed);
     }
     /*
      * Sets the rotator to speed
