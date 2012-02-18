@@ -55,7 +55,7 @@ public class Zephyr extends SimpleRobot {
      public double cameraSetY;
      private double CAMERA_STEP = .005;
      //Collector Variables
-     public int collectorLift = 0;
+     public double collectorLift = 0;
      public boolean collectorSpin = false;
      public boolean convMove = false;
 
