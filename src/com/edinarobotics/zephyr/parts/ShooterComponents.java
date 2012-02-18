@@ -39,6 +39,6 @@ public class ShooterComponents {
      * Sets the piston up if position is true, else it lowers it.
      */
     public void firePiston(boolean position){
-        ballLoadPiston.set((position ? Relay.Value.kReverse :Relay.Value.kForward));
+        ballLoadPiston.set((position ? Relay.Value.kForward :Relay.Value.kReverse));
     }
 }
