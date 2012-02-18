@@ -45,7 +45,7 @@ public class Zephyr extends SimpleRobot {
     public double shooterSpeed = 0;
     public boolean ballLoaderUp = false;
     public double shooterRotateSpeed = 0;
-    private final double SHOOTER_SPEED_STEP = 0.0005;
+    private final double SHOOTER_SPEED_STEP = 0.001;
     private double lastManualSpeed = 0;
     
     //Sensor Variables
