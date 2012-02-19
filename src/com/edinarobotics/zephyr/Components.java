@@ -41,6 +41,8 @@ public class Components {
     private static final int COMPRESSOR_PRESSURE_SENSOR = 1;
     private static final int SHOOTER_LEFT_LIMIT_SWITCH = 2;
     private static final int SHOOTER_RIGHT_LIMIT_SWITCH = 3;
+    private static final int SHOOTER_ENCODER_CHANNEL_A = 4;
+    private static final int SHOOTER_ENCODER_CHANNEL_B = 5;
     //Cypress
     public static final int CYPRESS_AUTO_SWITCH_ONE_IN = 1;
     public static final int CYPRESS_AUTO_SWITCH_TWO_IN = 2;
@@ -70,7 +72,8 @@ public class Components {
         //Relays
         shooter = new ShooterComponents(SHOOTER_LEFT_JAGUAR_PORT, SHOOTER_RIGHT_JAGUAR_PORT,
                                             SHOOTER_ROTATOR_JAGUAR_PORT, BALL_LOAD_PISTON_SPIKE,
-                                            SHOOTER_LEFT_LIMIT_SWITCH, SHOOTER_RIGHT_LIMIT_SWITCH);
+                                            SHOOTER_LEFT_LIMIT_SWITCH, SHOOTER_RIGHT_LIMIT_SWITCH,
+                                            SHOOTER_ENCODER_CHANNEL_A, SHOOTER_ENCODER_CHANNEL_B);
         drive = new DrivingComponents(LEFT_JAGUAR_PORT, RIGHT_JAGUAR_PORT, SUPER_SHIFTERS_SPIKE);
 	collector = new CollectorComponents(BALL_COLL_LIFT_JAGUAR, BALL_COLL_ROTATE_SPIKE,
                                                 CONV_MOVE_SPIKE);

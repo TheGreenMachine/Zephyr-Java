@@ -1,6 +1,7 @@
 package com.edinarobotics.zephyr.parts;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Relay;
 
@@ -18,17 +19,20 @@ public class ShooterComponents {
     private Relay ballLoadPiston;
     private DigitalInput leftLimitSwitch;
     private DigitalInput rightLimitSwitch;
+    private Encoder encoder;
     /*
      * Constructs shooterLeftJaguar, shooterRightJaguar, shooterRotator and ballLoadPiston
      * with leftJaguar, rightJaguar, rotator and piston respectively.
      */
-    public ShooterComponents(int leftJaguar, int rightJaguar, int rotator, int piston, int leftLimitSwitch, int rightLimitSwitch){
+    public ShooterComponents(int leftJaguar, int rightJaguar, int rotator, int piston,
+                             int leftLimitSwitch, int rightLimitSwitch, int encoderA, int encoderB){
         shooterLeftJaguar = new Jaguar(leftJaguar);
         shooterRightJaguar = new Jaguar(rightJaguar);
         shooterRotator = new Jaguar(rotator);
         ballLoadPiston = new Relay(piston);
         this.leftLimitSwitch = new DigitalInput(leftLimitSwitch);
         this.rightLimitSwitch = new DigitalInput(rightLimitSwitch);
+        this.encoder = new Encoder(encoderA, encoderB);
     }
     /*
      * sets the shooterLeftJaguar to speed and shooterRightJaguar to -speed
@@ -54,6 +58,15 @@ public class ShooterComponents {
      */
     public void firePiston(boolean position){
         ballLoadPiston.set((position ? Relay.Value.kForward :Relay.Value.kReverse));
+    }
+    
+    /**
+     * Returns the encoder attached to the shooter.
+     * @return The {@link Encoder} object that can be used to access the encoder
+     * attached to the shooter.
+     */
+    public Encoder getEncoder(){
+        return encoder;
     }
     
     /**
