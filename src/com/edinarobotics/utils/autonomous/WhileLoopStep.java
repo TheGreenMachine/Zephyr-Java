@@ -36,6 +36,7 @@ public class WhileLoopStep extends AutonomousStep{
             repeatedStep.run();
         }
         else if(!isFinished()){
+            loopCondition.increment();
             repeatedStep.stop();
             repeatedStep.start();
         }
