@@ -12,4 +12,9 @@ public interface LoopCondition extends BooleanCondition{
      * is at all possible.
      */
     public void reset();
+    
+    /**
+     * Increments the loop condition. Called once per loop iteration.
+     */
+    public void increment();
 }
