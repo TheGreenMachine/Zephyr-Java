@@ -33,6 +33,8 @@ public class ShooterComponents {
         this.leftLimitSwitch = new DigitalInput(leftLimitSwitch);
         this.rightLimitSwitch = new DigitalInput(rightLimitSwitch);
         this.encoder = new Encoder(encoderA, encoderB);
+        encoder.setReverseDirection(true);
+        encoder.setDistancePerPulse(18518);
         encoder.start();
     }
     /*
