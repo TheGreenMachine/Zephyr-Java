@@ -28,7 +28,14 @@ public class CounterCondition implements LoopCondition{
      * {@code countTo}.
      */
     public boolean get(){
-        return value++<countTo;
+        return value<countTo;
+    }
+    
+    /**
+     * Increments the loop counter once per loop iteration.
+     */
+    public void increment(){
+        value++;
     }
     
     /**
