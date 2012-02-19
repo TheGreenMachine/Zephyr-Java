@@ -29,7 +29,6 @@ public class IdleWaitStep extends AutonomousStep{
     
     public void start(){
         timer.start();
-        timer.reset();
     }
     
     public void run(){
@@ -41,6 +40,7 @@ public class IdleWaitStep extends AutonomousStep{
     
     public void stop(){
         isFinished = false;
+        timer = new Timer();
     }
     
     public boolean isFinished(){
