@@ -50,7 +50,7 @@ public class SequentialAutonomousStepGroup extends AutonomousStep{
      * Stops the current step if we are interrupted.
      */
     public void stop(){
-        if(currentStep<steps.length){
+        if(currentStep<steps.length && currentStep>0){
             steps[currentStep].stop();
         }
         //Reset the step group so that it can be reused.
