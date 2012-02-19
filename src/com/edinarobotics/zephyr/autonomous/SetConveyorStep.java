@@ -9,7 +9,7 @@ import com.edinarobotics.zephyr.parts.CollectorComponents;
  * on Zephyr. This step can be used to load balls into the shooter for firing.
  */
 public class SetConveyorStep extends AutonomousStep{
-    private boolean conveyorOn;
+    private int conveyorState;
     private Zephyr robot;
     
     /**
@@ -21,7 +21,20 @@ public class SetConveyorStep extends AutonomousStep{
      * conveyor.
      */
     public SetConveyorStep(boolean conveyorOn, Zephyr robot){
-        this.conveyorOn = conveyorOn;
+        this((conveyorOn?CollectorComponents.CONVEYOR_UP:CollectorComponents.CONVEYOR_STOP), robot);
+    }
+    
+    /**
+     * Constructs a new SetConveyorStep that sets the internal conveyor to the
+     * given state, {@code conveyorState}.
+     * @param conveyorState The state to which the conveyor will be set.
+     * One of: {@link CollectorComponents#CONVEYOR_DOWN},
+     * {@link CollectorComponents#CONVEYOR_UP} or
+     * {@link CollectorComponents#CONVEYOR_STOP}
+     * @param robot 
+     */
+    public SetConveyorStep(int conveyorState, Zephyr robot){
+        this.conveyorState = conveyorState;
         this.robot = robot;
     }
     
@@ -29,7 +42,7 @@ public class SetConveyorStep extends AutonomousStep{
      * Sets the conveyor to the requested state, {@code conveyorOn}.
      */
     public void start(){
-        robot.convMove = (conveyorOn?CollectorComponents.CONVEYOR_UP:CollectorComponents.CONVEYOR_STOP);
+        robot.convMove = conveyorState;
         robot.mechanismSet();
     }
     
