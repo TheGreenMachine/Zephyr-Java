@@ -162,7 +162,7 @@ public class Zephyr extends SimpleRobot {
             //Control collector brushes
             collectorSpin = driveGamepad.getRawButton(Gamepad.LEFT_BUMPER);
             //
-            if(shifterHelper.isToggled(driveGamepad.getRawButton(Gamepad.BUTTON_3))){
+            if(shifterHelper.isToggled(driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER))){
                 shifters =! shifters;
             }
             //Control collector deployment
@@ -244,8 +244,7 @@ public class Zephyr extends SimpleRobot {
                 convMove = CollectorComponents.CONVEYOR_DOWN;
             }
             else{
-                convMove = (driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER) ||
-                        shootGamepad.getRawButton(Gamepad.LEFT_TRIGGER)?
+                convMove = (shootGamepad.getRawButton(Gamepad.LEFT_TRIGGER)?
                         CollectorComponents.CONVEYOR_UP:
                         CollectorComponents.CONVEYOR_STOP);
             }
