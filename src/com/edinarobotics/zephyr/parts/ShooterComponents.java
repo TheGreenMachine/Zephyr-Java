@@ -33,6 +33,7 @@ public class ShooterComponents {
         this.leftLimitSwitch = new DigitalInput(leftLimitSwitch);
         this.rightLimitSwitch = new DigitalInput(rightLimitSwitch);
         this.encoder = new Encoder(encoderA, encoderB);
+        encoder.start();
     }
     /*
      * sets the shooterLeftJaguar to speed and shooterRightJaguar to -speed
