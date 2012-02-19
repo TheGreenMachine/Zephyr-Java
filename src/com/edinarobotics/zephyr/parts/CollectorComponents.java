@@ -11,13 +11,65 @@ public class CollectorComponents {
     private Relay collectorSpin;
     private Relay conveyor;
     
+    /**
+     * Constant that when used with {@link #lift(int)} will lift the collector
+     * up.
+     * This constant can also be multiplied with another number from
+     * -1 to 1 to produce the correct sign to move the collector up
+     * for use with {@link #lift(double)}.
+     */
     public static final int COLLECTOR_LIFT_UP = 1;
+    
+    /**
+     * Constant that when used with {@link #lift(int)} will move the collector
+     * down.
+     * This constant can also be multiplied with another number from
+     * -1 to 1 to produce the correct sign to move the collector down
+     * for use with {@link #lift(double)}.
+     */
     public static final int COLLECTOR_LIFT_DOWN = -1;
+    
+    /**
+     * Constant that when used with {@link #lift(int)} will stop the
+     * collector deployment motor.
+     * This constant can also be multiplied with another number from
+     * -1 to 1 to produce the correct sign to move the collector up
+     * for use with {@link #lift(double)}.
+     */
     public static final int COLLECTOR_LIFT_STOP = 0;
+    
+    /**
+     * This constant can be used to change the sign of a positive number
+     * from 0 to 1 to have the correct sign to move the collector up
+     * when passed to {@link #lift(double)}.
+     */
     public static final int DEPLOY_UP_SIGN = 1;
+    
+    /**
+     * This constant can be used to change the sign of a positive number
+     * from 0 to 1 to have the correct sign to move the collector down
+     * when passed to {@link #lift(double)}.
+     */
     public static final int DEPLOY_DOWN_SIGN = -1;
+    
+    /**
+     * This constant is for use with {@link #conveyorMove(int)}.
+     * When passed to {@link #conveyorMove(int)} it will set the conveyor
+     * to draw balls upwards towards the shooter.
+     */
     public static final int CONVEYOR_UP = 1;
+    
+    /**
+     * This constant is for use with {@link #conveyorMove(int)}.
+     * When passed to {@link #conveyorMove(int)} it will set the conveyor
+     * to move balls downward away from the shooter.
+     */
     public static final int CONVEYOR_DOWN = -1;
+    
+    /**
+     * This constant is for use with {@link #conveyorMove(int)}.
+     * When passed to {@link #conveyorMove(int)} it will stop the conveyor.
+     */
     public static final int CONVEYOR_STOP = 0;
     
     private static final double DEFAULT_DEPLOY_MULTIPLIER = 0.9;
