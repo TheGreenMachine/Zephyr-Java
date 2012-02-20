@@ -61,6 +61,7 @@ public class Zephyr extends SimpleRobot {
      private final double COLLECTOR_LIFT_DOWN = -0.25;
      private final double COLLECTOR_LIFT_UP = 0.9;
      private final double COLLECTOR_LIFT_STOP = 0;
+     private final double COLLECTOR_LIFT_DOWN_FAST = -1;
      public boolean shifters = false;
      
      /**
@@ -170,6 +171,9 @@ public class Zephyr extends SimpleRobot {
             //Control collector deployment
             if(driveGamepad.getRawButton(Gamepad.RIGHT_TRIGGER)){
                 collectorLift = COLLECTOR_LIFT_DOWN;
+            }
+            else if(driveGamepad.getRawButton(Gamepad.BUTTON_4)){
+                collectorLift = COLLECTOR_LIFT_DOWN_FAST;
             }
             else if(driveGamepad.getRawButton(Gamepad.RIGHT_BUMPER)){
                 collectorLift = COLLECTOR_LIFT_UP;
