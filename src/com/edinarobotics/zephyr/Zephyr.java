@@ -25,9 +25,8 @@ import com.edinarobotics.zephyr.autonomous.IdleStopStep;
 import com.edinarobotics.zephyr.autonomous.IdleWaitStep;
 import com.edinarobotics.zephyr.parts.CollectorComponents;
 import com.edinarobotics.zephyr.parts.CypressComponents;
-import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
-import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -94,9 +93,9 @@ public class Zephyr extends SimpleRobot {
         CypressComponents cypress = parts.cypress;
         
         //Autonomous program constants
-        final double LEFT_KEY_SHOOTER_SPEED = 0.75;
-        final double RIGHT_KEY_SHOOTER_SPEED = 0.75;
-        final double MIDDLE_KEY_SHOOTER_SPEED = 0.75;
+        final double LEFT_KEY_SHOOTER_SPEED = 0.71;
+        final double RIGHT_KEY_SHOOTER_SPEED = 0.71;
+        final double MIDDLE_KEY_SHOOTER_SPEED = 0.699;
         
         //Autonomous config values
         int shootingDelayValue = 1;
@@ -275,7 +274,7 @@ public class Zephyr extends SimpleRobot {
         robotParts.cameraServoVertical.set(cameraSetY);
         //Sonar Processing
         String shooterPowerString = "Shooter Targ: "+shooterSpeed;
-        String shooterActualString = "Shooter V: "+robotParts.shooter.getEncoder().getRate();
+        String shooterActualString = "Shooter V: "+robotParts.shooter.getEncoderValue();
         int sonarVal = (int) robotParts.sonar.getFilteredValue();
         String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
         String servoPositions = "Y-Axis Servo: "+robotParts.cameraServoVertical.get();
