@@ -78,11 +78,11 @@ public class Zephyr extends SimpleRobot {
     public void autonomous() {
         stop();
         //Cypress switch constants
-        final int POSITION_LEFT_SWITCH = 5;
-        final int POSITION_RIGHT_SWITCH = 3;
-        final int COLLECT_SWITCH = 1;
-        final int SHOOTING_DELAY_1 = 4;
-        final int SHOOTING_DELAY_2 = 2;
+        final int POSITION_LEFT_SWITCH = 6;
+        final int POSITION_RIGHT_SWITCH = 4;
+        final int COLLECT_SWITCH = 2;
+        final int SHOOTING_DELAY_1 = 5;
+        final int SHOOTING_DELAY_2 = 3;
         
         //Autonomous constants
         final int NO_AUTONOMOUS = 0;
