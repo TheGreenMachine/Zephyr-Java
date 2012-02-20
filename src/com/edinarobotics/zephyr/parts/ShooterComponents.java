@@ -1,15 +1,14 @@
 package com.edinarobotics.zephyr.parts;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.Relay;
+import com.edinarobotics.utils.sensors.FilterDouble;
+import com.edinarobotics.utils.sensors.SimpleAverageFilter;
+import edu.wpi.first.wpilibj.*;
 
 /**
  *The wrapper for the shooter components, contains the 2 jaguars driving the shooter
  * along with the rotating jaguar and the piston.
  */
-public class ShooterComponents {
+public class ShooterComponents{
     public static final int ROTATE_RIGHT_SIGN = 1;
     public static final int ROTATE_LEFT_SIGN = -1;
     
@@ -20,6 +19,7 @@ public class ShooterComponents {
     private DigitalInput leftLimitSwitch;
     private DigitalInput rightLimitSwitch;
     private Encoder encoder;
+    private FilterDouble filter;
     /*
      * Constructs shooterLeftJaguar, shooterRightJaguar, shooterRotator and ballLoadPiston
      * with leftJaguar, rightJaguar, rotator and piston respectively.
@@ -34,7 +34,9 @@ public class ShooterComponents {
         this.rightLimitSwitch = new DigitalInput(rightLimitSwitch);
         this.encoder = new Encoder(encoderA, encoderB);
         encoder.setReverseDirection(true);
+        encoder.setDistancePerPulse(1.0/180.0);
         encoder.start();
+        filter = new SimpleAverageFilter(200);
     }
     /*
      * sets the shooterLeftJaguar to speed and shooterRightJaguar to -speed
@@ -47,8 +49,8 @@ public class ShooterComponents {
      * Sets the rotator to speed
      */
     public void rotate(double speed){
-        if((sgn(speed) == ROTATE_LEFT_SIGN && leftLimitSwitch.get()) || 
-           (sgn(speed) == ROTATE_RIGHT_SIGN) && rightLimitSwitch.get()){
+        if((sgn(speed) == ROTATE_LEFT_SIGN && !(leftLimitSwitch.get())) || 
+           (sgn(speed) == ROTATE_RIGHT_SIGN) && !(rightLimitSwitch.get())){
             //Limit switches are pressed, stop rotating.
             shooterRotator.set(0);
             return;
@@ -69,6 +71,10 @@ public class ShooterComponents {
      */
     public Encoder getEncoder(){
         return encoder;
+    }
+    
+    public double getEncoderValue(){
+        return filter.filter(encoder.getRate());
     }
     
     /**
