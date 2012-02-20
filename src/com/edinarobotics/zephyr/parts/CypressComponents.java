@@ -29,6 +29,7 @@ public class CypressComponents {
             return cypress.getDigital(port);
         }
         catch(Exception e){
+            e.printStackTrace();
             return false;
         }
     }
