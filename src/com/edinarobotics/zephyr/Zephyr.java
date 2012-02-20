@@ -240,8 +240,6 @@ public class Zephyr extends SimpleRobot {
             }
             shooterRotateSpeed = shootFilters.filter(shootGamepad.getJoysticks()).getRightX();
             
-            cameraSetY = components.cameraServoVertical.get() + shootGamepad.getDPadY() * CAMERA_STEP;
-            
             //Shared Features
             if(shootGamepad.getRawButton(Gamepad.BUTTON_9)){
                 convMove = CollectorComponents.CONVEYOR_DOWN;
