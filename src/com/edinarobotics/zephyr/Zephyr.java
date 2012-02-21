@@ -241,6 +241,9 @@ public class Zephyr extends SimpleRobot {
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_3)){
                 shooterSpeed = 0.5;
             }
+            else if(shootGamepad.getRawButton(Gamepad.BUTTON_4)){
+                shooterSpeed = lastManualSpeed;
+            }
             shooterRotateSpeed = shootFilters.filter(shootGamepad.getJoysticks()).getRightX();
             
             if(shootGamepad.getRawButton(Gamepad.BUTTON_9)){
