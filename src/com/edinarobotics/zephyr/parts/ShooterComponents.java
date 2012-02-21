@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.*;
  *The wrapper for the shooter components, contains the 2 jaguars driving the shooter
  * along with the rotating jaguar and the piston.
  */
-public class ShooterComponents{
+public class ShooterComponents implements PIDSource, PIDOutput{
     public static final int ROTATE_RIGHT_SIGN = 1;
     public static final int ROTATE_LEFT_SIGN = -1;
     
@@ -20,6 +20,8 @@ public class ShooterComponents{
     private DigitalInput rightLimitSwitch;
     private Encoder encoder;
     private FilterDouble filter;
+    private PIDController pid;
+    
     /*
      * Constructs shooterLeftJaguar, shooterRightJaguar, shooterRotator and ballLoadPiston
      * with leftJaguar, rightJaguar, rotator and piston respectively.
@@ -37,14 +39,22 @@ public class ShooterComponents{
         encoder.setDistancePerPulse(1.0/180.0);
         encoder.start();
         filter = new SimpleAverageFilter(200);
+        pid = new PIDController(0.3,0.8,0.5,this,this);
+        pid.setTolerance(5);
+        pid.enable();
     }
     /*
      * sets the shooterLeftJaguar to speed and shooterRightJaguar to -speed
      */
     public void setSpeed(double speed){
+        pid.setSetpoint(speed);
+    }
+    
+    public void pidWrite(double speed){
         shooterLeftJaguar.set(-speed);
         shooterRightJaguar.set(speed);
     }
+    
     /*
      * Sets the rotator to speed
      */
@@ -75,6 +85,10 @@ public class ShooterComponents{
     
     public double getEncoderValue(){
         return filter.filter(encoder.getRate());
+    }
+    
+    public double pidGet(){
+        return getEncoderValue();
     }
     
     /**
