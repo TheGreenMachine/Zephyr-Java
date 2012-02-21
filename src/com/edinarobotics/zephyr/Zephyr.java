@@ -63,6 +63,9 @@ public class Zephyr extends SimpleRobot {
      private final double COLLECTOR_LIFT_STOP = 0;
      private final double COLLECTOR_LIFT_DOWN_FAST = -1;
      public boolean shifters = false;
+     //Problem variables
+     public static boolean exceptionProblem = false;
+     public static boolean genericProblem = false;
      
      /**
       * This function initializes the robot by constructing objects for each
@@ -285,10 +288,12 @@ public class Zephyr extends SimpleRobot {
         int sonarVal = (int) robotParts.sonar.getFilteredValue();
         String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
         String servoPositions = "Y-Axis Servo: "+robotParts.cameraServoVertical.get();
+        String problemValue = "Prb: "+(exceptionProblem?"except! ":"")+(genericProblem?"prblm! ":"");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3,1, "                                                              ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString);
         robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue);
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue);
         robotParts.textOutput.updateLCD();
         
     }

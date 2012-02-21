@@ -1,5 +1,6 @@
 package com.edinarobotics.zephyr.parts;
 
+import com.edinarobotics.zephyr.Zephyr;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 
@@ -30,6 +31,7 @@ public class CypressComponents {
         }
         catch(Exception e){
             e.printStackTrace();
+            Zephyr.exceptionProblem = true;
             return false;
         }
     }
@@ -44,6 +46,7 @@ public class CypressComponents {
         try{
             return cypress.getDigitals();
         }catch(Exception e){
+            Zephyr.exceptionProblem = true;
             return 0;
         }
     }
