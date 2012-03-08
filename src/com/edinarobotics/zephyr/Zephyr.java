@@ -105,9 +105,9 @@ public class Zephyr extends SimpleRobot {
         CypressComponents cypress = parts.cypress;
         
         //Autonomous program constants
-        final double LEFT_KEY_SHOOTER_SPEED = 0.71;
-        final double RIGHT_KEY_SHOOTER_SPEED = 0.71;
-        final double MIDDLE_KEY_SHOOTER_SPEED = 0.699;
+        final double LEFT_KEY_SHOOTER_SPEED = 51.5;
+        final double RIGHT_KEY_SHOOTER_SPEED = 51.5;
+        final double MIDDLE_KEY_SHOOTER_SPEED = 50.0;
         
         //Autonomous config values
         int shootingDelayValue = 1;

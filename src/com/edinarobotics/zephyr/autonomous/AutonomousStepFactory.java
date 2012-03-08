@@ -29,7 +29,7 @@ public class AutonomousStepFactory {
         
         AutonomousStep[] steps = new AutonomousStep[4];
         //Start the shooter
-        steps[0] = new SetShooterSpeedStep(shooterSpeed, robot);
+        steps[0] = new ShooterVoltagePWMStep(shooterSpeed, robot);
         //Wait for the shooter to warm up
         steps[1] = new IdleWaitStep(SHOOTER_WARMUP_DELAY, robot);
         //Fire the piston several times

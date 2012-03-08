@@ -36,7 +36,7 @@ public class ShooterComponents{
         encoder.setReverseDirection(true);
         encoder.setDistancePerPulse(1.0/180.0);
         encoder.start();
-        filter = new SimpleAverageFilter(200);
+        filter = new SimpleAverageFilter(300);
     }
     /*
      * sets the shooterLeftJaguar to speed and shooterRightJaguar to -speed
@@ -62,6 +62,22 @@ public class ShooterComponents{
      */
     public void firePiston(boolean position){
         ballLoadPiston.set((position ? Relay.Value.kForward :Relay.Value.kReverse));
+    }
+    
+    /**
+     * Uses a function of battery voltage to convert a desired velocity into
+     * a PWM value that can be used for the shooter.
+     * @param desiredVelocity The velocity in rotations per second to target.
+     * @return A PWM value that can be used to approximately reach the
+     * desired velocity.
+     */
+    public static double getVoltagePWM(double desiredVelocity){
+        double targetVoltage = 0.1377905889*desiredVelocity+0.1398396921;
+        double batteryVoltage = DriverStation.getInstance().getBatteryVoltage();
+        if(batteryVoltage == 0.0){
+            return 1;
+        }
+        return targetVoltage/batteryVoltage;
     }
     
     /**
