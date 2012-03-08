@@ -100,7 +100,7 @@ public class CollectorComponents {
         switch(liftDirection){
                 case 1: lift(DEFAULT_DEPLOY_MULTIPLIER); break;
                 case -1: lift(-1*DEFAULT_DEPLOY_MULTIPLIER); break;
-                default: lift(DEFAULT_DEPLOY_MULTIPLIER); break;
+                default: lift(0); break;
         }
     }
     
