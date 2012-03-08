@@ -75,6 +75,14 @@ public class Zephyr extends SimpleRobot {
          Components.getInstance();
      }
      
+     /**
+      * When we are disabled, stop the robot and stop the watchdog.
+      */
+     protected void disabled(){
+         stop();
+         getWatchdog().setEnabled(false); //Disable the watchdog when disabled.
+     }
+     
     /**
      * This function is called once each time the robot enters autonomous mode.
      */
@@ -136,6 +144,7 @@ public class Zephyr extends SimpleRobot {
         steps[1] = shootStep;
         steps[2] = new IdleStopStep(this);
         AutonomousManager manager = new AutonomousManager(steps, this);
+        getWatchdog().setEnabled(true); //Start the watchdog for autonomous
         manager.start();
         stop();
     }
@@ -162,6 +171,7 @@ public class Zephyr extends SimpleRobot {
         Components components = Components.getInstance();
         ToggleHelper shifterHelper = new ToggleHelper();
         ToggleHelper button3 = new ToggleHelper();
+        getWatchdog().setEnabled(true); //Start the watchdog for teleop
         while(this.isOperatorControl()&&this.isEnabled())
         {
             //Gamepad 1*********************************************************
@@ -268,6 +278,7 @@ public class Zephyr extends SimpleRobot {
      * Updates all parts of the robot to avoid safety timeouts
      */
     public void mechanismSet(){
+        getWatchdog().feed(); //Feed the watchdog
         //Driving Assignments
         Components robotParts = Components.getInstance();
         robotParts.drive.setDrivingSpeed(leftDrive, rightDrive);
