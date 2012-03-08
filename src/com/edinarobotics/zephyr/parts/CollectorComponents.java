@@ -72,6 +72,10 @@ public class CollectorComponents {
      */
     public static final int CONVEYOR_STOP = 0;
     
+    public static final int COLLECTOR_STOP = 0;
+    public static final int COLLECTOR_IN = 1;
+    public static final int COLLECTOR_OUT  = -1;
+    
     private static final double DEFAULT_DEPLOY_MULTIPLIER = 0.9;
     
     /**
@@ -118,7 +122,15 @@ public class CollectorComponents {
      * the collector and will collect balls, {@code false} stops the collector.
      */
     public void collect(boolean collectState){
-        collectorSpin.set((collectState?Relay.Value.kReverse:Relay.Value.kOff));
+        collect((collectState?COLLECTOR_IN:COLLECTOR_STOP));
+    }
+    
+    public void collect(int collectState){
+        switch(collectState){
+            case COLLECTOR_IN: collectorSpin.set(Relay.Value.kReverse); break;
+            case COLLECTOR_OUT: collectorSpin.set(Relay.Value.kForward); break;
+            default: collectorSpin.set(Relay.Value.kOff); break;
+        }
     }
     
     /**

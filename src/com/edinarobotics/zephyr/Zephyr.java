@@ -56,7 +56,7 @@ public class Zephyr extends SimpleRobot {
      private double CAMERA_STEP = .005;
      //Collector Variables
      public double collectorLift = 0;
-     public boolean collectorSpin = false;
+     public int collectorSpin = CollectorComponents.COLLECTOR_STOP;
      public int convMove = 0;
      private final double COLLECTOR_LIFT_DOWN = -0.25;
      private final double COLLECTOR_LIFT_UP = 0.9;
@@ -176,7 +176,15 @@ public class Zephyr extends SimpleRobot {
         {
             //Gamepad 1*********************************************************
             //Control collector brushes
-            collectorSpin = driveGamepad.getRawButton(Gamepad.LEFT_BUMPER);
+            if(driveGamepad.getRawButton(Gamepad.LEFT_BUMPER)){
+                collectorSpin = CollectorComponents.COLLECTOR_IN;
+            }
+            else if(driveGamepad.getRawButton(Gamepad.BUTTON_9)){
+                collectorSpin = CollectorComponents.COLLECTOR_OUT;
+            }
+            else{
+                collectorSpin = CollectorComponents.COLLECTOR_STOP;
+            }
             //
             if(shifterHelper.isToggled(driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER))){
                 shifters =! shifters;
@@ -320,7 +328,7 @@ public class Zephyr extends SimpleRobot {
         shooterRotateSpeed = 0;
         ballLoaderUp = false;
         collectorLift = CollectorComponents.COLLECTOR_LIFT_STOP;
-        collectorSpin = false;
+        collectorSpin = CollectorComponents.COLLECTOR_STOP;
         convMove = CollectorComponents.CONVEYOR_STOP;
         mechanismSet();
     }
