@@ -26,13 +26,13 @@ public class AutonomousStepFactory {
         fireSteps[5] = new IdleWaitStep(BALL_LOAD_DELAY, robot);
         fireSteps[6] = new SetConveyorStep(false, robot);
         
-        AutonomousStep[] steps = new AutonomousStep[4];
+        AutonomousStep[] steps = new AutonomousStep[3];
         //Start the shooter
         steps[0] = shooterVoltageEstimateStep(shooterSpeed, 3, 3);
         //Fire the piston several times
-        steps[2] = new ForLoopStep(new SequentialAutonomousStepGroup(fireSteps), numShots);
+        steps[1] = new ForLoopStep(new SequentialAutonomousStepGroup(fireSteps), numShots);
         //Stop the shooter
-        steps[3] = new SetShooterSpeedStep(0, robot);
+        steps[2] = new SetShooterSpeedStep(0, robot);
         
         return new SequentialAutonomousStepGroup(steps);
     }
