@@ -190,7 +190,7 @@ public class Zephyr extends SimpleRobot {
             }
             //
             if(shifterHelper.isToggled(driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER))){
-                shifters =! shifters;
+                shifters = false;
             }
             //Control collector deployment
             if(driveGamepad.getRawButton(Gamepad.RIGHT_TRIGGER)){
