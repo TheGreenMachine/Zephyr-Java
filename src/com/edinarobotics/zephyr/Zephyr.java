@@ -157,7 +157,7 @@ public class Zephyr extends SimpleRobot {
     public void operatorControl() 
     {
         stop();
-        final double PRESET_RPS_SPEED = KEY_SHOOTER_SPEED_RPS;
+        final double PRESET_RPS_SPEED = 47;
         FilterSet driveFilters = new FilterSet();
         driveFilters.addFilter(new DeadzoneFilter(0.5));
         driveFilters.addFilter(new ScalingFilter());
