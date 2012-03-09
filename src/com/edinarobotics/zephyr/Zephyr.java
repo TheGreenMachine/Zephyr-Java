@@ -25,6 +25,7 @@ import com.edinarobotics.zephyr.autonomous.IdleStopStep;
 import com.edinarobotics.zephyr.autonomous.IdleWaitStep;
 import com.edinarobotics.zephyr.parts.CollectorComponents;
 import com.edinarobotics.zephyr.parts.CypressComponents;
+import com.edinarobotics.zephyr.parts.ShooterComponents;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 
@@ -47,6 +48,7 @@ public class Zephyr extends SimpleRobot {
     public double shooterRotateSpeed = 0;
     private final double SHOOTER_SPEED_STEP = 0.001;
     private double lastManualSpeed = 0;
+    public final double KEY_SHOOTER_SPEED_RPS = 50;
     
     //Sensor Variables
      private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
@@ -107,7 +109,7 @@ public class Zephyr extends SimpleRobot {
         //Autonomous program constants
         final double LEFT_KEY_SHOOTER_SPEED = 51.5;
         final double RIGHT_KEY_SHOOTER_SPEED = 51.5;
-        final double MIDDLE_KEY_SHOOTER_SPEED = 50.0;
+        final double MIDDLE_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPS;
         
         //Autonomous config values
         int shootingDelayValue = 1;
@@ -155,6 +157,7 @@ public class Zephyr extends SimpleRobot {
     public void operatorControl() 
     {
         stop();
+        final double PRESET_RPS_SPEED = KEY_SHOOTER_SPEED_RPS;
         FilterSet driveFilters = new FilterSet();
         driveFilters.addFilter(new DeadzoneFilter(0.5));
         driveFilters.addFilter(new ScalingFilter());
@@ -265,6 +268,9 @@ public class Zephyr extends SimpleRobot {
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_4)){
                 shooterSpeed = lastManualSpeed;
             }
+            else if(shootGamepad.getRawButton(Gamepad.BUTTON_10)){
+                shooterSpeed = ShooterComponents.getVoltagePWM(PRESET_RPS_SPEED); //50 RPS estimate button
+            }
             shooterRotateSpeed = shootFilters.filter(shootGamepad.getJoysticks()).getRightX();
             
             if(shootGamepad.getRawButton(Gamepad.BUTTON_9)){
@@ -309,11 +315,11 @@ public class Zephyr extends SimpleRobot {
         String servoPositions = "Y-Axis Servo: "+robotParts.cameraServoVertical.get();
         String problemValue = "Prb: "+(exceptionProblem?"except! ":"")+(genericProblem?"prblm! ":"")+
                                        (getWatchdog().isAlive()?"":"wtchdg! ");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser3,1, "                                                              ");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString);
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue);
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue);
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser3,1, "                                                       ");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString+"                                   ");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString+"                                  ");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue+"                                           ");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue+"                                         ");
         robotParts.textOutput.updateLCD();
         
     }
