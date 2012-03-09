@@ -28,7 +28,7 @@ public class AutonomousStepFactory {
         
         AutonomousStep[] steps = new AutonomousStep[3];
         //Start the shooter
-        steps[0] = shooterVoltageEstimateStep(shooterSpeed, 3, 3);
+        steps[0] = shooterVoltageEstimateStep(shooterSpeed, 3, 3.5);
         //Fire the piston several times
         steps[1] = new ForLoopStep(new SequentialAutonomousStepGroup(fireSteps), numShots);
         //Stop the shooter

@@ -48,7 +48,7 @@ public class Zephyr extends SimpleRobot {
     public double shooterRotateSpeed = 0;
     private final double SHOOTER_SPEED_STEP = 0.001;
     private double lastManualSpeed = 0;
-    public final double KEY_SHOOTER_SPEED_RPS = 51.5;
+    public final double KEY_SHOOTER_SPEED_RPS = 46;
     
     //Sensor Variables
      private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
@@ -157,7 +157,7 @@ public class Zephyr extends SimpleRobot {
     public void operatorControl() 
     {
         stop();
-        final double PRESET_RPS_SPEED = 47;
+        final double PRESET_RPS_SPEED = KEY_SHOOTER_SPEED_RPS;
         FilterSet driveFilters = new FilterSet();
         driveFilters.addFilter(new DeadzoneFilter(0.5));
         driveFilters.addFilter(new ScalingFilter());
