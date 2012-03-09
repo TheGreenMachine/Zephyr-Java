@@ -72,7 +72,7 @@ public class ShooterComponents{
      * desired velocity.
      */
     public static double getVoltagePWM(double desiredVelocity){
-        double targetVoltage = 0.1370976321*desiredVelocity+0.1606578664-0.04;//-0.23;
+        double targetVoltage = 0.1377905889*desiredVelocity+0.1398396921;
         double batteryVoltage = DriverStation.getInstance().getBatteryVoltage();
         if(batteryVoltage == 0.0){
             return 1;
