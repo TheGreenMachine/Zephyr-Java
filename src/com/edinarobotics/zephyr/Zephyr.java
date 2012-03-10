@@ -15,6 +15,7 @@ import com.edinarobotics.utils.gamepad.Gamepad;
 import com.edinarobotics.utils.gamepad.GamepadResult;
 import com.edinarobotics.utils.gamepad.ToggleHelper;
 import com.edinarobotics.utils.gamepad.filters.DeadzoneFilter;
+import com.edinarobotics.utils.gamepad.filters.QuarticScalingFilter;
 import com.edinarobotics.utils.gamepad.filters.ScalingFilter;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
@@ -164,7 +165,7 @@ public class Zephyr extends SimpleRobot {
         
         FilterSet shootFilters = new FilterSet();
         shootFilters.addFilter(new DeadzoneFilter(0.5));
-        shootFilters.addFilter(new ScalingFilter());
+        shootFilters.addFilter(new QuarticScalingFilter());
         
         // Gamepads
         Gamepad driveGamepad = new Gamepad(1);
