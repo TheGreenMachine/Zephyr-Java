@@ -2,6 +2,7 @@ package com.edinarobotics.zephyr.autonomous;
 
 import com.edinarobotics.utils.autonomous.AutonomousStep;
 import com.edinarobotics.zephyr.Zephyr;
+import com.edinarobotics.zephyr.parts.CollectorComponents;
 
 /**
  * An autonomous step that turns the collector's collecting motor on and off.
@@ -27,7 +28,8 @@ public class SetCollectorStep extends AutonomousStep{
      * Sets the collector's motor to the given state, {@code collectorOn}.
      */
     public void start(){
-        robot.collectorSpin = collectorOn;
+        robot.collectorSpin = (collectorOn?CollectorComponents.COLLECTOR_IN:
+                                           CollectorComponents.COLLECTOR_STOP);
         robot.mechanismSet();
     }
     

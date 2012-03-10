@@ -15,6 +15,7 @@ import com.edinarobotics.utils.gamepad.Gamepad;
 import com.edinarobotics.utils.gamepad.GamepadResult;
 import com.edinarobotics.utils.gamepad.ToggleHelper;
 import com.edinarobotics.utils.gamepad.filters.DeadzoneFilter;
+import com.edinarobotics.utils.gamepad.filters.QuarticScalingFilter;
 import com.edinarobotics.utils.gamepad.filters.ScalingFilter;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
@@ -25,6 +26,7 @@ import com.edinarobotics.zephyr.autonomous.IdleStopStep;
 import com.edinarobotics.zephyr.autonomous.IdleWaitStep;
 import com.edinarobotics.zephyr.parts.CollectorComponents;
 import com.edinarobotics.zephyr.parts.CypressComponents;
+import com.edinarobotics.zephyr.parts.ShooterComponents;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
 
@@ -47,6 +49,7 @@ public class Zephyr extends SimpleRobot {
     public double shooterRotateSpeed = 0;
     private final double SHOOTER_SPEED_STEP = 0.05;
     private double lastManualSpeed = 0;
+    public final double KEY_SHOOTER_SPEED_RPS = 46;
     
     //Sensor Variables
      private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
@@ -56,13 +59,16 @@ public class Zephyr extends SimpleRobot {
      private double CAMERA_STEP = .005;
      //Collector Variables
      public double collectorLift = 0;
-     public boolean collectorSpin = false;
+     public int collectorSpin = CollectorComponents.COLLECTOR_STOP;
      public int convMove = 0;
      private final double COLLECTOR_LIFT_DOWN = -0.25;
      private final double COLLECTOR_LIFT_UP = 0.9;
      private final double COLLECTOR_LIFT_STOP = 0;
      private final double COLLECTOR_LIFT_DOWN_FAST = -1;
      public boolean shifters = false;
+     //Problem variables
+     public static boolean exceptionProblem = false;
+     public static boolean genericProblem = false;
      
      /**
       * This function initializes the robot by constructing objects for each
@@ -70,6 +76,14 @@ public class Zephyr extends SimpleRobot {
       */
      protected void robotInit(){
          Components.getInstance();
+     }
+     
+     /**
+      * When we are disabled, stop the robot and stop the watchdog.
+      */
+     protected void disabled(){
+         stop();
+         getWatchdog().setEnabled(false); //Disable the watchdog when disabled.
      }
      
     /**
@@ -94,9 +108,9 @@ public class Zephyr extends SimpleRobot {
         CypressComponents cypress = parts.cypress;
         
         //Autonomous program constants
-        final double LEFT_KEY_SHOOTER_SPEED = 0.71;
-        final double RIGHT_KEY_SHOOTER_SPEED = 0.71;
-        final double MIDDLE_KEY_SHOOTER_SPEED = 0.699;
+        final double LEFT_KEY_SHOOTER_SPEED = 51.5;
+        final double RIGHT_KEY_SHOOTER_SPEED = 51.5;
+        final double MIDDLE_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPS;
         
         //Autonomous config values
         int shootingDelayValue = 1;
@@ -133,6 +147,7 @@ public class Zephyr extends SimpleRobot {
         steps[1] = shootStep;
         steps[2] = new IdleStopStep(this);
         AutonomousManager manager = new AutonomousManager(steps, this);
+        getWatchdog().setEnabled(true); //Start the watchdog for autonomous
         manager.start();
         stop();
     }
@@ -143,13 +158,14 @@ public class Zephyr extends SimpleRobot {
     public void operatorControl() 
     {
         stop();
+        final double PRESET_RPS_SPEED = KEY_SHOOTER_SPEED_RPS;
         FilterSet driveFilters = new FilterSet();
         driveFilters.addFilter(new DeadzoneFilter(0.5));
         driveFilters.addFilter(new ScalingFilter());
         
         FilterSet shootFilters = new FilterSet();
         shootFilters.addFilter(new DeadzoneFilter(0.5));
-        shootFilters.addFilter(new ScalingFilter());
+        shootFilters.addFilter(new QuarticScalingFilter());
         
         // Gamepads
         Gamepad driveGamepad = new Gamepad(1);
@@ -159,14 +175,23 @@ public class Zephyr extends SimpleRobot {
         Components components = Components.getInstance();
         ToggleHelper shifterHelper = new ToggleHelper();
         ToggleHelper button3 = new ToggleHelper();
+        getWatchdog().setEnabled(true); //Start the watchdog for teleop
         while(this.isOperatorControl()&&this.isEnabled())
         {
             //Gamepad 1*********************************************************
             //Control collector brushes
-            collectorSpin = driveGamepad.getRawButton(Gamepad.LEFT_BUMPER);
+            if(driveGamepad.getRawButton(Gamepad.LEFT_BUMPER)){
+                collectorSpin = CollectorComponents.COLLECTOR_IN;
+            }
+            else if(driveGamepad.getRawButton(Gamepad.BUTTON_9)){
+                collectorSpin = CollectorComponents.COLLECTOR_OUT;
+            }
+            else{
+                collectorSpin = CollectorComponents.COLLECTOR_STOP;
+            }
             //
             if(shifterHelper.isToggled(driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER))){
-                shifters =! shifters;
+                shifters = false;
             }
             //Control collector deployment
             if(driveGamepad.getRawButton(Gamepad.RIGHT_TRIGGER)){
@@ -244,6 +269,9 @@ public class Zephyr extends SimpleRobot {
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_4)){
                 shooterSpeed = lastManualSpeed;
             }
+            else if(shootGamepad.getRawButton(Gamepad.BUTTON_10)){
+                shooterSpeed = ShooterComponents.getVoltagePWM(PRESET_RPS_SPEED); //50 RPS estimate button
+            }
             shooterRotateSpeed = shootFilters.filter(shootGamepad.getJoysticks()).getRightX();
             
             if(shootGamepad.getRawButton(Gamepad.BUTTON_9)){
@@ -265,6 +293,7 @@ public class Zephyr extends SimpleRobot {
      * Updates all parts of the robot to avoid safety timeouts
      */
     public void mechanismSet(){
+        getWatchdog().feed(); //Feed the watchdog
         //Driving Assignments
         Components robotParts = Components.getInstance();
         robotParts.drive.setDrivingSpeed(leftDrive, rightDrive);
@@ -282,13 +311,18 @@ public class Zephyr extends SimpleRobot {
         //Sonar Processing
         String shooterPowerString = "Shooter Targ: "+shooterSpeed;
         String shooterActualString = "Shooter V: "+robotParts.shooter.getEncoderValue();
+        String rawShooterEncString = "Shooter VR: "+robotParts.shooter.getEncoder().getRate();
         int sonarVal = (int) robotParts.sonar.getFilteredValue();
         String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
         String servoPositions = "Y-Axis Servo: "+robotParts.cameraServoVertical.get();
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser3,1, "                                                              ");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString);
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString);
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue);
+        String problemValue = "Prb: "+(exceptionProblem?"except! ":"")+(genericProblem?"prblm! ":"")+
+                                       (getWatchdog().isAlive()?"":"wtchdg! ");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser3,1, "                                                       ");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString+"                                   ");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString+"                                  ");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue+"                                           ");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue+"                                         ");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser6, 1, rawShooterEncString+"                                  ");
         robotParts.textOutput.updateLCD();
         
     }
@@ -303,7 +337,7 @@ public class Zephyr extends SimpleRobot {
         shooterRotateSpeed = 0;
         ballLoaderUp = false;
         collectorLift = CollectorComponents.COLLECTOR_LIFT_STOP;
-        collectorSpin = false;
+        collectorSpin = CollectorComponents.COLLECTOR_STOP;
         convMove = CollectorComponents.CONVEYOR_STOP;
         mechanismSet();
     }
