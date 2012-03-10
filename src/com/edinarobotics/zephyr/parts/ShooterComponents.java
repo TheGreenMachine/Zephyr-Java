@@ -39,8 +39,8 @@ public class ShooterComponents implements PIDSource, PIDOutput{
         encoder.setDistancePerPulse(1.0/180.0);
         encoder.start();
         filter = new SimpleAverageFilter(300);
-        pid = new PIDController(0.3,10,0.3,this,this);
-        pid.setTolerance(5);
+        pid = new PIDController(0,100,10,this,this);
+        pid.setTolerance(2);
         pid.enable();
     }
     /*
@@ -105,7 +105,7 @@ public class ShooterComponents implements PIDSource, PIDOutput{
     }
     
     public double pidGet(){
-        return getEncoderValue();
+        return getEncoder().getRate();
     }
     
     /**
