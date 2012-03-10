@@ -2,7 +2,7 @@ package com.edinarobotics.utils.autonomous;
 
 /**
  * An autonomous step that allows multiple substeps to be run in parallel.
- * It simulates 
+ * It simulates concurrent operation.
  */
 public class ParallelAutonomousStepGroup extends AutonomousStep{
     private AutonomousStep[] steps;
