@@ -103,7 +103,7 @@ public class Zephyr extends SimpleRobot {
         final int KEY_LEFT = 1;
         final int KEY_RIGHT = 2;
         final int KEY_MIDDLE = 3;
-        final int DELAY_MULTIPLIER = 3;
+        final int DELAY_MULTIPLIER = 1;
         Components parts = Components.getInstance();
         CypressComponents cypress = parts.cypress;
         
