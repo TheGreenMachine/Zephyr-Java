@@ -2,6 +2,7 @@ package com.edinarobotics.zephyr.parts;
 
 import com.edinarobotics.utils.sensors.FilterDouble;
 import com.edinarobotics.utils.sensors.SimpleAverageFilter;
+import com.edinarobotics.zephyr.Zephyr;
 import edu.wpi.first.wpilibj.*;
 
 /**
@@ -11,40 +12,68 @@ import edu.wpi.first.wpilibj.*;
 public class ShooterComponents{
     public static final int ROTATE_RIGHT_SIGN = 1;
     public static final int ROTATE_LEFT_SIGN = -1;
+    public static final int ENCODER_TICKS_PER_REV = 180;
     
-    private Jaguar shooterLeftJaguar;
-    private Jaguar shooterRightJaguar;
+    private CANJaguar shooterLeftJaguar;
+    private CANJaguar shooterRightJaguar;
     private Jaguar shooterRotator;
     private Relay ballLoadPiston;
     private DigitalInput leftLimitSwitch;
     private DigitalInput rightLimitSwitch;
-    private Encoder encoder;
     private FilterDouble filter;
     /*
      * Constructs shooterLeftJaguar, shooterRightJaguar, shooterRotator and ballLoadPiston
      * with leftJaguar, rightJaguar, rotator and piston respectively.
      */
     public ShooterComponents(int leftJaguar, int rightJaguar, int rotator, int piston,
-                             int leftLimitSwitch, int rightLimitSwitch, int encoderA, int encoderB){
-        shooterLeftJaguar = new Jaguar(leftJaguar);
-        shooterRightJaguar = new Jaguar(rightJaguar);
+                             int leftLimitSwitch, int rightLimitSwitch){
+        try{
+            shooterLeftJaguar = new CANJaguar(leftJaguar, CANJaguar.ControlMode.kSpeed);
+            shooterRightJaguar = new CANJaguar(rightJaguar, CANJaguar.ControlMode.kSpeed);
+        }catch(Exception e){
+            e.printStackTrace();
+            Zephyr.exceptionProblem = true;
+        }
+        try{
+            shooterLeftJaguar.configEncoderCodesPerRev(ENCODER_TICKS_PER_REV);
+        }catch(Exception e){
+            e.printStackTrace();
+            Zephyr.exceptionProblem = true;
+        }
         shooterRotator = new Jaguar(rotator);
         ballLoadPiston = new Relay(piston);
         this.leftLimitSwitch = new DigitalInput(leftLimitSwitch);
         this.rightLimitSwitch = new DigitalInput(rightLimitSwitch);
-        this.encoder = new Encoder(encoderA, encoderB);
-        encoder.setReverseDirection(true);
-        encoder.setDistancePerPulse(1.0/180.0);
-        encoder.start();
         filter = new SimpleAverageFilter(300);
     }
     /*
-     * sets the shooterLeftJaguar to speed and shooterRightJaguar to -speed
+     * Sets the current setpoint value for the shooter Jaguars. Scaling and
+     * units depend on the current control mode of the Jaguars.
      */
     public void setSpeed(double speed){
-        shooterLeftJaguar.set(-speed);
-        shooterRightJaguar.set(speed);
+        try{
+            shooterLeftJaguar.setX(speed);
+            shooterRightJaguar.setX(-speed);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
+    
+    /**
+     * Changes the control mode of the shooter Jaguars to the given
+     * CANJaguar.ControlMode value.
+     * @param controlMode The new control mode for the shooter Jaguars.
+     */
+    public void setShooterControlMode(CANJaguar.ControlMode controlMode){
+        try{
+            shooterLeftJaguar.changeControlMode(controlMode);
+            shooterRightJaguar.changeControlMode(controlMode);
+        }catch(Exception e){
+            e.printStackTrace();
+            Zephyr.exceptionProblem = true;
+        }
+    }
+    
     /*
      * Sets the rotator to speed
      */
@@ -81,16 +110,19 @@ public class ShooterComponents{
     }
     
     /**
-     * Returns the encoder attached to the shooter.
-     * @return The {@link Encoder} object that can be used to access the encoder
-     * attached to the shooter.
+     * Returns the current, raw value from the encoder attached to the
+     * shooter jaguar. If an error occurs {@code -1} is returned.
+     * @return The raw speed given by the shooter encoder, or {@code 0} if an
+     * error occurs.
      */
-    public Encoder getEncoder(){
-        return encoder;
-    }
-    
     public double getEncoderValue(){
-        return filter.filter(encoder.getRate());
+        try{
+            return shooterLeftJaguar.getSpeed();
+        }catch(Exception e){
+            e.printStackTrace();
+            Zephyr.exceptionProblem = true;
+        }
+        return 0;
     }
     
     /**
