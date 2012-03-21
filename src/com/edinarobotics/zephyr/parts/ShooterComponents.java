@@ -60,8 +60,8 @@ public class ShooterComponents{
      */
     public void setSpeed(double speed){
         try{
-            shooterLeftJaguar.setX(speed);
-            shooterRightJaguar.setX(shooterLeftJaguar.getOutputVoltage());
+            shooterLeftJaguar.setX(-1*speed);
+            shooterRightJaguar.setX(-1*shooterLeftJaguar.getOutputVoltage());
         }catch(Exception e){
             e.printStackTrace();
         }
