@@ -47,7 +47,8 @@ public class Zephyr extends SimpleRobot {
     public double shooterSpeed = 0;
     public boolean ballLoaderUp = false;
     public double shooterRotateSpeed = 0;
-    private final double SHOOTER_SPEED_STEP = 25;
+    private final double SHOOTER_LARGE_SPEED_STEP = 50;
+    private final double SHOOTER_SMALL_SPEED_STEP = 10;
     private double lastManualSpeed = 0;
     public final double KEY_SHOOTER_SPEED_RPS = 46;
     
@@ -158,7 +159,8 @@ public class Zephyr extends SimpleRobot {
     public void operatorControl() 
     {
         stop();
-        final double PRESET_RPS_SPEED = KEY_SHOOTER_SPEED_RPS;
+        //Add 2 to componensate for the fact we are not at the very top of the key
+        final double PRESET_RPS_SPEED = KEY_SHOOTER_SPEED_RPS+2;
         FilterSet driveFilters = new FilterSet();
         driveFilters.addFilter(new DeadzoneFilter(0.5));
         driveFilters.addFilter(new ScalingFilter());
@@ -229,7 +231,7 @@ public class Zephyr extends SimpleRobot {
             if(shootGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
             {
                 //Step speed of shooter up.
-                shooterSpeed += SHOOTER_SPEED_STEP;
+                shooterSpeed += SHOOTER_LARGE_SPEED_STEP;
                 
                 // Limit the speed of the shooter to not exceed -1
                 if(shooterSpeed >= ShooterComponents.MAX_SHOOTER_SPEED)
@@ -246,7 +248,7 @@ public class Zephyr extends SimpleRobot {
             else if(shootGamepad.getRawButton(Gamepad.RIGHT_TRIGGER))
             {
                 //Step speed of shooter down.
-                shooterSpeed -= SHOOTER_SPEED_STEP;
+                shooterSpeed -= SHOOTER_LARGE_SPEED_STEP;
                 
                 // Limit the speed of the shooter to not go past 0
                 if(shooterSpeed <= ShooterComponents.MIN_SHOOTER_SPEED)
@@ -256,6 +258,18 @@ public class Zephyr extends SimpleRobot {
                 
                 // Store the speed of the shooter to a second variable
                 lastManualSpeed = shooterSpeed;
+            }
+            else if(shootGamepad.DPAD_X == 1){
+                shooterSpeed+=SHOOTER_LARGE_SPEED_STEP;
+                if(shooterSpeed>=ShooterComponents.MAX_SHOOTER_SPEED){
+                    shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
+                }
+            }
+            else if(shootGamepad.DPAD_X == -1){
+                shooterSpeed-=SHOOTER_LARGE_SPEED_STEP;
+                if(shooterSpeed>=ShooterComponents.MIN_SHOOTER_SPEED){
+                    shooterSpeed = ShooterComponents.MIN_SHOOTER_SPEED;
+                }
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_1)){
                 shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
@@ -310,7 +324,7 @@ public class Zephyr extends SimpleRobot {
         robotParts.cameraServoVertical.set(cameraSetY);
         //Sonar Processing
         String shooterPowerString = "Shooter Targ: "+shooterSpeed;
-        String shooterActualString = "Shooter V: "+robotParts.shooter.getEncoderValue();
+        String shooterActualString = "Shooter V: "+robotParts.shooter.getFilteredEncoderValue();
         int sonarVal = (int) robotParts.sonar.getFilteredValue();
         String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
         String servoPositions = "Y-Axis Servo: "+robotParts.cameraServoVertical.get();

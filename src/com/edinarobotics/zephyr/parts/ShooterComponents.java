@@ -1,5 +1,6 @@
 package com.edinarobotics.zephyr.parts;
 
+import com.edinarobotics.utils.sensors.FIRFilter;
 import com.edinarobotics.utils.sensors.FilterDouble;
 import com.edinarobotics.utils.sensors.SimpleAverageFilter;
 import com.edinarobotics.zephyr.Zephyr;
@@ -23,7 +24,10 @@ public class ShooterComponents{
     private DigitalInput leftLimitSwitch;
     private DigitalInput rightLimitSwitch;
     private FilterDouble filter;
-    /*
+    private final double P = 1.05;
+    private final double I = .0175;
+    private final double D = 1.5;
+    /**
      * Constructs shooterLeftJaguar, shooterRightJaguar, shooterRotator and ballLoadPiston
      * with leftJaguar, rightJaguar, rotator and piston respectively.
      */
@@ -45,7 +49,48 @@ public class ShooterComponents{
             Zephyr.exceptionProblem = true;
         }
         try{
-            shooterLeftJaguar.setPID(0.05, 0.18, 0);
+            shooterLeftJaguar.setPID(P, I, D);
+            shooterLeftJaguar.setSafetyEnabled(false);
+            shooterLeftJaguar.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
+            shooterRightJaguar.setSafetyEnabled(false);
+            shooterLeftJaguar.enableControl();
+            shooterRightJaguar.enableControl();
+        }catch(Exception e){
+            e.printStackTrace();
+            Zephyr.exceptionProblem = true;
+        }
+        shooterRotator = new Jaguar(rotator);
+        ballLoadPiston = new Relay(piston);
+        this.leftLimitSwitch = new DigitalInput(leftLimitSwitch);
+        this.rightLimitSwitch = new DigitalInput(rightLimitSwitch);
+    }
+    
+    /**
+     * Initializes shooterLeftJaguar, shooterRightJaguar, shooterRotator, ballPistonLoader
+     * leftLimitSwitch, rightLimitSwitch, and filter with leftJaguar, rightJaguar, 
+     * rotator piston, and filterTaps respectively. 
+     * 
+     */
+    public ShooterComponents(int leftJaguar, int rightJaguar, int rotator, int piston,
+                             int leftLimitSwitch, int rightLimitSwitch, int filterTaps){
+        filter = FIRFilter.autoWeightedFilter(filterTaps);
+        try{
+            shooterLeftJaguar = new CANJaguar(leftJaguar, CANJaguar.ControlMode.kSpeed);
+            shooterRightJaguar = new CANJaguar(rightJaguar, CANJaguar.ControlMode.kVoltage);
+            System.out.println("Success!");
+        }catch(Exception e){
+            e.printStackTrace();
+            Zephyr.exceptionProblem = true;
+        }
+        System.out.println("CAN setup done.");
+        try{
+            shooterLeftJaguar.configEncoderCodesPerRev(ENCODER_TICKS_PER_REV);
+        }catch(Exception e){
+            e.printStackTrace();
+            Zephyr.exceptionProblem = true;
+        }
+        try{
+            shooterLeftJaguar.setPID(P, I, D);
             shooterLeftJaguar.setSafetyEnabled(false);
             shooterLeftJaguar.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
             shooterRightJaguar.setSafetyEnabled(false);
@@ -61,7 +106,7 @@ public class ShooterComponents{
         this.rightLimitSwitch = new DigitalInput(rightLimitSwitch);
         filter = new SimpleAverageFilter(300);
     }
-    /*
+    /**
      * Sets the current setpoint value for the shooter Jaguars. Scaling and
      * units depend on the current control mode of the Jaguars.
      */
@@ -90,7 +135,7 @@ public class ShooterComponents{
         }
     }
     
-    /*
+    /**
      * Sets the rotator to speed
      */
     public void rotate(double speed){
@@ -102,7 +147,7 @@ public class ShooterComponents{
         }
         shooterRotator.set(speed);
     }
-    /*
+    /**
      * Sets the piston up if position is true, else it lowers it.
      */
     public void firePiston(boolean position){
@@ -137,6 +182,16 @@ public class ShooterComponents{
         }catch(Exception e){
             e.printStackTrace();
             Zephyr.exceptionProblem = true;
+        }
+        return 0;
+    }
+    
+    public double getFilteredEncoderValue(){
+        try{
+            return filter.filter(shooterLeftJaguar.getSpeed());
+        }catch(Exception e){
+            getEncoderValue();
+            e.printStackTrace();
         }
         return 0;
     }
