@@ -29,7 +29,7 @@ public class ShooterComponents{
                              int leftLimitSwitch, int rightLimitSwitch){
         try{
             shooterLeftJaguar = new CANJaguar(leftJaguar, CANJaguar.ControlMode.kSpeed);
-            shooterRightJaguar = new CANJaguar(rightJaguar, CANJaguar.ControlMode.kSpeed);
+            shooterRightJaguar = new CANJaguar(rightJaguar, CANJaguar.ControlMode.kVoltage);
         }catch(Exception e){
             e.printStackTrace();
             Zephyr.exceptionProblem = true;
@@ -53,7 +53,7 @@ public class ShooterComponents{
     public void setSpeed(double speed){
         try{
             shooterLeftJaguar.setX(speed);
-            shooterRightJaguar.setX(-speed);
+            shooterRightJaguar.setX(shooterLeftJaguar.getOutputVoltage());
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -67,7 +67,7 @@ public class ShooterComponents{
     public void setShooterControlMode(CANJaguar.ControlMode controlMode){
         try{
             shooterLeftJaguar.changeControlMode(controlMode);
-            shooterRightJaguar.changeControlMode(controlMode);
+            shooterRightJaguar.changeControlMode(CANJaguar.ControlMode.kVoltage);
         }catch(Exception e){
             e.printStackTrace();
             Zephyr.exceptionProblem = true;
