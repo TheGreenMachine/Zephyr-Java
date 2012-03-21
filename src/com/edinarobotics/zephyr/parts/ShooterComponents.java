@@ -1,6 +1,5 @@
 package com.edinarobotics.zephyr.parts;
 
-import com.edinarobotics.utils.sensors.FIRFilter;
 import com.edinarobotics.utils.sensors.FilterDouble;
 import com.edinarobotics.utils.sensors.SimpleAverageFilter;
 import com.edinarobotics.zephyr.Zephyr;
@@ -24,9 +23,9 @@ public class ShooterComponents{
     private DigitalInput leftLimitSwitch;
     private DigitalInput rightLimitSwitch;
     private FilterDouble filter;
-    private final double P = 1.05;
-    private final double I = .0175;
-    private final double D = 1.5;
+    private final double P = 1.5;
+    private final double I = .015;
+    private final double D = .25;
     /**
      * Constructs shooterLeftJaguar, shooterRightJaguar, shooterRotator and ballLoadPiston
      * with leftJaguar, rightJaguar, rotator and piston respectively.
@@ -73,7 +72,7 @@ public class ShooterComponents{
      */
     public ShooterComponents(int leftJaguar, int rightJaguar, int rotator, int piston,
                              int leftLimitSwitch, int rightLimitSwitch, int filterTaps){
-        filter = FIRFilter.autoWeightedFilter(filterTaps);
+        filter = new SimpleAverageFilter(filterTaps);
         try{
             shooterLeftJaguar = new CANJaguar(leftJaguar, CANJaguar.ControlMode.kSpeed);
             shooterRightJaguar = new CANJaguar(rightJaguar, CANJaguar.ControlMode.kVoltage);

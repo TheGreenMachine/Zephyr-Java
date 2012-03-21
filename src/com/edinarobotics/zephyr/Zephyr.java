@@ -324,7 +324,7 @@ public class Zephyr extends SimpleRobot {
         robotParts.cameraServoVertical.set(cameraSetY);
         //Sonar Processing
         String shooterPowerString = "Shooter Targ: "+shooterSpeed;
-        String shooterActualString = "Shooter V: "+robotParts.shooter.getFilteredEncoderValue();
+        String shooterActualString = "Shooter V: "+robotParts.shooter.getEncoderValue();
         int sonarVal = (int) robotParts.sonar.getFilteredValue();
         String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
         String servoPositions = "Y-Axis Servo: "+robotParts.cameraServoVertical.get();

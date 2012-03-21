@@ -25,7 +25,7 @@ public class Components {
     private static final int SHOOTER_RIGHT_JAGUAR_NUMBER = 11;
     private static final int SHOOTER_ROTATOR_JAGUAR_PORT = 5;
     private static final int BALL_COLL_LIFT_JAGUAR = 6;
-    private static final int SHOOTER_TAP_SIZE = 200;
+    private static final int SHOOTER_TAP_SIZE = 10;
     //Relays
     private static final int COMPRESSOR_SPIKE = 1;
     private static final int BALL_LOAD_PISTON_SPIKE = 3;
