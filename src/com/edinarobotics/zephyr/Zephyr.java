@@ -47,7 +47,7 @@ public class Zephyr extends SimpleRobot {
     public double shooterSpeed = 0;
     public boolean ballLoaderUp = false;
     public double shooterRotateSpeed = 0;
-    private final double SHOOTER_SPEED_STEP = 0.001;
+    private final double SHOOTER_SPEED_STEP = 25;
     private double lastManualSpeed = 0;
     public final double KEY_SHOOTER_SPEED_RPS = 46;
     
@@ -258,13 +258,13 @@ public class Zephyr extends SimpleRobot {
                 lastManualSpeed = shooterSpeed;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_1)){
-                shooterSpeed = 1;
+                shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_2)){
-                shooterSpeed = 0;
+                shooterSpeed = ShooterComponents.MIN_SHOOTER_SPEED;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_3)){
-                shooterSpeed = 0.5;
+                shooterSpeed = 0.5*ShooterComponents.MAX_SHOOTER_SPEED;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_4)){
                 shooterSpeed = lastManualSpeed;

@@ -13,7 +13,7 @@ public class ShooterComponents{
     public static final int ROTATE_RIGHT_SIGN = 1;
     public static final int ROTATE_LEFT_SIGN = -1;
     public static final int ENCODER_TICKS_PER_REV = 180;
-    public static final double MAX_SHOOTER_SPEED = 80;
+    public static final double MAX_SHOOTER_SPEED = 8000;
     public static final double MIN_SHOOTER_SPEED = 0;
     
     private CANJaguar shooterLeftJaguar;
@@ -32,10 +32,12 @@ public class ShooterComponents{
         try{
             shooterLeftJaguar = new CANJaguar(leftJaguar, CANJaguar.ControlMode.kSpeed);
             shooterRightJaguar = new CANJaguar(rightJaguar, CANJaguar.ControlMode.kVoltage);
+            System.out.println("Success!");
         }catch(Exception e){
             e.printStackTrace();
             Zephyr.exceptionProblem = true;
         }
+        System.out.println("CAN setup done.");
         try{
             shooterLeftJaguar.configEncoderCodesPerRev(ENCODER_TICKS_PER_REV);
         }catch(Exception e){
@@ -43,7 +45,12 @@ public class ShooterComponents{
             Zephyr.exceptionProblem = true;
         }
         try{
-            shooterLeftJaguar.setPID(2, 2, 0);
+            shooterLeftJaguar.setPID(0.05, 0.18, 0);
+            shooterLeftJaguar.setSafetyEnabled(false);
+            shooterLeftJaguar.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
+            shooterRightJaguar.setSafetyEnabled(false);
+            shooterLeftJaguar.enableControl();
+            shooterRightJaguar.enableControl();
         }catch(Exception e){
             e.printStackTrace();
             Zephyr.exceptionProblem = true;
@@ -62,6 +69,7 @@ public class ShooterComponents{
         try{
             shooterLeftJaguar.setX(-1*speed);
             shooterRightJaguar.setX(-1*shooterLeftJaguar.getOutputVoltage());
+            System.out.println("Speed set: "+shooterRightJaguar.getX()+"  -  "+shooterLeftJaguar.getOutputVoltage());
         }catch(Exception e){
             e.printStackTrace();
         }
