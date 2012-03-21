@@ -232,9 +232,9 @@ public class Zephyr extends SimpleRobot {
                 shooterSpeed += SHOOTER_SPEED_STEP;
                 
                 // Limit the speed of the shooter to not exceed -1
-                if(shooterSpeed >= 1)
+                if(shooterSpeed >= ShooterComponents.MAX_SHOOTER_SPEED)
                 {
-                    shooterSpeed = 1;
+                    shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
                 }
                 
                 // Store the speed of the shooter to a second variable
@@ -249,9 +249,9 @@ public class Zephyr extends SimpleRobot {
                 shooterSpeed -= SHOOTER_SPEED_STEP;
                 
                 // Limit the speed of the shooter to not go past 0
-                if(shooterSpeed<=0)
+                if(shooterSpeed <= ShooterComponents.MIN_SHOOTER_SPEED)
                 {
-                    shooterSpeed = 0;
+                    shooterSpeed = ShooterComponents.MIN_SHOOTER_SPEED;
                 }
                 
                 // Store the speed of the shooter to a second variable
