@@ -13,7 +13,7 @@ public class ShooterComponents{
     public static final int ROTATE_RIGHT_SIGN = 1;
     public static final int ROTATE_LEFT_SIGN = -1;
     public static final int ENCODER_TICKS_PER_REV = 180;
-    public static final double MAX_SHOOTER_SPEED = 8000;
+    public static final double MAX_SHOOTER_SPEED = 4000;
     public static final double MIN_SHOOTER_SPEED = 0;
     
     private CANJaguar shooterLeftJaguar;

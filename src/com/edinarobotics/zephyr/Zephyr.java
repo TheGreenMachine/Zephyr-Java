@@ -177,6 +177,7 @@ public class Zephyr extends SimpleRobot {
         Components components = Components.getInstance();
         ToggleHelper shifterHelper = new ToggleHelper();
         ToggleHelper button3 = new ToggleHelper();
+        ToggleHelper dPadXToggler = new ToggleHelper();
         getWatchdog().setEnabled(true); //Start the watchdog for teleop
         while(this.isOperatorControl()&&this.isEnabled())
         {
@@ -259,17 +260,26 @@ public class Zephyr extends SimpleRobot {
                 // Store the speed of the shooter to a second variable
                 lastManualSpeed = shooterSpeed;
             }
-            else if(shootGamepad.DPAD_X == 1){
-                shooterSpeed+=SHOOTER_LARGE_SPEED_STEP;
+            else if(shootGamepad.getDPadX() == 1&&dPadXToggler.isToggled(true)){
+                shooterSpeed+=SHOOTER_SMALL_SPEED_STEP;//increment shooter speed
+                //if it exceeds bounds, set it to the maxiumum speed
                 if(shooterSpeed>=ShooterComponents.MAX_SHOOTER_SPEED){
                     shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
                 }
+                //Store the shooters speed
+                lastManualSpeed = shooterSpeed;
             }
-            else if(shootGamepad.DPAD_X == -1){
-                shooterSpeed-=SHOOTER_LARGE_SPEED_STEP;
+            else if(shootGamepad.getDPadX() == -1&&dPadXToggler.isToggled(true)){
+                shooterSpeed-=SHOOTER_SMALL_SPEED_STEP;//decrement shooter speed
+                //if shooterSpeed is below minimum set it to the min speed
                 if(shooterSpeed>=ShooterComponents.MIN_SHOOTER_SPEED){
                     shooterSpeed = ShooterComponents.MIN_SHOOTER_SPEED;
                 }
+                //store the speed
+                lastManualSpeed = shooterSpeed;
+            }
+            if(shootGamepad.getDPadX() == 0){
+                dPadXToggler.isToggled(false); //update the dPadX Toggler
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_1)){
                 shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
@@ -284,7 +294,7 @@ public class Zephyr extends SimpleRobot {
                 shooterSpeed = lastManualSpeed;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_10)){
-                shooterSpeed = ShooterComponents.getVoltagePWM(PRESET_RPS_SPEED); //50 RPS estimate button
+                shooterSpeed = PRESET_RPS_SPEED; //50 RPS estimate button
             }
             shooterRotateSpeed = shootFilters.filter(shootGamepad.getJoysticks()).getRightX();
             
