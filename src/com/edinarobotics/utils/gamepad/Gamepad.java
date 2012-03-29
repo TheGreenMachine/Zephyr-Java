@@ -56,7 +56,7 @@ public class Gamepad extends Joystick{
     
     public int getDPadY()
     {
-        return dPadToInt(this.getRawAxis(DPAD_Y));
+        return -dPadToInt(this.getRawAxis(DPAD_Y));
     }
     
     private int dPadToInt(double value){
