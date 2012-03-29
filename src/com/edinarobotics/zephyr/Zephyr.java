@@ -49,6 +49,7 @@ public class Zephyr extends SimpleRobot {
     public double shooterRotateSpeed = 0;
     private final double SHOOTER_LARGE_SPEED_STEP = 50;
     private final double SHOOTER_SMALL_SPEED_STEP = 10;
+    private final double SHOOTER_MEDIUM_SPEED_STEP = 50;
     private double lastManualSpeed = 0;
     public final double KEY_SHOOTER_SPEED_RPM = 2760;
     
@@ -178,6 +179,7 @@ public class Zephyr extends SimpleRobot {
         ToggleHelper shifterHelper = new ToggleHelper();
         ToggleHelper button3 = new ToggleHelper();
         ToggleHelper dPadXToggler = new ToggleHelper();
+        ToggleHelper dPadYToggler = new ToggleHelper();
         getWatchdog().setEnabled(true); //Start the watchdog for teleop
         while(this.isOperatorControl()&&this.isEnabled())
         {
@@ -249,6 +251,11 @@ public class Zephyr extends SimpleRobot {
             else if(dPadXToggler.isToggled(shootGamepad.getDPadX() != 0)){
                 //D-Pad x-axis is in use and has been toggled
                 shooterSpeed += shootGamepad.getDPadX() * SHOOTER_SMALL_SPEED_STEP;
+                lastManualSpeed = shooterSpeed;
+            }
+            else if(dPadYToggler.isToggled(shootGamepad.getDPadY() != 0)){
+                //D-Pad y-axis is in use and has been toggled
+                shooterSpeed += shootGamepad.getDPadY() * SHOOTER_MEDIUM_SPEED_STEP;
                 lastManualSpeed = shooterSpeed;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_1)){
