@@ -159,8 +159,8 @@ public class Zephyr extends SimpleRobot {
     public void operatorControl() 
     {
         stop();
-        //Add 2 to componensate for the fact we are not at the very top of the key
-        final double PRESET_RPM_SPEED = KEY_SHOOTER_SPEED_RPM+20;
+        //Add 120 to componensate for the fact we are not at the very top of the key
+        final double PRESET_RPM_SPEED = KEY_SHOOTER_SPEED_RPM+120;
         FilterSet driveFilters = new FilterSet();
         driveFilters.addFilter(new DeadzoneFilter(0.5));
         driveFilters.addFilter(new ScalingFilter());
@@ -194,7 +194,7 @@ public class Zephyr extends SimpleRobot {
             }
             //
             if(shifterHelper.isToggled(driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER))){
-                shifters = false;
+                shifters = !shifters;
             }
             //Control collector deployment
             if(driveGamepad.getRawButton(Gamepad.RIGHT_TRIGGER)){
