@@ -52,7 +52,7 @@ public class ShooterComponents{
                 System.out.println("Success!");
                 canDone = true;
             }catch(Exception e){
-                System.out.println(e.getMessage());
+                e.printStackTrace();
                 Zephyr.exceptionProblem = true;
             }
         }
@@ -62,7 +62,8 @@ public class ShooterComponents{
                 shooterLeftJaguar.configEncoderCodesPerRev(ENCODER_TICKS_PER_REV);
                 encoderSetupDone = true;
             }catch(Exception e){
-                System.out.println("CAN ENCODER DUN GOOFED: "+e.getMessage());
+                System.out.println("CAN ENCODER DUN GOOFED!");
+                e.printStackTrace();
                 Zephyr.exceptionProblem = true;
             }
         }
@@ -77,7 +78,8 @@ public class ShooterComponents{
                 shooterRightJaguar.enableControl();
                 pidSetupDone = true;
             }catch(Exception e){
-                System.out.println("CAN PID DUN GOOFED: "+e.getMessage());
+                System.out.println("CAN PID DUN GOOFED!");
+                e.printStackTrace();
                 Zephyr.exceptionProblem = true;
             }
         }
