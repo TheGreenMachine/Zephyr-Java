@@ -255,7 +255,7 @@ public class Zephyr extends SimpleRobot {
             }
             else if(dPadYToggler.isToggled(shootGamepad.getDPadY() != 0)){
                 //D-Pad y-axis is in use and has been toggled
-                shooterSpeed += shootGamepad.getDPadY() * SHOOTER_MEDIUM_SPEED_STEP;
+                shooterSpeed += -shootGamepad.getDPadY() * SHOOTER_MEDIUM_SPEED_STEP;
                 lastManualSpeed = shooterSpeed;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_1)){
