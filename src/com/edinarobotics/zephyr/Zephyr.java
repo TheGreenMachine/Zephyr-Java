@@ -50,7 +50,7 @@ public class Zephyr extends SimpleRobot {
     private final double SHOOTER_LARGE_SPEED_STEP = 50;
     private final double SHOOTER_SMALL_SPEED_STEP = 10;
     private double lastManualSpeed = 0;
-    public final double KEY_SHOOTER_SPEED_RPS = 2760;
+    public final double KEY_SHOOTER_SPEED_RPM = 2760;
     
     //Sensor Variables
      private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
@@ -111,7 +111,7 @@ public class Zephyr extends SimpleRobot {
         //Autonomous program constants
         final double LEFT_KEY_SHOOTER_SPEED = 51.5;
         final double RIGHT_KEY_SHOOTER_SPEED = 51.5;
-        final double MIDDLE_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPS;
+        final double MIDDLE_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
         
         //Autonomous config values
         int shootingDelayValue = 1;
@@ -160,7 +160,7 @@ public class Zephyr extends SimpleRobot {
     {
         stop();
         //Add 2 to componensate for the fact we are not at the very top of the key
-        final double PRESET_RPS_SPEED = KEY_SHOOTER_SPEED_RPS+20;
+        final double PRESET_RPM_SPEED = KEY_SHOOTER_SPEED_RPM+20;
         FilterSet driveFilters = new FilterSet();
         driveFilters.addFilter(new DeadzoneFilter(0.5));
         driveFilters.addFilter(new ScalingFilter());
@@ -294,7 +294,7 @@ public class Zephyr extends SimpleRobot {
                 shooterSpeed = lastManualSpeed;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_10)){
-                shooterSpeed = PRESET_RPS_SPEED; //50 RPS estimate button
+                shooterSpeed = PRESET_RPM_SPEED; //50 RPS estimate button
             }
             shooterRotateSpeed = shootFilters.filter(shootGamepad.getJoysticks()).getRightX();
             
