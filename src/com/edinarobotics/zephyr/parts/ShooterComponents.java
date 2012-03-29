@@ -97,7 +97,6 @@ public class ShooterComponents{
         try{
             shooterLeftJaguar.setX(-1*speed);
             shooterRightJaguar.setX(-1*shooterLeftJaguar.getOutputVoltage());
-            System.out.println("Speed set: "+shooterRightJaguar.getX()+"  -  "+shooterLeftJaguar.getOutputVoltage());
         }catch(Exception e){
             e.printStackTrace();
         }
