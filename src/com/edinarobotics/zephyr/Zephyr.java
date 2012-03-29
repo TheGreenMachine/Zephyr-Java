@@ -51,7 +51,7 @@ public class Zephyr extends SimpleRobot {
     private final double SHOOTER_SMALL_SPEED_STEP = 10;
     private final double SHOOTER_MEDIUM_SPEED_STEP = 50;
     private double lastManualSpeed = 0;
-    public final double KEY_SHOOTER_SPEED_RPM = 2760;
+    public final double KEY_SHOOTER_SPEED_RPM = 2150;
     
     //Sensor Variables
      private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
@@ -110,8 +110,8 @@ public class Zephyr extends SimpleRobot {
         CypressComponents cypress = parts.cypress;
         
         //Autonomous program constants
-        final double LEFT_KEY_SHOOTER_SPEED = 51.5;
-        final double RIGHT_KEY_SHOOTER_SPEED = 51.5;
+        final double LEFT_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
+        final double RIGHT_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
         final double MIDDLE_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
         
         //Autonomous config values
