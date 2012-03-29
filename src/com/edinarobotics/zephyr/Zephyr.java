@@ -210,7 +210,7 @@ public class Zephyr extends SimpleRobot {
                 collectorLift = COLLECTOR_LIFT_STOP;
             }
             //Driving with joysticks
-            if(Math.abs(driveGamepad.getDPadY()) <= 0.9){
+            if(driveGamepad.getDPadY() == 0){
                 //D-Pad not in use, normal joystick drive.
                 GamepadResult joystick = driveFilters.filter(driveGamepad.getJoysticks());
                 leftDrive = joystick.getLeftY();
@@ -233,13 +233,6 @@ public class Zephyr extends SimpleRobot {
             {
                 //Step speed of shooter up.
                 shooterSpeed += SHOOTER_LARGE_SPEED_STEP;
-                
-                // Limit the speed of the shooter to not exceed -1
-                if(shooterSpeed >= ShooterComponents.MAX_SHOOTER_SPEED)
-                {
-                    shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
-                }
-                
                 // Store the speed of the shooter to a second variable
                 lastManualSpeed = shooterSpeed;
             }
@@ -250,36 +243,13 @@ public class Zephyr extends SimpleRobot {
             {
                 //Step speed of shooter down.
                 shooterSpeed -= SHOOTER_LARGE_SPEED_STEP;
-                
-                // Limit the speed of the shooter to not go past 0
-                if(shooterSpeed <= ShooterComponents.MIN_SHOOTER_SPEED)
-                {
-                    shooterSpeed = ShooterComponents.MIN_SHOOTER_SPEED;
-                }
-                
                 // Store the speed of the shooter to a second variable
                 lastManualSpeed = shooterSpeed;
             }
-            else if(shootGamepad.getDPadX() == 1&&dPadXToggler.isToggled(true)){
-                shooterSpeed+=SHOOTER_SMALL_SPEED_STEP;//increment shooter speed
-                //if it exceeds bounds, set it to the maxiumum speed
-                if(shooterSpeed>=ShooterComponents.MAX_SHOOTER_SPEED){
-                    shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
-                }
-                //Store the shooters speed
+            else if(dPadXToggler.isToggled(shootGamepad.getDPadX() != 0)){
+                //D-Pad x-axis is in use and has been toggled
+                shooterSpeed += shootGamepad.getDPadX() * SHOOTER_SMALL_SPEED_STEP;
                 lastManualSpeed = shooterSpeed;
-            }
-            else if(shootGamepad.getDPadX() == -1&&dPadXToggler.isToggled(true)){
-                shooterSpeed-=SHOOTER_SMALL_SPEED_STEP;//decrement shooter speed
-                //if shooterSpeed is below minimum set it to the min speed
-                if(shooterSpeed>=ShooterComponents.MIN_SHOOTER_SPEED){
-                    shooterSpeed = ShooterComponents.MIN_SHOOTER_SPEED;
-                }
-                //store the speed
-                lastManualSpeed = shooterSpeed;
-            }
-            if(shootGamepad.getDPadX() == 0){
-                dPadXToggler.isToggled(false); //update the dPadX Toggler
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_1)){
                 shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
@@ -303,6 +273,7 @@ public class Zephyr extends SimpleRobot {
             else if(shooterSpeed < ShooterComponents.MIN_SHOOTER_SPEED){
                 shooterSpeed = ShooterComponents.MIN_SHOOTER_SPEED;
             }
+            
             shooterRotateSpeed = shootFilters.filter(shootGamepad.getJoysticks()).getRightX();
             
             if(shootGamepad.getRawButton(Gamepad.BUTTON_9)){
