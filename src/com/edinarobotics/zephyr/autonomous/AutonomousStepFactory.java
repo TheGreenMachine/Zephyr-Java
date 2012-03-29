@@ -17,19 +17,18 @@ public class AutonomousStepFactory {
         final double PISTON_SET_DELAY = 1;
         final double BALL_LOAD_DELAY = 2.5;
         //Steps to bring the piston up and down
-        AutonomousStep[] fireSteps = new AutonomousStep[8];
+        AutonomousStep[] fireSteps = new AutonomousStep[7];
         fireSteps[0] = new ShooterPistonControlStep(true, robot);
         fireSteps[1] = new IdleWaitStep(PISTON_SET_DELAY, robot);
         fireSteps[2] = new ShooterPistonControlStep(false, robot);
         fireSteps[3] = new IdleWaitStep(PISTON_SET_DELAY, robot);
         fireSteps[4] = new SetConveyorStep(true, robot);
-        fireSteps[5] = new ShooterVoltagePWMStep(shooterSpeed, robot);
-        fireSteps[6] = new IdleWaitStep(BALL_LOAD_DELAY, robot);
-        fireSteps[7] = new SetConveyorStep(false, robot);
+        fireSteps[5] = new IdleWaitStep(BALL_LOAD_DELAY, robot);
+        fireSteps[6] = new SetConveyorStep(false, robot);
         
         AutonomousStep[] steps = new AutonomousStep[3];
         //Start the shooter
-        steps[0] = shooterVoltageEstimateStep(shooterSpeed, 3, 3.5);
+        steps[0] = new SetShooterSpeedStep(shooterSpeed, robot);
         //Fire the piston several times
         steps[1] = new ForLoopStep(new SequentialAutonomousStepGroup(fireSteps), numShots);
         //Stop the shooter
