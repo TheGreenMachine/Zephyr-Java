@@ -32,36 +32,7 @@ public class ShooterComponents{
      */
     public ShooterComponents(int leftJaguar, int rightJaguar, int rotator, int piston,
                              int leftLimitSwitch, int rightLimitSwitch){
-        try{
-            shooterLeftJaguar = new CANJaguar(leftJaguar, CANJaguar.ControlMode.kSpeed);
-            shooterRightJaguar = new CANJaguar(rightJaguar, CANJaguar.ControlMode.kVoltage);
-            System.out.println("Success!");
-        }catch(Exception e){
-            e.printStackTrace();
-            Zephyr.exceptionProblem = true;
-        }
-        System.out.println("CAN setup done.");
-        try{
-            shooterLeftJaguar.configEncoderCodesPerRev(ENCODER_TICKS_PER_REV);
-        }catch(Exception e){
-            e.printStackTrace();
-            Zephyr.exceptionProblem = true;
-        }
-        try{
-            shooterLeftJaguar.setPID(P, I, D);
-            shooterLeftJaguar.setSafetyEnabled(false);
-            shooterLeftJaguar.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
-            shooterRightJaguar.setSafetyEnabled(false);
-            shooterLeftJaguar.enableControl();
-            shooterRightJaguar.enableControl();
-        }catch(Exception e){
-            e.printStackTrace();
-            Zephyr.exceptionProblem = true;
-        }
-        shooterRotator = new Jaguar(rotator);
-        ballLoadPiston = new Relay(piston);
-        this.leftLimitSwitch = new DigitalInput(leftLimitSwitch);
-        this.rightLimitSwitch = new DigitalInput(rightLimitSwitch);
+        this(leftJaguar,rightJaguar,rotator,piston,leftLimitSwitch,rightLimitSwitch,300);
     }
     
     /**
@@ -73,37 +44,48 @@ public class ShooterComponents{
     public ShooterComponents(int leftJaguar, int rightJaguar, int rotator, int piston,
                              int leftLimitSwitch, int rightLimitSwitch, int filterTaps){
         filter = new SimpleAverageFilter(filterTaps);
-        try{
-            shooterLeftJaguar = new CANJaguar(leftJaguar, CANJaguar.ControlMode.kSpeed);
-            shooterRightJaguar = new CANJaguar(rightJaguar, CANJaguar.ControlMode.kVoltage);
-            System.out.println("Success!");
-        }catch(Exception e){
-            e.printStackTrace();
-            Zephyr.exceptionProblem = true;
+        boolean canDone = false;
+        for(int i=0;i<10 && (!canDone); i++){
+            try{
+                shooterLeftJaguar = new CANJaguar(leftJaguar, CANJaguar.ControlMode.kSpeed);
+                shooterRightJaguar = new CANJaguar(rightJaguar, CANJaguar.ControlMode.kVoltage);
+                System.out.println("Success!");
+                canDone = true;
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+                Zephyr.exceptionProblem = true;
+            }
         }
-        System.out.println("CAN setup done.");
-        try{
-            shooterLeftJaguar.configEncoderCodesPerRev(ENCODER_TICKS_PER_REV);
-        }catch(Exception e){
-            e.printStackTrace();
-            Zephyr.exceptionProblem = true;
+        boolean encoderSetupDone = false;
+        for(int i=0;i<5 && !(encoderSetupDone); i++){
+            try{
+                shooterLeftJaguar.configEncoderCodesPerRev(ENCODER_TICKS_PER_REV);
+                encoderSetupDone = true;
+            }catch(Exception e){
+                System.out.println("CAN ENCODER DUN GOOFED: "+e.getMessage());
+                Zephyr.exceptionProblem = true;
+            }
         }
-        try{
-            shooterLeftJaguar.setPID(P, I, D);
-            shooterLeftJaguar.setSafetyEnabled(false);
-            shooterLeftJaguar.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
-            shooterRightJaguar.setSafetyEnabled(false);
-            shooterLeftJaguar.enableControl();
-            shooterRightJaguar.enableControl();
-        }catch(Exception e){
-            e.printStackTrace();
-            Zephyr.exceptionProblem = true;
+        boolean pidSetupDone = false;
+        for(int i=0;i<5 && !(pidSetupDone); i++){
+            try{
+                shooterLeftJaguar.setPID(P, I, D);
+                shooterLeftJaguar.setSafetyEnabled(false);
+                shooterLeftJaguar.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
+                shooterRightJaguar.setSafetyEnabled(false);
+                shooterLeftJaguar.enableControl();
+                shooterRightJaguar.enableControl();
+                pidSetupDone = true;
+            }catch(Exception e){
+                System.out.println("CAN PID DUN GOOFED: "+e.getMessage());
+                Zephyr.exceptionProblem = true;
+            }
         }
+        System.out.println("CAN setup done!");
         shooterRotator = new Jaguar(rotator);
         ballLoadPiston = new Relay(piston);
         this.leftLimitSwitch = new DigitalInput(leftLimitSwitch);
         this.rightLimitSwitch = new DigitalInput(rightLimitSwitch);
-        filter = new SimpleAverageFilter(300);
     }
     /**
      * Sets the current setpoint value for the shooter Jaguars. Scaling and
