@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.camera.AxisCamera;
 
 /**
  *
@@ -62,6 +63,7 @@ public class Components {
     public DriverStationLCD textOutput;
     public CypressComponents cypress;
     public Timer timer;
+    public AxisCamera camera;
     
     /**
      * Instantiates all components of the robot
@@ -87,6 +89,7 @@ public class Components {
         textOutput = DriverStationLCD.getInstance();
         cypress = new CypressComponents();
         timer = new Timer();
+        camera = AxisCamera.getInstance("10.18.16.11");
     }
 
     /**
