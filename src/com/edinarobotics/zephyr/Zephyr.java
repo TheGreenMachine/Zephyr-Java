@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import com.edinarobotics.utils.sensors.FIRFilter;
+import com.edinarobotics.utils.visiontracking.ParticleVT;
+import com.edinarobotics.utils.visiontracking.TargetingStuff;
 import com.edinarobotics.zephyr.autonomous.AutonomousStepFactory;
 import com.edinarobotics.zephyr.autonomous.IdleStopStep;
 import com.edinarobotics.zephyr.autonomous.IdleWaitStep;
@@ -330,6 +332,7 @@ public class Zephyr extends SimpleRobot {
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString+"                                  ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue+"                                           ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue+"                                         ");
+        robotParts.textOutput.println(DriverStationLCD.Line.kUser6, 1, TargetingStuff.lockOn(TargetingStuff.findClosest(ParticleVT.fullyQualified)));
         robotParts.textOutput.updateLCD();
         
     }
