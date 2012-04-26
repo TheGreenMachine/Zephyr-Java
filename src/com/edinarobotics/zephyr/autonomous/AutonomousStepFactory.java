@@ -81,15 +81,25 @@ public class AutonomousStepFactory {
     /**
      * Creates a step that performs a turn of a certain number of degrees
      * using the gyro.
-     * @param degreesLeft The number of degrees that the robot should
-     * turn left.
-     * @return An {@link AutonomousStep} that performs a left turn
+     * @param degreesRight The number of degrees that the robot should
+     * turn right.
+     * @return An {@link AutonomousStep} that performs a right turn
      * of a certain number of degrees using the gyro.
      */
     public AutonomousStep turnRightStep(double degreesRight){
         return getGyroTurnSteps(degreesRight, DEFAULT_GYRO_TURN_SPEED);
     }
     
+    /**
+     * Creates a step that performs a turn of a certain number of degrees
+     * using the gyro.
+     * @param degreesRight The number of degrees that the robot should
+     * turn right.
+     * @param power The power to be given to both motors when performing the
+     * turn.
+     * @return An {@link AutonomousStep} that performs a right turn
+     * of a certain number of degrees using the gyro and the given power.
+     */
     public AutonomousStep turnRightStep(double degreesRight, double power){
         return getGyroTurnSteps(degreesRight, power);
     }
