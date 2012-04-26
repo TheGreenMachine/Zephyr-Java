@@ -130,7 +130,10 @@ public class Zephyr extends SimpleRobot {
         //Determine position on the key
         keyPosition = ((cypress.getDigital(POSITION_RIGHT_SWITCH)?1:0)<<1)+
                       (cypress.getDigital(POSITION_LEFT_SWITCH)?1:0);
-        
+       
+        shootingDelayValue = 0;
+        driveToCollect = false;
+        keyPosition = KEY_MIDDLE;
         //Create autonomous program
         AutonomousStepFactory stepFactory = new AutonomousStepFactory(this);
         //Create our pre-shooting delay step
