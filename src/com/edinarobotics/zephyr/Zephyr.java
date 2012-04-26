@@ -51,7 +51,7 @@ public class Zephyr extends SimpleRobot {
     private final double SHOOTER_SMALL_SPEED_STEP = 10;
     private final double SHOOTER_MEDIUM_SPEED_STEP = 50;
     private double lastManualSpeed = 0;
-    public final double KEY_SHOOTER_SPEED_RPM = 2350;
+    public final double KEY_SHOOTER_SPEED_RPM = 2150;
     
     //Sensor Variables
      private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
