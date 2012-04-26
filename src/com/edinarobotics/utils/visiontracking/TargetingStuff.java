@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
  * A class with functions for targeting the shooter based on distance-to-target
  * and the target's particle report.
  */
-public class TargetingStuff {
+abstract public class TargetingStuff {
     
     /**
      * Finds distance-to-target based on the width of the target in pixels. This

@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.image.*;
  * members and methods of this class are static because it would be silly to 
  * instantiate something like this.
  */
-public class ParticleVT {
+abstract public class ParticleVT {
     
     private static ColorImage initialImage;
     private static BinaryImage afterMask;
