@@ -2,6 +2,7 @@ package com.edinarobotics.zephyr.autonomous;
 
 import com.edinarobotics.utils.autonomous.*;
 import com.edinarobotics.zephyr.Zephyr;
+import com.edinarobotics.zephyr.autonomous.stringsources.FormattedShooterSpeedSource;
 
 /**
  *
@@ -18,15 +19,16 @@ public class AutonomousStepFactory {
         final double BALL_LOAD_DELAY = 2.5;
         final double SHOOTER_WARMUP_DELAY = 4;
         //Steps to bring the piston up and down
-        AutonomousStep[] fireSteps = new AutonomousStep[8];
+        AutonomousStep[] fireSteps = new AutonomousStep[9];
         fireSteps[0] = new ShooterPistonControlStep(true, robot);
         fireSteps[1] = new PrintStep("Firing!");
-        fireSteps[2] = new IdleWaitStep(PISTON_SET_DELAY, robot);
-        fireSteps[3] = new ShooterPistonControlStep(false, robot);
-        fireSteps[4] = new IdleWaitStep(PISTON_SET_DELAY, robot);
-        fireSteps[5] = new SetConveyorStep(true, robot);
-        fireSteps[6] = new IdleWaitStep(BALL_LOAD_DELAY, robot);
-        fireSteps[7] = new SetConveyorStep(false, robot);
+        fireSteps[2] = new PrintStep(new FormattedShooterSpeedSource());
+        fireSteps[3] = new IdleWaitStep(PISTON_SET_DELAY, robot);
+        fireSteps[4] = new ShooterPistonControlStep(false, robot);
+        fireSteps[5] = new IdleWaitStep(PISTON_SET_DELAY, robot);
+        fireSteps[6] = new SetConveyorStep(true, robot);
+        fireSteps[7] = new IdleWaitStep(BALL_LOAD_DELAY, robot);
+        fireSteps[8] = new SetConveyorStep(false, robot);
         
         AutonomousStep[] steps = new AutonomousStep[5];
         steps[0] = new PrintStep("Warming the shooter up!");
