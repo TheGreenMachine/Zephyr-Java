@@ -16,26 +16,28 @@ public class AutonomousStepFactory {
     public AutonomousStep getShooterFireStep(double shooterSpeed, int numShots){
         final double PISTON_SET_DELAY = 1;
         final double BALL_LOAD_DELAY = 2.5;
-        final double SHOOTER_WARMUP_DELAY = 3;
+        final double SHOOTER_WARMUP_DELAY = 4;
         //Steps to bring the piston up and down
-        AutonomousStep[] fireSteps = new AutonomousStep[7];
+        AutonomousStep[] fireSteps = new AutonomousStep[8];
         fireSteps[0] = new ShooterPistonControlStep(true, robot);
-        fireSteps[1] = new IdleWaitStep(PISTON_SET_DELAY, robot);
-        fireSteps[2] = new ShooterPistonControlStep(false, robot);
-        fireSteps[3] = new IdleWaitStep(PISTON_SET_DELAY, robot);
-        fireSteps[4] = new SetConveyorStep(true, robot);
-        fireSteps[5] = new IdleWaitStep(BALL_LOAD_DELAY, robot);
-        fireSteps[6] = new SetConveyorStep(false, robot);
+        fireSteps[1] = new PrintStep("Firing!");
+        fireSteps[2] = new IdleWaitStep(PISTON_SET_DELAY, robot);
+        fireSteps[3] = new ShooterPistonControlStep(false, robot);
+        fireSteps[4] = new IdleWaitStep(PISTON_SET_DELAY, robot);
+        fireSteps[5] = new SetConveyorStep(true, robot);
+        fireSteps[6] = new IdleWaitStep(BALL_LOAD_DELAY, robot);
+        fireSteps[7] = new SetConveyorStep(false, robot);
         
-        AutonomousStep[] steps = new AutonomousStep[4];
+        AutonomousStep[] steps = new AutonomousStep[5];
+        steps[0] = new PrintStep("Warming the shooter up!");
         //Start the shooter
-        steps[0] = new SetShooterSpeedStep(shooterSpeed, robot);
+        steps[1] = new SetShooterSpeedStep(shooterSpeed, robot);
         //Wait for the shooter to warm up
-        steps[1] = new IdleWaitStep(SHOOTER_WARMUP_DELAY, robot);
+        steps[2] = new IdleWaitStep(SHOOTER_WARMUP_DELAY, robot);
         //Fire the piston several times
-        steps[2] = new ForLoopStep(new SequentialAutonomousStepGroup(fireSteps), numShots);
+        steps[3] = new ForLoopStep(new SequentialAutonomousStepGroup(fireSteps), numShots);
         //Stop the shooter
-        steps[3] = new SetShooterSpeedStep(0, robot);
+        steps[4] = new SetShooterSpeedStep(0, robot);
         
         return new SequentialAutonomousStepGroup(steps);
     }
