@@ -1,5 +1,6 @@
 package com.edinarobotics.zephyr.autonomous;
 
+import com.edinarobotics.utils.autonomous.PrintStep;
 import com.edinarobotics.utils.autonomous.*;
 import com.edinarobotics.zephyr.Zephyr;
 import com.edinarobotics.zephyr.autonomous.stringsources.FormattedShooterSpeedSource;
