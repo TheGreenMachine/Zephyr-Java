@@ -23,7 +23,7 @@ public class GyroWaitStep extends AutonomousStep{
      * @param robot The robot that is turning, used to call
      * {@link Zephyr#mechanismSet()} to keep components alive.
      */
-    public void GyroWaitStep(double angle, Gyro gyro, Zephyr robot){
+    public GyroWaitStep(double angle, Gyro gyro, Zephyr robot){
         this.angle = angle;
         this.gyro = gyro;
         this.robot = robot;
