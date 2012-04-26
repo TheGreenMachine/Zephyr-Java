@@ -53,8 +53,10 @@ public class ShooterComponents{
                 canDone = true;
             }catch(Exception e){
                 e.printStackTrace();
-                Zephyr.exceptionProblem = true;
             }
+        }
+        if(!canDone){
+            Zephyr.exceptionProblem = true; //We never succeeded, even after several attempts.
         }
         boolean encoderSetupDone = false;
         for(int i=0;i<5 && !(encoderSetupDone); i++){
@@ -64,8 +66,10 @@ public class ShooterComponents{
             }catch(Exception e){
                 System.out.println("CAN ENCODER DUN GOOFED!");
                 e.printStackTrace();
-                Zephyr.exceptionProblem = true;
             }
+        }
+        if(!encoderSetupDone){
+            Zephyr.exceptionProblem = true; //We never succeeded, even after several attempts.
         }
         boolean pidSetupDone = false;
         for(int i=0;i<5 && !(pidSetupDone); i++){
@@ -80,8 +84,10 @@ public class ShooterComponents{
             }catch(Exception e){
                 System.out.println("CAN PID DUN GOOFED!");
                 e.printStackTrace();
-                Zephyr.exceptionProblem = true;
             }
+        }
+        if(!pidSetupDone){
+            Zephyr.exceptionProblem = true; //We never succeeded, even after several attempts.
         }
         System.out.println("CAN setup done!");
         shooterRotator = new Jaguar(rotator);
