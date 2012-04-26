@@ -302,35 +302,40 @@ public class Zephyr extends SimpleRobot {
      * Updates all parts of the robot to avoid safety timeouts
      */
     public void mechanismSet(){
-        getWatchdog().feed(); //Feed the watchdog
-        //Driving Assignments
-        Components robotParts = Components.getInstance();
-        robotParts.drive.setDrivingSpeed(leftDrive, rightDrive);
-        robotParts.drive.shift(shifters);
-        //Shooter Assignments
-        robotParts.shooter.setSpeed(shooterSpeed);
-        robotParts.shooter.firePiston(ballLoaderUp);
-        robotParts.shooter.rotate(shooterRotateSpeed);
-        //Collector Assignments
-        robotParts.collector.conveyorMove(convMove);
-        robotParts.collector.collect(collectorSpin);
-        robotParts.collector.lift(collectorLift);
-        //Servo Assignments
-        robotParts.cameraServoVertical.set(cameraSetY);
-        //Sonar Processing
-        String shooterPowerString = "Shooter Targ: "+shooterSpeed;
-        String shooterActualString = "Shooter V: "+robotParts.shooter.getEncoderValue();
-        int sonarVal = (int) robotParts.sonar.getFilteredValue();
-        String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
-        String servoPositions = "Y-Axis Servo: "+robotParts.cameraServoVertical.get();
-        String problemValue = "Prb: "+(exceptionProblem?"except! ":"")+(genericProblem?"prblm! ":"")+
-                                       (getWatchdog().isAlive()?"":"wtchdg! ");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser3,1, "                                                       ");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString+"                                   ");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString+"                                  ");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue+"                                           ");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue+"                                         ");
-        robotParts.textOutput.updateLCD();
+        try{
+            getWatchdog().feed(); //Feed the watchdog
+            //Driving Assignments
+            Components robotParts = Components.getInstance();
+            robotParts.drive.setDrivingSpeed(leftDrive, rightDrive);
+            robotParts.drive.shift(shifters);
+            //Shooter Assignments
+            robotParts.shooter.setSpeed(shooterSpeed);
+            robotParts.shooter.firePiston(ballLoaderUp);
+            robotParts.shooter.rotate(shooterRotateSpeed);
+            //Collector Assignments
+            robotParts.collector.conveyorMove(convMove);
+            robotParts.collector.collect(collectorSpin);
+            robotParts.collector.lift(collectorLift);
+            //Servo Assignments
+            robotParts.cameraServoVertical.set(cameraSetY);
+            //Sonar Processing
+            String shooterPowerString = "Shooter Targ: "+shooterSpeed;
+            String shooterActualString = "Shooter V: "+robotParts.shooter.getEncoderValue();
+            int sonarVal = (int) robotParts.sonar.getFilteredValue();
+            String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
+            String servoPositions = "Y-Axis Servo: "+robotParts.cameraServoVertical.get();
+            String problemValue = "Prb: "+(exceptionProblem?"except! ":"")+(genericProblem?"prblm! ":"")+
+                                        (getWatchdog().isAlive()?"":"wtchdg! ");
+            robotParts.textOutput.println(DriverStationLCD.Line.kUser3,1, "                                                       ");
+            robotParts.textOutput.println(DriverStationLCD.Line.kUser2, 1, shooterPowerString+"                                   ");
+            robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString+"                                  ");
+            robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue+"                                           ");
+            robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue+"                                         ");
+            robotParts.textOutput.updateLCD();
+        }catch(Exception e){
+            e.printStackTrace();
+            Zephyr.exceptionProblem = true;
+        }
         
     }
     
