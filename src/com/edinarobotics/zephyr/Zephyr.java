@@ -144,6 +144,25 @@ public class Zephyr extends SimpleRobot {
             case KEY_MIDDLE: shootStep = stepFactory.getShooterFireStep(MIDDLE_KEY_SHOOTER_SPEED, 2); break;
             default: shootStep = new IdleWaitStep(0, this);
         }
+        
+        String positionString = "";
+        if(keyPosition == KEY_LEFT){
+            positionString = "left";
+        }
+        else if(keyPosition == KEY_MIDDLE){
+            positionString = "middle";
+        }
+        else if(keyPosition == KEY_RIGHT){
+            positionString = "right";
+        }
+        else{
+            positionString = "no autonomous";
+        }
+        System.out.println("Autonomous Configuration:");
+        System.out.println("Position: "+positionString);
+        System.out.println("Delay: "+shootingDelayValue);
+        System.out.println("Collect?: "+driveToCollect);
+        
         AutonomousStep[] steps = new AutonomousStep[3];
         steps[0] = shootDelayStep;
         steps[1] = shootStep;
