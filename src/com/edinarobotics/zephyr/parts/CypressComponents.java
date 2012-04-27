@@ -37,6 +37,16 @@ public class CypressComponents {
     }
     
     /**
+     * Returns the state of an analog input on the DriverStation.
+     * @param port The number of the analog input to read.
+     * @return The value stored in the analog input slot on the
+     * DriverStation.
+     */
+    public double getAnalog(int port){
+        return cypress.getAnalogIn(port);
+    }
+    
+    /**
      * Returns the state of all digital inputs on the DriverStationEnhancedIO
      * set. Defaults to {@code 0}.
      * @return The state of all inputs on the DriverStationEnhancedIO board
