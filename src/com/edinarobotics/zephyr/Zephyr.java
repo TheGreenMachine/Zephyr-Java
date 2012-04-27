@@ -94,11 +94,11 @@ public class Zephyr extends SimpleRobot {
     public void autonomous() {
         stop();
         //Cypress switch constants
-        final int POSITION_LEFT_SWITCH = 6;
-        final int POSITION_RIGHT_SWITCH = 4;
-        final int COLLECT_SWITCH = 2;
-        final int SHOOTING_DELAY_1 = 5;
-        final int SHOOTING_DELAY_2 = 3;
+        final int POSITION_LEFT_SWITCH = 1;
+        final int POSITION_RIGHT_SWITCH = 2;
+        final int COLLECT_SWITCH = 3;
+        final int SHOOTING_DELAY_1 = 4;
+        final int SHOOTING_DELAY_2 = 5;
         
         //Autonomous constants
         final int NO_AUTONOMOUS = 0;
@@ -131,9 +131,6 @@ public class Zephyr extends SimpleRobot {
         keyPosition = ((cypress.getDigital(POSITION_RIGHT_SWITCH)?1:0)<<1)+
                       (cypress.getDigital(POSITION_LEFT_SWITCH)?1:0);
        
-        shootingDelayValue = 0;
-        driveToCollect = false;
-        keyPosition = KEY_MIDDLE;
         //Create autonomous program
         AutonomousStepFactory stepFactory = new AutonomousStepFactory(this);
         //Create our pre-shooting delay step
