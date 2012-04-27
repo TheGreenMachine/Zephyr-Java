@@ -97,8 +97,7 @@ public class Zephyr extends SimpleRobot {
         final int POSITION_LEFT_SWITCH = 1;
         final int POSITION_RIGHT_SWITCH = 2;
         final int COLLECT_SWITCH = 3;
-        final int SHOOTING_DELAY_1 = 4;
-        final int SHOOTING_DELAY_2 = 5;
+        final int SHOOTING_DELAY_ANALOG = 1;
         
         //Autonomous constants
         final int NO_AUTONOMOUS = 0;
@@ -115,14 +114,12 @@ public class Zephyr extends SimpleRobot {
         final double MIDDLE_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
         
         //Autonomous config values
-        int shootingDelayValue = 1;
+        double shootingDelayValue = 1;
         boolean driveToCollect = false;
         int keyPosition = KEY_MIDDLE;
         
         //Determine shooting delay value
-        shootingDelayValue = (((cypress.getDigital(SHOOTING_DELAY_2)?1:0)<<1)+
-                             (cypress.getDigital(SHOOTING_DELAY_1)?1:0))*
-                             DELAY_MULTIPLIER;
+        shootingDelayValue = cypress.getAnalog(SHOOTING_DELAY_ANALOG);
         
         //Determine if we should collect
         driveToCollect = cypress.getDigital(COLLECT_SWITCH);
