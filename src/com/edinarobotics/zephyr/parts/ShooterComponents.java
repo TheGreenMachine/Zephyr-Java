@@ -23,9 +23,9 @@ public class ShooterComponents{
     private DigitalInput leftLimitSwitch;
     private DigitalInput rightLimitSwitch;
     private FilterDouble filter;
-    private final double P = 1.5;
-    private final double I = .015;
-    private final double D = .25;
+    private final double P = 0.307;
+    private final double I = 0.112;
+    private final double D = 0;
     /**
      * Constructs shooterLeftJaguar, shooterRightJaguar, shooterRotator and ballLoadPiston
      * with leftJaguar, rightJaguar, rotator and piston respectively.
