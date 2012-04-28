@@ -99,6 +99,8 @@ public class Zephyr extends SimpleRobot {
         final int POSITION_LEFT_SWITCH = 1;
         final int POSITION_RIGHT_SWITCH = 2;
         final int COLLECT_SWITCH = 3;
+        final int FIRST_DENSE_SWITCH = 4;
+        final int SECOND_DENSE_SWITCH = 5;
         final int SHOOTING_DELAY_ANALOG = 1;
         
         //Autonomous constants
@@ -114,6 +116,7 @@ public class Zephyr extends SimpleRobot {
         final double LEFT_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
         final double RIGHT_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
         final double MIDDLE_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
+        final double DENSE_BALL_MODIFIER = -110;
         
         //Autonomous config values
         double shootingDelayValue = 1;
@@ -129,20 +132,34 @@ public class Zephyr extends SimpleRobot {
         //Determine position on the key
         keyPosition = ((cypress.getDigital(POSITION_RIGHT_SWITCH)?1:0)<<1)+
                       (cypress.getDigital(POSITION_LEFT_SWITCH)?1:0);
+        
+        boolean isFirstDense = cypress.getDigital(FIRST_DENSE_SWITCH);
+        boolean isSecondDense = cypress.getDigital(SECOND_DENSE_SWITCH);
        
         //Create autonomous program
         AutonomousStepFactory stepFactory = new AutonomousStepFactory(this);
         //Create our pre-shooting delay step
         AutonomousStep shootDelayStep = new IdleWaitStep(shootingDelayValue, this);
         
+        double[] shootingPowers = new double[2];
+        
         //Create out shooting step
         AutonomousStep shootStep;
         switch(keyPosition){
-            case KEY_LEFT: shootStep = stepFactory.getShooterFireStep(LEFT_KEY_SHOOTER_SPEED, 2); break;
-            case KEY_RIGHT: shootStep = stepFactory.getShooterFireStep(RIGHT_KEY_SHOOTER_SPEED, 2); break;
-            case KEY_MIDDLE: shootStep = stepFactory.getShooterFireStep(MIDDLE_KEY_SHOOTER_SPEED, 2); break;
-            default: shootStep = new IdleWaitStep(0, this);
+            case KEY_LEFT: shootingPowers[0] = LEFT_KEY_SHOOTER_SPEED; shootingPowers[1] = LEFT_KEY_SHOOTER_SPEED; break;
+            case KEY_RIGHT: shootingPowers[0] = RIGHT_KEY_SHOOTER_SPEED; shootingPowers[1] = RIGHT_KEY_SHOOTER_SPEED; break;
+            case KEY_MIDDLE: shootingPowers[0] = MIDDLE_KEY_SHOOTER_SPEED; shootingPowers[1] = MIDDLE_KEY_SHOOTER_SPEED; break;
+            default: shootingPowers[0] = 0; shootingPowers[0] = 0; break;
         }
+        
+        if(isFirstDense){
+            shootingPowers[0] += DENSE_BALL_MODIFIER;
+        }
+        if(isSecondDense){
+            shootingPowers[1] += DENSE_BALL_MODIFIER;
+        }
+        
+        shootStep = stepFactory.getMultipleShotStep(shootingPowers);
         
         String positionString = "";
         if(keyPosition == KEY_LEFT){
@@ -179,7 +196,7 @@ public class Zephyr extends SimpleRobot {
     {
         stop();
         //Add 120 to componensate for the fact we are not at the very top of the key
-        final double PRESET_RPM_SPEED = KEY_SHOOTER_SPEED_RPM+120;
+        final double PRESET_RPM_SPEED = KEY_SHOOTER_SPEED_RPM;
         FilterSet driveFilters = new FilterSet();
         driveFilters.addFilter(new DeadzoneFilter(0.5));
         driveFilters.addFilter(new ScalingFilter());
