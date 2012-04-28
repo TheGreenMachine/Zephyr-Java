@@ -177,7 +177,7 @@ public class Zephyr extends SimpleRobot {
     {
         stop();
         //Add 120 to componensate for the fact we are not at the very top of the key
-        final double PRESET_RPM_SPEED = KEY_SHOOTER_SPEED_RPM+120;
+        final double PRESET_RPM_SPEED = KEY_SHOOTER_SPEED_RPM;
         FilterSet driveFilters = new FilterSet();
         driveFilters.addFilter(new DeadzoneFilter(0.5));
         driveFilters.addFilter(new ScalingFilter());
