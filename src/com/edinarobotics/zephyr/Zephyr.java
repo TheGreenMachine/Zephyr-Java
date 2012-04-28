@@ -53,6 +53,7 @@ public class Zephyr extends SimpleRobot {
     private final double SHOOTER_MEDIUM_SPEED_STEP = 50;
     private double lastManualSpeed = 0;
     public final double KEY_SHOOTER_SPEED_RPM = 2250;
+    double cacheSum = 0;
     
     //Sensor Variables
      private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
@@ -331,7 +332,14 @@ public class Zephyr extends SimpleRobot {
         robotParts.shooter.firePiston(ballLoaderUp);
         robotParts.shooter.rotate(shooterRotateSpeed);
         DriverStation ds = DriverStation.getInstance();
-        robotParts.shooter.setPID(ds.getAnalogIn(2), ds.getAnalogIn(3), ds.getAnalogIn(4));
+        double dsP = ds.getAnalogIn(2);
+        double dsI = ds.getAnalogIn(3);
+        double dsD = ds.getAnalogIn(4);
+        double dsSum = dsP+dsI+dsD;
+        if(cacheSum != dsSum){
+            robotParts.shooter.setPID(ds.getAnalogIn(2), ds.getAnalogIn(3), ds.getAnalogIn(4));
+            cacheSum = dsSum;
+        }
         //Collector Assignments
         robotParts.collector.conveyorMove(convMove);
         robotParts.collector.collect(collectorSpin);
@@ -352,8 +360,15 @@ public class Zephyr extends SimpleRobot {
         robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue+"                                           ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue+"                                         ");
         if(printSpeed){
-            System.out.println(robotParts.shooter.getEncoderValue());
-            robotParts.textOutput.println(DriverStationLCD.Line.kUser6, 1, robotParts.shooter.getEncoderValue()+"             ");
+            double sspeed = robotParts.shooter.getEncoderValue();
+            double difference = sspeed - shooterSpeed;
+            String shooterLevel = "Within Accepted Range";
+            if(Math.abs(difference) > 50){
+                shooterLevel = "Out of acceptable range";
+            }
+            System.out.println(robotParts.shooter.getEncoderValue()+" - "+difference + 
+                                                    "     -     " + shooterLevel+"   -   "+dsP);
+            robotParts.textOutput.println(DriverStationLCD.Line.kUser6, 1, robotParts.shooter.getEncoderValue()+" - "+difference+"             ");
         }
         robotParts.textOutput.updateLCD();
         

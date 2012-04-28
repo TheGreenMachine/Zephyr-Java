@@ -180,7 +180,7 @@ public class ShooterComponents{
     
     public void setPID(double p, double i, double d){
         try{
-            shooterRightJaguar.setPID(p, i, d);
+            shooterLeftJaguar.setPID(p, i, d);   
         }catch(Exception e){
             Zephyr.exceptionProblem = true;
             e.printStackTrace();
@@ -189,7 +189,7 @@ public class ShooterComponents{
     
     public double getP(){
         try{
-            return shooterRightJaguar.getP();
+            return shooterLeftJaguar.getP();
         }catch(Exception e){
             Zephyr.exceptionProblem = true;
             e.printStackTrace();
@@ -199,7 +199,7 @@ public class ShooterComponents{
     
     public double getI(){
         try{
-            return shooterRightJaguar.getI();
+            return shooterLeftJaguar.getI();
         }catch(Exception e){
             Zephyr.exceptionProblem = true;
             e.printStackTrace();
@@ -209,7 +209,7 @@ public class ShooterComponents{
     
     public double getD(){
         try{
-            return shooterRightJaguar.getD();
+            return shooterLeftJaguar.getD();
         }catch(Exception e){
             Zephyr.exceptionProblem = true;
             e.printStackTrace();
