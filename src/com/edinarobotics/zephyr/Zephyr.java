@@ -47,9 +47,11 @@ public class Zephyr extends SimpleRobot {
     public double shooterSpeed = 0;
     public boolean ballLoaderUp = false;
     public double shooterRotateSpeed = 0;
-    private final double SHOOTER_SPEED_STEP = 0.05;
+    private final double SHOOTER_LARGE_SPEED_STEP = 50;
+    private final double SHOOTER_SMALL_SPEED_STEP = 10;
+    private final double SHOOTER_MEDIUM_SPEED_STEP = 50;
     private double lastManualSpeed = 0;
-    public final double KEY_SHOOTER_SPEED_RPS = 46;
+    public final double KEY_SHOOTER_SPEED_RPM = 2250;
     
     //Sensor Variables
      private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
@@ -92,11 +94,10 @@ public class Zephyr extends SimpleRobot {
     public void autonomous() {
         stop();
         //Cypress switch constants
-        final int POSITION_LEFT_SWITCH = 6;
-        final int POSITION_RIGHT_SWITCH = 4;
-        final int COLLECT_SWITCH = 2;
-        final int SHOOTING_DELAY_1 = 5;
-        final int SHOOTING_DELAY_2 = 3;
+        final int POSITION_LEFT_SWITCH = 1;
+        final int POSITION_RIGHT_SWITCH = 2;
+        final int COLLECT_SWITCH = 3;
+        final int SHOOTING_DELAY_ANALOG = 1;
         
         //Autonomous constants
         final int NO_AUTONOMOUS = 0;
@@ -108,19 +109,17 @@ public class Zephyr extends SimpleRobot {
         CypressComponents cypress = parts.cypress;
         
         //Autonomous program constants
-        final double LEFT_KEY_SHOOTER_SPEED = 51.5;
-        final double RIGHT_KEY_SHOOTER_SPEED = 51.5;
-        final double MIDDLE_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPS;
+        final double LEFT_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
+        final double RIGHT_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
+        final double MIDDLE_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
         
         //Autonomous config values
-        int shootingDelayValue = 1;
+        double shootingDelayValue = 1;
         boolean driveToCollect = false;
         int keyPosition = KEY_MIDDLE;
         
         //Determine shooting delay value
-        shootingDelayValue = (((cypress.getDigital(SHOOTING_DELAY_2)?1:0)<<1)+
-                             (cypress.getDigital(SHOOTING_DELAY_1)?1:0))*
-                             DELAY_MULTIPLIER;
+        shootingDelayValue = cypress.getAnalog(SHOOTING_DELAY_ANALOG);
         
         //Determine if we should collect
         driveToCollect = cypress.getDigital(COLLECT_SWITCH);
@@ -128,7 +127,7 @@ public class Zephyr extends SimpleRobot {
         //Determine position on the key
         keyPosition = ((cypress.getDigital(POSITION_RIGHT_SWITCH)?1:0)<<1)+
                       (cypress.getDigital(POSITION_LEFT_SWITCH)?1:0);
-        
+       
         //Create autonomous program
         AutonomousStepFactory stepFactory = new AutonomousStepFactory(this);
         //Create our pre-shooting delay step
@@ -142,6 +141,25 @@ public class Zephyr extends SimpleRobot {
             case KEY_MIDDLE: shootStep = stepFactory.getShooterFireStep(MIDDLE_KEY_SHOOTER_SPEED, 2); break;
             default: shootStep = new IdleWaitStep(0, this);
         }
+        
+        String positionString = "";
+        if(keyPosition == KEY_LEFT){
+            positionString = "left";
+        }
+        else if(keyPosition == KEY_MIDDLE){
+            positionString = "middle";
+        }
+        else if(keyPosition == KEY_RIGHT){
+            positionString = "right";
+        }
+        else{
+            positionString = "no autonomous";
+        }
+        System.out.println("Autonomous Configuration:");
+        System.out.println("Position: "+positionString);
+        System.out.println("Delay: "+shootingDelayValue);
+        System.out.println("Collect?: "+driveToCollect);
+        
         AutonomousStep[] steps = new AutonomousStep[3];
         steps[0] = shootDelayStep;
         steps[1] = shootStep;
@@ -158,7 +176,8 @@ public class Zephyr extends SimpleRobot {
     public void operatorControl() 
     {
         stop();
-        final double PRESET_RPS_SPEED = KEY_SHOOTER_SPEED_RPS;
+        //Add 120 to componensate for the fact we are not at the very top of the key
+        final double PRESET_RPM_SPEED = KEY_SHOOTER_SPEED_RPM+120;
         FilterSet driveFilters = new FilterSet();
         driveFilters.addFilter(new DeadzoneFilter(0.5));
         driveFilters.addFilter(new ScalingFilter());
@@ -175,6 +194,8 @@ public class Zephyr extends SimpleRobot {
         Components components = Components.getInstance();
         ToggleHelper shifterHelper = new ToggleHelper();
         ToggleHelper button3 = new ToggleHelper();
+        ToggleHelper dPadXToggler = new ToggleHelper();
+        ToggleHelper dPadYToggler = new ToggleHelper();
         getWatchdog().setEnabled(true); //Start the watchdog for teleop
         while(this.isOperatorControl()&&this.isEnabled())
         {
@@ -191,7 +212,7 @@ public class Zephyr extends SimpleRobot {
             }
             //
             if(shifterHelper.isToggled(driveGamepad.getRawButton(Gamepad.LEFT_TRIGGER))){
-                shifters = false;
+                shifters = !shifters;
             }
             //Control collector deployment
             if(driveGamepad.getRawButton(Gamepad.RIGHT_TRIGGER)){
@@ -207,7 +228,7 @@ public class Zephyr extends SimpleRobot {
                 collectorLift = COLLECTOR_LIFT_STOP;
             }
             //Driving with joysticks
-            if(Math.abs(driveGamepad.getDPadY()) <= 0.9){
+            if(driveGamepad.getDPadY() == 0){
                 //D-Pad not in use, normal joystick drive.
                 GamepadResult joystick = driveFilters.filter(driveGamepad.getJoysticks());
                 leftDrive = joystick.getLeftY();
@@ -229,14 +250,7 @@ public class Zephyr extends SimpleRobot {
             if(shootGamepad.getRawButton(Gamepad.RIGHT_BUMPER))
             {
                 //Step speed of shooter up.
-                shooterSpeed += SHOOTER_SPEED_STEP;
-                
-                // Limit the speed of the shooter to not exceed -1
-                if(shooterSpeed >= 1)
-                {
-                    shooterSpeed = 1;
-                }
-                
+                shooterSpeed += SHOOTER_LARGE_SPEED_STEP;
                 // Store the speed of the shooter to a second variable
                 lastManualSpeed = shooterSpeed;
             }
@@ -246,32 +260,43 @@ public class Zephyr extends SimpleRobot {
             else if(shootGamepad.getRawButton(Gamepad.RIGHT_TRIGGER))
             {
                 //Step speed of shooter down.
-                shooterSpeed -= SHOOTER_SPEED_STEP;
-                
-                // Limit the speed of the shooter to not go past 0
-                if(shooterSpeed<=0)
-                {
-                    shooterSpeed = 0;
-                }
-                
+                shooterSpeed -= SHOOTER_LARGE_SPEED_STEP;
                 // Store the speed of the shooter to a second variable
                 lastManualSpeed = shooterSpeed;
             }
+            else if(dPadXToggler.isToggled(shootGamepad.getDPadX() != 0)){
+                //D-Pad x-axis is in use and has been toggled
+                shooterSpeed += shootGamepad.getDPadX() * SHOOTER_SMALL_SPEED_STEP;
+                lastManualSpeed = shooterSpeed;
+            }
+            else if(dPadYToggler.isToggled(shootGamepad.getDPadY() != 0)){
+                //D-Pad y-axis is in use and has been toggled
+                shooterSpeed += -shootGamepad.getDPadY() * SHOOTER_MEDIUM_SPEED_STEP;
+                lastManualSpeed = shooterSpeed;
+            }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_1)){
-                shooterSpeed = 1;
+                shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_2)){
-                shooterSpeed = 0;
+                shooterSpeed = ShooterComponents.MIN_SHOOTER_SPEED;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_3)){
-                shooterSpeed = 0.5;
+                shooterSpeed = 0.5*ShooterComponents.MAX_SHOOTER_SPEED;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_4)){
                 shooterSpeed = lastManualSpeed;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_10)){
-                shooterSpeed = ShooterComponents.getVoltagePWM(PRESET_RPS_SPEED); //50 RPS estimate button
+                shooterSpeed = PRESET_RPM_SPEED; //50 RPS estimate button
             }
+            //Verify that shooter speed is in range
+            if(shooterSpeed > ShooterComponents.MAX_SHOOTER_SPEED){
+                shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
+            }
+            else if(shooterSpeed < ShooterComponents.MIN_SHOOTER_SPEED){
+                shooterSpeed = ShooterComponents.MIN_SHOOTER_SPEED;
+            }
+            
             shooterRotateSpeed = shootFilters.filter(shootGamepad.getJoysticks()).getRightX();
             
             if(shootGamepad.getRawButton(Gamepad.BUTTON_9)){
@@ -311,7 +336,6 @@ public class Zephyr extends SimpleRobot {
         //Sonar Processing
         String shooterPowerString = "Shooter Targ: "+shooterSpeed;
         String shooterActualString = "Shooter V: "+robotParts.shooter.getEncoderValue();
-        String rawShooterEncString = "Shooter VR: "+robotParts.shooter.getEncoder().getRate();
         int sonarVal = (int) robotParts.sonar.getFilteredValue();
         String sonarValue = "Sonar reads: " + String.valueOf((sonarVal/2)+5);
         String servoPositions = "Y-Axis Servo: "+robotParts.cameraServoVertical.get();
@@ -322,7 +346,6 @@ public class Zephyr extends SimpleRobot {
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString+"                                  ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue+"                                           ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue+"                                         ");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser6, 1, rawShooterEncString+"                                  ");
         robotParts.textOutput.updateLCD();
         
     }

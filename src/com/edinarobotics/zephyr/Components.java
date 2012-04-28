@@ -21,14 +21,15 @@ public class Components {
     //Jaguars
     private static final int RIGHT_JAGUAR_PORT = 1;
     private static final int LEFT_JAGUAR_PORT = 2;
-    private static final int SHOOTER_LEFT_JAGUAR_PORT = 3;
-    private static final int SHOOTER_RIGHT_JAGUAR_PORT = 4;
+    private static final int SHOOTER_LEFT_JAGUAR_NUMBER = 10;
+    private static final int SHOOTER_RIGHT_JAGUAR_NUMBER = 11;
     private static final int SHOOTER_ROTATOR_JAGUAR_PORT = 5;
     private static final int BALL_COLL_LIFT_JAGUAR = 6;
+    private static final int SHOOTER_TAP_SIZE = 10;
     //Relays
     private static final int COMPRESSOR_SPIKE = 1;
-    private static final int BALL_LOAD_PISTON_SPIKE = 3;
-    private static final int SUPER_SHIFTERS_SPIKE = 2;
+    private static final int BALL_LOAD_PISTON_SPIKE = 2;
+    private static final int SUPER_SHIFTERS_SPIKE = 3;
     private static final int BALL_COLL_ROTATE_SPIKE = 4;
     private static final int CONV_MOVE_SPIKE = 6;
     //Servos
@@ -41,8 +42,6 @@ public class Components {
     private static final int COMPRESSOR_PRESSURE_SENSOR = 1;
     private static final int SHOOTER_LEFT_LIMIT_SWITCH = 2;
     private static final int SHOOTER_RIGHT_LIMIT_SWITCH = 3;
-    private static final int SHOOTER_ENCODER_CHANNEL_A = 4;
-    private static final int SHOOTER_ENCODER_CHANNEL_B = 5;
     //Cypress
     public static final int CYPRESS_AUTO_SWITCH_ONE_IN = 1;
     public static final int CYPRESS_AUTO_SWITCH_TWO_IN = 2;
@@ -70,10 +69,10 @@ public class Components {
     private Components()
     {
         //Relays
-        shooter = new ShooterComponents(SHOOTER_LEFT_JAGUAR_PORT, SHOOTER_RIGHT_JAGUAR_PORT,
+        shooter = new ShooterComponents(SHOOTER_LEFT_JAGUAR_NUMBER, SHOOTER_RIGHT_JAGUAR_NUMBER,
                                             SHOOTER_ROTATOR_JAGUAR_PORT, BALL_LOAD_PISTON_SPIKE,
                                             SHOOTER_LEFT_LIMIT_SWITCH, SHOOTER_RIGHT_LIMIT_SWITCH,
-                                            SHOOTER_ENCODER_CHANNEL_A, SHOOTER_ENCODER_CHANNEL_B);
+                                            SHOOTER_TAP_SIZE);
         drive = new DrivingComponents(LEFT_JAGUAR_PORT, RIGHT_JAGUAR_PORT, SUPER_SHIFTERS_SPIKE);
 	collector = new CollectorComponents(BALL_COLL_LIFT_JAGUAR, BALL_COLL_ROTATE_SPIKE,
                                                 CONV_MOVE_SPIKE);

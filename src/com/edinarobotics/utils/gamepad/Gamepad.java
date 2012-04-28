@@ -27,6 +27,7 @@ public class Gamepad extends Joystick{
     public static final int BUTTON_9 = 9;
     public static final int BUTTON_10 = 10;
                     
+    private static final double DPAD_THRESHOLD = 0.9;
     
     public Gamepad(int port){
         super(port);
@@ -48,14 +49,24 @@ public class Gamepad extends Joystick{
         return this.getRawAxis(RIGHT_Y_AXIS);
     }
     
-    public double getDPadX()
+    public int getDPadX()
     {
-        return this.getRawAxis(DPAD_X);
+        return dPadToInt(this.getRawAxis(DPAD_X));
     }
     
-    public double getDPadY()
+    public int getDPadY()
     {
-        return this.getRawAxis(DPAD_Y);
+        return dPadToInt(this.getRawAxis(DPAD_Y));
+    }
+    
+    private int dPadToInt(double value){
+        if(value >= DPAD_THRESHOLD){
+            return 1;
+        }
+        else if(value <= -DPAD_THRESHOLD){
+            return -1;
+        }
+        return 0;
     }
     
     public GamepadResult getJoysticks(){

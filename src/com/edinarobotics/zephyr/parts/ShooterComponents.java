@@ -2,61 +2,122 @@ package com.edinarobotics.zephyr.parts;
 
 import com.edinarobotics.utils.sensors.FilterDouble;
 import com.edinarobotics.utils.sensors.SimpleAverageFilter;
+import com.edinarobotics.zephyr.Zephyr;
 import edu.wpi.first.wpilibj.*;
 
 /**
  *The wrapper for the shooter components, contains the 2 jaguars driving the shooter
  * along with the rotating jaguar and the piston.
  */
-public class ShooterComponents implements PIDSource, PIDOutput{
+public class ShooterComponents{
     public static final int ROTATE_RIGHT_SIGN = 1;
     public static final int ROTATE_LEFT_SIGN = -1;
+    public static final int ENCODER_TICKS_PER_REV = 180;
+    public static final double MAX_SHOOTER_SPEED = 4000;
+    public static final double MIN_SHOOTER_SPEED = 0;
     
-    private Jaguar shooterLeftJaguar;
-    private Jaguar shooterRightJaguar;
+    private CANJaguar shooterLeftJaguar;
+    private CANJaguar shooterRightJaguar;
     private Jaguar shooterRotator;
     private Relay ballLoadPiston;
     private DigitalInput leftLimitSwitch;
     private DigitalInput rightLimitSwitch;
-    private Encoder encoder;
     private FilterDouble filter;
-    private PIDController pid;
-    
-    /*
+    private final double P = 1.5;
+    private final double I = .015;
+    private final double D = .25;
+    /**
      * Constructs shooterLeftJaguar, shooterRightJaguar, shooterRotator and ballLoadPiston
      * with leftJaguar, rightJaguar, rotator and piston respectively.
      */
     public ShooterComponents(int leftJaguar, int rightJaguar, int rotator, int piston,
-                             int leftLimitSwitch, int rightLimitSwitch, int encoderA, int encoderB){
-        shooterLeftJaguar = new Jaguar(leftJaguar);
-        shooterRightJaguar = new Jaguar(rightJaguar);
+                             int leftLimitSwitch, int rightLimitSwitch){
+        this(leftJaguar,rightJaguar,rotator,piston,leftLimitSwitch,rightLimitSwitch,300);
+    }
+    
+    /**
+     * Initializes shooterLeftJaguar, shooterRightJaguar, shooterRotator, ballPistonLoader
+     * leftLimitSwitch, rightLimitSwitch, and filter with leftJaguar, rightJaguar, 
+     * rotator piston, and filterTaps respectively. 
+     * 
+     */
+    public ShooterComponents(int leftJaguar, int rightJaguar, int rotator, int piston,
+                             int leftLimitSwitch, int rightLimitSwitch, int filterTaps){
+        filter = new SimpleAverageFilter(filterTaps);
+        boolean canDone = false;
+        for(int i=0;i<10 && (!canDone); i++){
+            try{
+                shooterLeftJaguar = new CANJaguar(leftJaguar, CANJaguar.ControlMode.kSpeed);
+                shooterRightJaguar = new CANJaguar(rightJaguar, CANJaguar.ControlMode.kVoltage);
+                System.out.println("Success!");
+                canDone = true;
+            }catch(Exception e){
+                e.printStackTrace();
+                Zephyr.exceptionProblem = true;
+            }
+        }
+        boolean encoderSetupDone = false;
+        for(int i=0;i<5 && !(encoderSetupDone); i++){
+            try{
+                shooterLeftJaguar.configEncoderCodesPerRev(ENCODER_TICKS_PER_REV);
+                encoderSetupDone = true;
+            }catch(Exception e){
+                System.out.println("CAN ENCODER DUN GOOFED!");
+                e.printStackTrace();
+                Zephyr.exceptionProblem = true;
+            }
+        }
+        boolean pidSetupDone = false;
+        for(int i=0;i<5 && !(pidSetupDone); i++){
+            try{
+                shooterLeftJaguar.setPID(P, I, D);
+                shooterLeftJaguar.setSafetyEnabled(false);
+                shooterLeftJaguar.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
+                shooterRightJaguar.setSafetyEnabled(false);
+                shooterLeftJaguar.enableControl();
+                shooterRightJaguar.enableControl();
+                pidSetupDone = true;
+            }catch(Exception e){
+                System.out.println("CAN PID DUN GOOFED!");
+                e.printStackTrace();
+                Zephyr.exceptionProblem = true;
+            }
+        }
+        System.out.println("CAN setup done!");
         shooterRotator = new Jaguar(rotator);
         ballLoadPiston = new Relay(piston);
         this.leftLimitSwitch = new DigitalInput(leftLimitSwitch);
         this.rightLimitSwitch = new DigitalInput(rightLimitSwitch);
-        this.encoder = new Encoder(encoderA, encoderB);
-        encoder.setReverseDirection(true);
-        encoder.setDistancePerPulse(1.0/180.0);
-        encoder.start();
-        filter = new SimpleAverageFilter(300);
-        pid = new PIDController(0,100,10,this,this);
-        pid.setTolerance(2);
-        pid.enable();
     }
-    /*
-     * sets the shooterLeftJaguar to speed and shooterRightJaguar to -speed
+    /**
+     * Sets the current setpoint value for the shooter Jaguars. Scaling and
+     * units depend on the current control mode of the Jaguars.
      */
     public void setSpeed(double speed){
-        pidWrite(getVoltagePWM(speed));
-        pid.setSetpoint(speed);
+        try{
+            shooterLeftJaguar.setX(-1*speed);
+            shooterRightJaguar.setX(-1*shooterLeftJaguar.getOutputVoltage());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
-    public void pidWrite(double speed){
-        shooterLeftJaguar.set(-speed);
-        shooterRightJaguar.set(speed);
+    /**
+     * Changes the control mode of the shooter Jaguars to the given
+     * CANJaguar.ControlMode value.
+     * @param controlMode The new control mode for the shooter Jaguars.
+     */
+    public void setShooterControlMode(CANJaguar.ControlMode controlMode){
+        try{
+            shooterLeftJaguar.changeControlMode(controlMode);
+            shooterRightJaguar.changeControlMode(CANJaguar.ControlMode.kVoltage);
+        }catch(Exception e){
+            e.printStackTrace();
+            Zephyr.exceptionProblem = true;
+        }
     }
     
-    /*
+    /**
      * Sets the rotator to speed
      */
     public void rotate(double speed){
@@ -68,7 +129,7 @@ public class ShooterComponents implements PIDSource, PIDOutput{
         }
         shooterRotator.set(speed);
     }
-    /*
+    /**
      * Sets the piston up if position is true, else it lowers it.
      */
     public void firePiston(boolean position){
@@ -92,20 +153,29 @@ public class ShooterComponents implements PIDSource, PIDOutput{
     }
     
     /**
-     * Returns the encoder attached to the shooter.
-     * @return The {@link Encoder} object that can be used to access the encoder
-     * attached to the shooter.
+     * Returns the current, raw value from the encoder attached to the
+     * shooter jaguar. If an error occurs {@code -1} is returned.
+     * @return The raw speed given by the shooter encoder, or {@code 0} if an
+     * error occurs.
      */
-    public Encoder getEncoder(){
-        return encoder;
-    }
-    
     public double getEncoderValue(){
-        return filter.filter(encoder.getRate());
+        try{
+            return shooterLeftJaguar.getSpeed();
+        }catch(Exception e){
+            e.printStackTrace();
+            Zephyr.exceptionProblem = true;
+        }
+        return 0;
     }
     
-    public double pidGet(){
-        return getEncoder().getRate();
+    public double getFilteredEncoderValue(){
+        try{
+            return filter.filter(shooterLeftJaguar.getSpeed());
+        }catch(Exception e){
+            getEncoderValue();
+            e.printStackTrace();
+        }
+        return 0;
     }
     
     /**
