@@ -47,6 +47,7 @@ public class Zephyr extends SimpleRobot {
     public double shooterSpeed = 0;
     public boolean ballLoaderUp = false;
     public double shooterRotateSpeed = 0;
+    public boolean printSpeed = false;
     private final double SHOOTER_LARGE_SPEED_STEP = 50;
     private final double SHOOTER_SMALL_SPEED_STEP = 10;
     private final double SHOOTER_MEDIUM_SPEED_STEP = 50;
@@ -308,6 +309,8 @@ public class Zephyr extends SimpleRobot {
                         CollectorComponents.CONVEYOR_STOP);
             }
             
+            printSpeed = shootGamepad.getRawAxis(Gamepad.LEFT_Y_AXIS)>=0.5?true:false;
+            
             mechanismSet();
             Timer.delay(0.005);
         }
@@ -327,6 +330,8 @@ public class Zephyr extends SimpleRobot {
         robotParts.shooter.setSpeed(shooterSpeed);
         robotParts.shooter.firePiston(ballLoaderUp);
         robotParts.shooter.rotate(shooterRotateSpeed);
+        DriverStation ds = DriverStation.getInstance();
+        robotParts.shooter.setPID(ds.getAnalogIn(2), ds.getAnalogIn(3), ds.getAnalogIn(4));
         //Collector Assignments
         robotParts.collector.conveyorMove(convMove);
         robotParts.collector.collect(collectorSpin);
@@ -346,6 +351,10 @@ public class Zephyr extends SimpleRobot {
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString+"                                  ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue+"                                           ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue+"                                         ");
+        if(printSpeed){
+            System.out.println(robotParts.shooter.getEncoderValue());
+            robotParts.textOutput.println(DriverStationLCD.Line.kUser6, 1, robotParts.shooter.getEncoderValue()+"             ");
+        }
         robotParts.textOutput.updateLCD();
         
     }
