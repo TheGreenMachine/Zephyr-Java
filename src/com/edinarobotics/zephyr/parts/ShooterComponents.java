@@ -178,6 +178,45 @@ public class ShooterComponents{
         return 0;
     }
     
+    public void setPID(double p, double i, double d){
+        try{
+            shooterRightJaguar.setPID(p, i, d);
+        }catch(Exception e){
+            Zephyr.exceptionProblem = true;
+            e.printStackTrace();
+        }
+    }
+    
+    public double getP(){
+        try{
+            return shooterRightJaguar.getP();
+        }catch(Exception e){
+            Zephyr.exceptionProblem = true;
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    
+    public double getI(){
+        try{
+            return shooterRightJaguar.getI();
+        }catch(Exception e){
+            Zephyr.exceptionProblem = true;
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    
+    public double getD(){
+        try{
+            return shooterRightJaguar.getD();
+        }catch(Exception e){
+            Zephyr.exceptionProblem = true;
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    
     /**
      * A very simple implementation of the sgn function. Returns
      * {@code 1},{@code -1} or {@code 0} representing the sign of the number.
