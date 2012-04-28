@@ -23,6 +23,7 @@ public class ParallelAutonomousStepGroup extends AutonomousStep{
      * objects contained by this ParallelAutonomousStepGroup.
      */
     public void start(){
+        stepsFinished = new boolean[steps.length];
         for(int i=0; i<steps.length; i++){
             steps[i].start();
         }
@@ -57,7 +58,6 @@ public class ParallelAutonomousStepGroup extends AutonomousStep{
             }
         }
         //Reset the steps array so that this step can be reused
-        stepsFinished = new boolean[steps.length];
     }
     
     /**
