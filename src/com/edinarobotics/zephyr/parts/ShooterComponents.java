@@ -13,9 +13,9 @@ public class ShooterComponents{
     public static final int ROTATE_RIGHT_SIGN = 1;
     public static final int ROTATE_LEFT_SIGN = -1;
     public static final int ENCODER_TICKS_PER_REV = 180;
-    public static final double MAX_SHOOTER_SPEED = 4000;
-    public static final double MIN_SHOOTER_SPEED = 0;
-    
+
+    private static final double MAX_SHOOTER_SPEED = 2300;
+    private static final double MIN_SHOOTER_SPEED = 1600;
     private CANJaguar shooterLeftJaguar;
     private CANJaguar shooterRightJaguar;
     private Jaguar shooterRotator;
@@ -176,6 +176,24 @@ public class ShooterComponents{
             e.printStackTrace();
         }
         return 0;
+    }
+    
+    public static double coerceInRange(double rawSpeed){
+        if(rawSpeed<MAX_SHOOTER_SPEED&&rawSpeed>MIN_SHOOTER_SPEED)
+            return rawSpeed;
+        if(rawSpeed>MAX_SHOOTER_SPEED)
+            return MAX_SHOOTER_SPEED;
+        else
+            return MIN_SHOOTER_SPEED;
+        
+    }
+    
+    public static double getMaxShooterSpeed(){
+        return MAX_SHOOTER_SPEED;
+    }
+    
+    public static double getMinShooterSpeed(){
+        return MIN_SHOOTER_SPEED;
     }
     
     /**

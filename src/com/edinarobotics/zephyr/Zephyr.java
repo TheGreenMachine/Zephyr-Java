@@ -292,13 +292,13 @@ public class Zephyr extends SimpleRobot {
                 lastManualSpeed = shooterSpeed;
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_1)){
-                shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
+                shooterSpeed = ShooterComponents.getMaxShooterSpeed();
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_2)){
-                shooterSpeed = ShooterComponents.MIN_SHOOTER_SPEED;
+                shooterSpeed = ShooterComponents.getMinShooterSpeed();
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_3)){
-                shooterSpeed = 0.5*ShooterComponents.MAX_SHOOTER_SPEED;
+                shooterSpeed = 0.5*ShooterComponents.getMaxShooterSpeed();
             }
             else if(shootGamepad.getRawButton(Gamepad.BUTTON_4)){
                 shooterSpeed = lastManualSpeed;
@@ -307,12 +307,7 @@ public class Zephyr extends SimpleRobot {
                 shooterSpeed = PRESET_RPM_SPEED; //50 RPS estimate button
             }
             //Verify that shooter speed is in range
-            if(shooterSpeed > ShooterComponents.MAX_SHOOTER_SPEED){
-                shooterSpeed = ShooterComponents.MAX_SHOOTER_SPEED;
-            }
-            else if(shooterSpeed < ShooterComponents.MIN_SHOOTER_SPEED){
-                shooterSpeed = ShooterComponents.MIN_SHOOTER_SPEED;
-            }
+            shooterSpeed = ShooterComponents.coerceInRange(shooterSpeed);
             
             shooterRotateSpeed = shootFilters.filter(shootGamepad.getJoysticks()).getRightX();
             
