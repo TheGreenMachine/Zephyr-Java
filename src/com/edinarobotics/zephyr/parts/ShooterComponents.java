@@ -4,6 +4,7 @@ import com.edinarobotics.utils.sensors.FilterDouble;
 import com.edinarobotics.utils.sensors.SimpleAverageFilter;
 import com.edinarobotics.zephyr.Zephyr;
 import edu.wpi.first.wpilibj.*;
+import java.util.Date;
 
 /**
  *The wrapper for the shooter components, contains the 2 jaguars driving the shooter
@@ -14,6 +15,8 @@ public class ShooterComponents{
     public static final int ROTATE_LEFT_SIGN = -1;
     public static final int ENCODER_TICKS_PER_REV = 180;
 
+    private static final int RUN_REST_SHOOTER_RATIO = 2;
+    private static final long SHOOTER_MAX_RUN_TIME = 60;
     private static final double MAX_SHOOTER_SPEED = 2300;
     private static final double MIN_SHOOTER_SPEED = 1600;
     private CANJaguar shooterLeftJaguar;
@@ -23,9 +26,12 @@ public class ShooterComponents{
     private DigitalInput leftLimitSwitch;
     private DigitalInput rightLimitSwitch;
     private FilterDouble filter;
+    private long shooterRunTime;
+    private Date lastShooterSetTime;
     private final double P = 0.345;
     private final double I = 0.503;
     private final double D = 0;
+    
     /**
      * Constructs shooterLeftJaguar, shooterRightJaguar, shooterRotator and ballLoadPiston
      * with leftJaguar, rightJaguar, rotator and piston respectively.
@@ -92,14 +98,61 @@ public class ShooterComponents{
     /**
      * Sets the current setpoint value for the shooter Jaguars. Scaling and
      * units depend on the current control mode of the Jaguars.
+     * 
+     * Additionally calls updateShooterRunTime() and updates lastShooterSetTime
+     * and shooterRunTime.
      */
     public void setSpeed(double speed){
         try{
+            updateShooterRunTime(new Date());
             shooterLeftJaguar.setX(-1*speed);
             shooterRightJaguar.setX(-1*shooterLeftJaguar.getOutputVoltage());
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * Sets the current setpoint value for the shooter Jaguars. Scaling and
+     * units depend on the current control mode of the Jaguars.
+     * 
+     * Checks to make sure that the shooter hasn't been run for more than
+     * SHOOTER_MAX_TIME, if it has then it updates the time and sets the speed
+     * to zero.
+     * 
+     * Additionally calls updateShooterRunTime() and updates lastShooterSetTime
+     * and shooterRunTime.
+     */
+    public void overheatSafeSetSpeed(double speed){
+        try{
+            updateShooterRunTime(new Date());
+            if(shooterRunTime<SHOOTER_MAX_RUN_TIME){
+                setSpeed(speed);
+            }
+            else{
+                setSpeed(0);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Updates lastShooterSetTime and shooterRunTime using the @param currentTime date
+     * object.
+     * 
+     * @param currentTime is used to get the elapsed time since lastShooterSetTime
+     */
+    private void updateShooterRunTime(Date currentTime){
+        long elapsedTime = currentTime.getTime()-lastShooterSetTime.getTime();
+        lastShooterSetTime = currentTime;
+        if(Math.abs(getEncoderValue())<.1){
+            shooterRunTime-=elapsedTime*RUN_REST_SHOOTER_RATIO;
+        }
+        else{
+            shooterRunTime+=elapsedTime;
+        }
+            
     }
     
     /**

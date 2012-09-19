@@ -336,7 +336,7 @@ public class Zephyr extends SimpleRobot {
         robotParts.drive.setDrivingSpeed(leftDrive, rightDrive);
         robotParts.drive.shift(shifters);
         //Shooter Assignments
-        robotParts.shooter.setSpeed(shooterSpeed);
+        robotParts.shooter.overheatSafeSetSpeed(shooterSpeed);
         robotParts.shooter.firePiston(ballLoaderUp);
         robotParts.shooter.rotate(shooterRotateSpeed);
         //Collector Assignments
