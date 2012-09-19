@@ -60,6 +60,7 @@ public class Components {
     //Misc
     public Compressor compressor;
     public DriverStationLCD textOutput;
+    public DriverStation driverStation;
     public CypressComponents cypress;
     public Timer timer;
     
@@ -85,6 +86,8 @@ public class Components {
         compressor = new Compressor(COMPRESSOR_PRESSURE_SENSOR,COMPRESSOR_SPIKE);
         compressor.start();
         textOutput = DriverStationLCD.getInstance();
+        driverStation = DriverStation.getInstance();
+        
         cypress = new CypressComponents();
         timer = new Timer();
     }

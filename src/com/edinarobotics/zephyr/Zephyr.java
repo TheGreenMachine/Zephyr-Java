@@ -68,6 +68,7 @@ public class Zephyr extends SimpleRobot {
      private final double COLLECTOR_LIFT_STOP = 0;
      private final double COLLECTOR_LIFT_DOWN_FAST = -1;
      public boolean shifters = false;
+     public boolean isOverheatSafe = true;
      //Problem variables
      public static boolean exceptionProblem = false;
      public static boolean genericProblem = false;
@@ -336,7 +337,12 @@ public class Zephyr extends SimpleRobot {
         robotParts.drive.setDrivingSpeed(leftDrive, rightDrive);
         robotParts.drive.shift(shifters);
         //Shooter Assignments
-        robotParts.shooter.overheatSafeSetSpeed(shooterSpeed);
+        if(isOverheatSafe){
+            robotParts.shooter.overheatSafeSetSpeed(shooterSpeed);
+        }
+        else{
+            robotParts.shooter.setSpeed(shooterSpeed);            
+        }        
         robotParts.shooter.firePiston(ballLoaderUp);
         robotParts.shooter.rotate(shooterRotateSpeed);
         //Collector Assignments

@@ -19,6 +19,7 @@ public class ShooterComponents{
     private static final long SHOOTER_MAX_RUN_TIME = 60;
     private static final double MAX_SHOOTER_SPEED = 2300;
     private static final double MIN_SHOOTER_SPEED = 1600;
+    private boolean isOverheated = false;
     private CANJaguar shooterLeftJaguar;
     private CANJaguar shooterRightJaguar;
     private Jaguar shooterRotator;
@@ -27,7 +28,7 @@ public class ShooterComponents{
     private DigitalInput rightLimitSwitch;
     private FilterDouble filter;
     private long shooterRunTime;
-    private Date lastShooterSetTime;
+    private Date lastShooterSetTime = new Date();
     private final double P = 0.345;
     private final double I = 0.503;
     private final double D = 0;
@@ -126,11 +127,15 @@ public class ShooterComponents{
     public void overheatSafeSetSpeed(double speed){
         try{
             updateShooterRunTime(new Date());
-            if(shooterRunTime<SHOOTER_MAX_RUN_TIME){
+            if(shooterRunTime<SHOOTER_MAX_RUN_TIME && !isOverheated){
                 setSpeed(speed);
             }
             else{
                 setSpeed(0);
+                if(shooterRunTime == 0)
+                    isOverheated = false;
+                if(shooterRunTime>=SHOOTER_MAX_RUN_TIME)
+                    isOverheated = true;
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -144,10 +149,12 @@ public class ShooterComponents{
      * @param currentTime is used to get the elapsed time since lastShooterSetTime
      */
     private void updateShooterRunTime(Date currentTime){
-        long elapsedTime = currentTime.getTime()-lastShooterSetTime.getTime();
+        long elapsedTime = currentTime.getTime()/1000-lastShooterSetTime.getTime()/1000;
         lastShooterSetTime = currentTime;
         if(Math.abs(getEncoderValue())<.1){
             shooterRunTime-=elapsedTime*RUN_REST_SHOOTER_RATIO;
+            if(shooterRunTime<0)
+                shooterRunTime = 0;
         }
         else{
             shooterRunTime+=elapsedTime;
