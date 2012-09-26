@@ -90,7 +90,7 @@ abstract public class TargetingStuff {
         if (report.center_mass_x_normalized>0.05) return("Turn left");
         if (report.center_mass_x_normalized>0.01) return("Turn a little bit left");
         if (report.center_mass_x_normalized>-0.01&&report.center_mass_x_normalized<0.01) return("TARGET LOCKED");
-        else return "lock on unavailible";
+        else return "lock on unavailable";
     }
     
     /**
