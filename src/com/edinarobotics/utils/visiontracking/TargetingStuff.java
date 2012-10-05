@@ -1,5 +1,6 @@
 package com.edinarobotics.utils.visiontracking;
 
+import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCamera.ResolutionT;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
@@ -45,11 +46,11 @@ abstract public class TargetingStuff {
             final double theta;
 
             //Damn it.
-    //            switch (model) {
-    //                case "M1011": theta = 47/2; break;
-    //                case "206": theta = 54/2; break;
-    //                default: throw new AxisCameraException("Camera model not recognized"); break;
-    //            }
+//                switch (model) {
+//                    case "M1011": theta = 47/2; break;
+//                    case "206": theta = 54/2; break;
+//                    default: throw new AxisCameraException("Camera model not recognized"); break;
+//                }
             if (model.equals("M1011")) theta = 47/2;
             else if (model.equals("206")) theta = 54/2;
             else throw new AxisCameraException("Camera model not recognized");
@@ -66,13 +67,11 @@ abstract public class TargetingStuff {
     
     /**
      * Suggests a shooter speed based on distance to target.
-     * @deprecated This method does not actually have the formula right now.
      * @param distance Distance to target.
      * @return Suggested shooter velocity in RPM.
      */
     public static double determinePower(double distance) {
-        //TODO: find formula
-        return -1.0;
+        return -2*MathUtils.pow(10,-9)*MathUtils.pow(distance,3) + MathUtils.pow(10,-5)*MathUtils.pow(distance,2) - 0.0105*distance + 6.2688;
     }
     
     /**
