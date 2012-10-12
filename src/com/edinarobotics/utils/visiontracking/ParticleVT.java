@@ -171,7 +171,7 @@ abstract public class ParticleVT {
     /**
      * We may not need this method, I just made it to streamline the process. 
      * Beware, you need to hard-code the rectangle-judging standards.
-     * @deprecated This method contains dummy code for the edge scores. 
+     * This method contains dummy code for the edge scores. 
      * @param image The initial image to be processed.
      * @param useFilter Whether or not to filter out all particles except for 
      * the four largest (which should be the targets).
@@ -189,7 +189,7 @@ abstract public class ParticleVT {
         } catch (NIVisionException e) {
             e.printStackTrace();
         }
-        double[] standards = {90,90,90,90};
+        double[] standards = {90,90,0,0}; //dummy code here
         qualify(reports,standards);
         try {
         initialImage.free();

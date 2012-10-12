@@ -4,7 +4,10 @@ import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCamera.ResolutionT;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
+import edu.wpi.first.wpilibj.image.ColorImage;
+import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
+import com.edinarobotics.zephyr.Components;
 
 /**
  * A class with functions for targeting the shooter based on distance-to-target
@@ -109,5 +112,11 @@ abstract public class TargetingStuff {
             }
         }
         return toBeTracked;
+    }
+    
+    public static ParticleAnalysisReport[] processParticleVT() throws  NIVisionException, AxisCameraException {
+        ColorImage image = Components.getInstance().camera.getImage();
+        boolean useFilter = false;
+        return ParticleVT.process(image, useFilter);
     }
 }
