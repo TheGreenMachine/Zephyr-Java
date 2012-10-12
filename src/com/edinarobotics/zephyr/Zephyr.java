@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import com.edinarobotics.utils.sensors.FIRFilter;
+import com.edinarobotics.utils.visiontracking.ParticleFilter;
 import com.edinarobotics.utils.visiontracking.ParticleVT;
 import com.edinarobotics.utils.visiontracking.TargetingStuff;
 import com.edinarobotics.zephyr.autonomous.AutonomousStepFactory;
@@ -31,6 +32,8 @@ import com.edinarobotics.zephyr.parts.CypressComponents;
 import com.edinarobotics.zephyr.parts.ShooterComponents;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO.EnhancedIOException;
+import edu.wpi.first.wpilibj.camera.AxisCameraException;
+import edu.wpi.first.wpilibj.image.NIVisionException;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -303,7 +306,7 @@ public class Zephyr extends SimpleRobot {
     /**
      * Updates all parts of the robot to avoid safety timeouts
      */
-    public void mechanismSet(){
+    public void mechanismSet() {
         getWatchdog().feed(); //Feed the watchdog
         //Driving Assignments
         Components robotParts = Components.getInstance();
@@ -332,7 +335,13 @@ public class Zephyr extends SimpleRobot {
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString+"                                  ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue+"                                           ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue+"                                         ");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser6, 1, TargetingStuff.lockOn(TargetingStuff.findClosest(ParticleVT.fullyQualified)));
+        try {
+            robotParts.textOutput.println(DriverStationLCD.Line.kUser6, 1, TargetingStuff.lockOn(TargetingStuff.findClosest(ParticleFilter.process(Components.getInstance().camera.getImage()))));
+        } catch (AxisCameraException e) {
+            System.err.println("Zephyr(341):"+e.getMessage());
+        } catch (NIVisionException e) {
+            System.err.println("Zephyr(343):"+e.getMessage());
+        }
         robotParts.textOutput.updateLCD();
         
     }
