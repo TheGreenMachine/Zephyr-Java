@@ -10,8 +10,15 @@ import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 import com.edinarobotics.zephyr.Components;
 
 /**
- * A class with functions for targeting the shooter based on distance-to-target
+ * An class with functions for targeting the shooter based on distance-to-target
  * and the target's particle report.
+ * 
+ * Team 1816, the Green Machine, has a 
+ * 
+ * How to use:
+ * ParticleAnalysisReport target=findClosest(processParticleVT())
+ * lockOn(target);
+ * determinePower(determineDTT(target,camera, model))
  */
 abstract public class TargetingStuff {
     
@@ -26,10 +33,12 @@ abstract public class TargetingStuff {
      * {@code 206}.
      * @return Returns distance-to-target.
      */
-    public static double determineDTT(ParticleAnalysisReport target, AxisCamera.ResolutionT res, String model) {
+    public static double determineDTT(ParticleAnalysisReport target, AxisCamera camera, String model) {
         try {
+            //Step 0: Initialize variables
+            AxisCamera.ResolutionT res = camera.getResolution();
             
-            //Step 1: Determine theta
+            //Step 1: Determine the width of the field of vision in feet
             final int twidthFt = 2; //constant
             final int twidthPx = target.boundingRectWidth; //changes based on distance.
             final int fovwidthPx; //determined by camera resolution
@@ -44,9 +53,9 @@ abstract public class TargetingStuff {
             //target width in pixels/target width in feet = FOV width in pixels/FOV width in feet`
             fovwidthFt = ((double)twidthPx/(double)twidthFt*(double)fovwidthPx)/(double)2;
 
-            //Step 2: Use theta to determine distance to target
+            //Step 2: Determine the viewing angle of the camera
 
-            final double theta;
+            final double theta; //viewing angle
 
             //Damn it.
 //                switch (model) {
@@ -58,14 +67,15 @@ abstract public class TargetingStuff {
             else if (model.equals("206")) theta = 54/2;
             else throw new AxisCameraException("Camera model not recognized");
 
+            //Step 3: Use the camera angle and the field of vision width to determine distance-to-target
             //tan(theta) = w/d
             final double distance=fovwidthFt/Math.tan(theta);
             return distance;
 
         } catch (AxisCameraException e) {
-            e.printStackTrace();
+            System.err.println("TargetingStuff(76):"+e.getMessage());
         }
-        return -1.0;
+        return -1.0; 
     }
     
     /**
@@ -116,7 +126,6 @@ abstract public class TargetingStuff {
     
     public static ParticleAnalysisReport[] processParticleVT() throws  NIVisionException, AxisCameraException {
         ColorImage image = Components.getInstance().camera.getImage();
-        boolean useFilter = false;
-        return ParticleVT.process(image, useFilter);
+        return ParticleFilter.process(image);
     }
 }

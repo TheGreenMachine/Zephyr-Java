@@ -162,7 +162,7 @@ abstract public class ParticleVT {
             if (rectangleScores[i]>qualifications[1]&&aspectRatioScores[i]>qualifications[2]&&edgeScoresX[i]>qualifications[3]&&edgeScoresY[i]>qualifications[4])
                 fullyQualified[fqPlace++]=reports[i];
             } catch (ArrayIndexOutOfBoundsException e) {
-                e.printStackTrace();
+                System.err.println("ParticleVT(165):"+e.getMessage());
             }
         }
     }
@@ -187,7 +187,7 @@ abstract public class ParticleVT {
             calculateRectScores();
             calculateAspectRatioScores();
         } catch (NIVisionException e) {
-            e.printStackTrace();
+            System.err.println("ParticleVT(190):"+e.getMessage());
         }
         double[] standards = {90,90,0,0}; //dummy code here
         qualify(reports,standards);
@@ -197,7 +197,7 @@ abstract public class ParticleVT {
         afterHull.free();
         afterFilter.free();
         } catch (NIVisionException e) {
-            e.printStackTrace();
+            System.err.println("ParticleVT(200):"+e.getMessage());
         }
         return fullyQualified;
     }
