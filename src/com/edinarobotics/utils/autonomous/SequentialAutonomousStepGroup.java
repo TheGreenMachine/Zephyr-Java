@@ -18,11 +18,6 @@ public class SequentialAutonomousStepGroup extends AutonomousStep{
         currentStep = -1;
     }
     
-    public void start(){
-        //Reset the step group so that it can be reused.
-        currentStep = -1;
-    }
-    
     /**
      * Runs the given steps in sequence.
      */
@@ -58,6 +53,8 @@ public class SequentialAutonomousStepGroup extends AutonomousStep{
         if(currentStep<steps.length && currentStep>0){
             steps[currentStep].stop();
         }
+        //Reset the step group so that it can be reused.
+        currentStep = -1;
     }
     
     /**
