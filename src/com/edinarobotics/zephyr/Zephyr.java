@@ -21,8 +21,6 @@ import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SimpleRobot;
 import com.edinarobotics.utils.sensors.FIRFilter;
-import com.edinarobotics.utils.visiontracking.ParticleVT;
-import com.edinarobotics.utils.visiontracking.TargetingStuff;
 import com.edinarobotics.zephyr.autonomous.AutonomousStepFactory;
 import com.edinarobotics.zephyr.autonomous.IdleStopStep;
 import com.edinarobotics.zephyr.autonomous.IdleWaitStep;
@@ -53,7 +51,7 @@ public class Zephyr extends SimpleRobot {
     private final double SHOOTER_SMALL_SPEED_STEP = 10;
     private final double SHOOTER_MEDIUM_SPEED_STEP = 50;
     private double lastManualSpeed = 0;
-    public final double KEY_SHOOTER_SPEED_RPM = 2150;
+    public final double KEY_SHOOTER_SPEED_RPM = 2250;
     
     //Sensor Variables
      private FIRFilter firFiltering = FIRFilter.autoWeightedFilter(20);
@@ -96,11 +94,12 @@ public class Zephyr extends SimpleRobot {
     public void autonomous() {
         stop();
         //Cypress switch constants
-        final int POSITION_LEFT_SWITCH = 6;
-        final int POSITION_RIGHT_SWITCH = 4;
-        final int COLLECT_SWITCH = 2;
-        final int SHOOTING_DELAY_1 = 5;
-        final int SHOOTING_DELAY_2 = 3;
+        final int POSITION_LEFT_SWITCH = 1;
+        final int POSITION_RIGHT_SWITCH = 2;
+        final int COLLECT_SWITCH = 3;
+        final int FIRST_DENSE_SWITCH = 4;
+        final int SECOND_DENSE_SWITCH = 5;
+        final int SHOOTING_DELAY_ANALOG = 1;
         
         //Autonomous constants
         final int NO_AUTONOMOUS = 0;
@@ -115,16 +114,15 @@ public class Zephyr extends SimpleRobot {
         final double LEFT_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
         final double RIGHT_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
         final double MIDDLE_KEY_SHOOTER_SPEED = KEY_SHOOTER_SPEED_RPM;
+        final double DENSE_BALL_MODIFIER = -110;
         
         //Autonomous config values
-        int shootingDelayValue = 1;
+        double shootingDelayValue = 1;
         boolean driveToCollect = false;
         int keyPosition = KEY_MIDDLE;
         
         //Determine shooting delay value
-        shootingDelayValue = (((cypress.getDigital(SHOOTING_DELAY_2)?1:0)<<1)+
-                             (cypress.getDigital(SHOOTING_DELAY_1)?1:0))*
-                             DELAY_MULTIPLIER;
+        shootingDelayValue = cypress.getAnalog(SHOOTING_DELAY_ANALOG);
         
         //Determine if we should collect
         driveToCollect = cypress.getDigital(COLLECT_SWITCH);
@@ -133,19 +131,52 @@ public class Zephyr extends SimpleRobot {
         keyPosition = ((cypress.getDigital(POSITION_RIGHT_SWITCH)?1:0)<<1)+
                       (cypress.getDigital(POSITION_LEFT_SWITCH)?1:0);
         
+        boolean isFirstDense = cypress.getDigital(FIRST_DENSE_SWITCH);
+        boolean isSecondDense = cypress.getDigital(SECOND_DENSE_SWITCH);
+       
         //Create autonomous program
         AutonomousStepFactory stepFactory = new AutonomousStepFactory(this);
         //Create our pre-shooting delay step
         AutonomousStep shootDelayStep = new IdleWaitStep(shootingDelayValue, this);
         
+        double[] shootingPowers = new double[2];
+        
         //Create out shooting step
         AutonomousStep shootStep;
         switch(keyPosition){
-            case KEY_LEFT: shootStep = stepFactory.getShooterFireStep(LEFT_KEY_SHOOTER_SPEED, 2); break;
-            case KEY_RIGHT: shootStep = stepFactory.getShooterFireStep(RIGHT_KEY_SHOOTER_SPEED, 2); break;
-            case KEY_MIDDLE: shootStep = stepFactory.getShooterFireStep(MIDDLE_KEY_SHOOTER_SPEED, 2); break;
-            default: shootStep = new IdleWaitStep(0, this);
+            case KEY_LEFT: shootingPowers[0] = LEFT_KEY_SHOOTER_SPEED; shootingPowers[1] = LEFT_KEY_SHOOTER_SPEED; break;
+            case KEY_RIGHT: shootingPowers[0] = RIGHT_KEY_SHOOTER_SPEED; shootingPowers[1] = RIGHT_KEY_SHOOTER_SPEED; break;
+            case KEY_MIDDLE: shootingPowers[0] = MIDDLE_KEY_SHOOTER_SPEED; shootingPowers[1] = MIDDLE_KEY_SHOOTER_SPEED; break;
+            default: shootingPowers[0] = 0; shootingPowers[0] = 0; break;
         }
+        
+        if(isFirstDense){
+            shootingPowers[0] += DENSE_BALL_MODIFIER;
+        }
+        if(isSecondDense){
+            shootingPowers[1] += DENSE_BALL_MODIFIER;
+        }
+        
+        shootStep = stepFactory.getMultipleShotStep(shootingPowers);
+        
+        String positionString = "";
+        if(keyPosition == KEY_LEFT){
+            positionString = "left";
+        }
+        else if(keyPosition == KEY_MIDDLE){
+            positionString = "middle";
+        }
+        else if(keyPosition == KEY_RIGHT){
+            positionString = "right";
+        }
+        else{
+            positionString = "no autonomous";
+        }
+        System.out.println("Autonomous Configuration:");
+        System.out.println("Position: "+positionString);
+        System.out.println("Delay: "+shootingDelayValue);
+        System.out.println("Collect?: "+driveToCollect);
+        
         AutonomousStep[] steps = new AutonomousStep[3];
         steps[0] = shootDelayStep;
         steps[1] = shootStep;
@@ -163,7 +194,7 @@ public class Zephyr extends SimpleRobot {
     {
         stop();
         //Add 120 to componensate for the fact we are not at the very top of the key
-        final double PRESET_RPM_SPEED = KEY_SHOOTER_SPEED_RPM+120;
+        final double PRESET_RPM_SPEED = KEY_SHOOTER_SPEED_RPM;
         FilterSet driveFilters = new FilterSet();
         driveFilters.addFilter(new DeadzoneFilter(0.5));
         driveFilters.addFilter(new ScalingFilter());
@@ -332,7 +363,6 @@ public class Zephyr extends SimpleRobot {
         robotParts.textOutput.println(DriverStationLCD.Line.kUser3, 1, shooterActualString+"                                  ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser4, 1, sonarValue+"                                           ");
         robotParts.textOutput.println(DriverStationLCD.Line.kUser5, 1, problemValue+"                                         ");
-        robotParts.textOutput.println(DriverStationLCD.Line.kUser6, 1, TargetingStuff.lockOn(TargetingStuff.findClosest(ParticleVT.fullyQualified)));
         robotParts.textOutput.updateLCD();
         
     }

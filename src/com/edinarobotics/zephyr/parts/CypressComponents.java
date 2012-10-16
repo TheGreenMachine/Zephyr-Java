@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
  * Driver Station Enhanced IO
  */
 public class CypressComponents {
-    private DriverStationEnhancedIO cypress;
+    private DriverStation cypress;
     /**
      * Creates an instance of the DriverStationEnhancedIO for the cypress.
      */
     public CypressComponents(){
-        cypress = DriverStation.getInstance().getEnhancedIO();
+        cypress = DriverStation.getInstance();
     }
     
     /**
@@ -27,13 +27,23 @@ public class CypressComponents {
      */
     public boolean getDigital(int port){
         try{
-            return cypress.getDigital(port);
+            return cypress.getDigitalIn(port);
         }
         catch(Exception e){
             e.printStackTrace();
             Zephyr.exceptionProblem = true;
             return false;
         }
+    }
+    
+    /**
+     * Returns the state of an analog input on the DriverStation.
+     * @param port The number of the analog input to read.
+     * @return The value stored in the analog input slot on the
+     * DriverStation.
+     */
+    public double getAnalog(int port){
+        return cypress.getAnalogIn(port);
     }
     
     /**
@@ -44,7 +54,7 @@ public class CypressComponents {
      */
     public short getDigitals(){
         try{
-            return cypress.getDigitals();
+            return 0;
         }catch(Exception e){
             Zephyr.exceptionProblem = true;
             return 0;

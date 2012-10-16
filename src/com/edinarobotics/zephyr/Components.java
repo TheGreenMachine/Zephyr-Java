@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Gyro;
-import edu.wpi.first.wpilibj.camera.AxisCamera;
 
 /**
  *
@@ -29,8 +28,8 @@ public class Components {
     private static final int SHOOTER_TAP_SIZE = 10;
     //Relays
     private static final int COMPRESSOR_SPIKE = 1;
-    private static final int BALL_LOAD_PISTON_SPIKE = 3;
-    private static final int SUPER_SHIFTERS_SPIKE = 2;
+    private static final int BALL_LOAD_PISTON_SPIKE = 2;
+    private static final int SUPER_SHIFTERS_SPIKE = 3;
     private static final int BALL_COLL_ROTATE_SPIKE = 4;
     private static final int CONV_MOVE_SPIKE = 6;
     //Servos
@@ -63,7 +62,6 @@ public class Components {
     public DriverStationLCD textOutput;
     public CypressComponents cypress;
     public Timer timer;
-    public AxisCamera camera;
     
     /**
      * Instantiates all components of the robot
@@ -89,7 +87,6 @@ public class Components {
         textOutput = DriverStationLCD.getInstance();
         cypress = new CypressComponents();
         timer = new Timer();
-        camera = AxisCamera.getInstance("10.18.16.11");
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.edinarobotics.zephyr.autonomous;
 
 import com.edinarobotics.utils.autonomous.AutonomousStep;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  *
@@ -13,7 +14,8 @@ public class PrintStep extends AutonomousStep{
     }
     
     public void start(){
-        System.out.println(message);
+        String timeValue = new Double(DriverStation.getInstance().getMatchTime()).toString();
+        System.out.println("@"+timeValue+" seconds: "+message);
     }
     
     
