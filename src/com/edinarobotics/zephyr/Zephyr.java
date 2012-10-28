@@ -218,10 +218,10 @@ public class Zephyr extends SimpleRobot {
         {
             //Gamepad 1*********************************************************
             //Control collector brushes
-            if(driveGamepad.getRawButton(Gamepad.LEFT_BUMPER)){
+            if(driveGamepad.getRawButton(Gamepad.LEFT_BUMPER) || shootGamepad.getRawButton(Gamepad.LEFT_JOYSTICK_BUTTON)){
                 collectorSpin = CollectorComponents.COLLECTOR_IN;
             }
-            else if(driveGamepad.getRawButton(Gamepad.BUTTON_9)){
+            else if(driveGamepad.getRawButton(Gamepad.BUTTON_9) || shootGamepad.getRawButton(Gamepad.RIGHT_JOYSTICK_BUTTON)){
                 collectorSpin = CollectorComponents.COLLECTOR_OUT;
             }
             else{
