@@ -26,6 +26,9 @@ public class Gamepad extends Joystick{
     public static final int BUTTON_4 = 4;
     public static final int BUTTON_9 = 9;
     public static final int BUTTON_10 = 10;
+    
+    public static final int LEFT_JOYSTICK_BUTTON = 11;
+    public static final int RIGHT_JOYSTICK_BUTTON = 12;
                     
     private static final double DPAD_THRESHOLD = 0.9;
     
