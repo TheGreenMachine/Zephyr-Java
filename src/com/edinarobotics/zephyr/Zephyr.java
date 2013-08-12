@@ -47,9 +47,9 @@ public class Zephyr extends SimpleRobot {
     public double shooterSpeed = 0;
     public boolean ballLoaderUp = false;
     public double shooterRotateSpeed = 0;
-    private final double SHOOTER_LARGE_SPEED_STEP = 50;
-    private final double SHOOTER_SMALL_SPEED_STEP = 10;
-    private final double SHOOTER_MEDIUM_SPEED_STEP = 50;
+    private final double SHOOTER_LARGE_SPEED_STEP = 50.0/4000;
+    private final double SHOOTER_SMALL_SPEED_STEP = 10.0/4000;
+    private final double SHOOTER_MEDIUM_SPEED_STEP = 50.0/4000;
     private double lastManualSpeed = 0;
     public final double KEY_SHOOTER_SPEED_RPM = 2250;
     

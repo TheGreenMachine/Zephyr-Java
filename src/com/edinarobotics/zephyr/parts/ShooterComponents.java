@@ -13,7 +13,7 @@ public class ShooterComponents{
     public static final int ROTATE_RIGHT_SIGN = 1;
     public static final int ROTATE_LEFT_SIGN = -1;
     public static final int ENCODER_TICKS_PER_REV = 180;
-    public static final double MAX_SHOOTER_SPEED = 4000;
+    public static final double MAX_SHOOTER_SPEED = 1;
     public static final double MIN_SHOOTER_SPEED = 0;
     
     private CANJaguar shooterLeftJaguar;
@@ -83,6 +83,13 @@ public class ShooterComponents{
                 Zephyr.exceptionProblem = true;
             }
         }
+        try{
+            shooterLeftJaguar.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            shooterRightJaguar.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         System.out.println("CAN setup done!");
         shooterRotator = new Jaguar(rotator);
         ballLoadPiston = new Relay(piston);
@@ -96,7 +103,7 @@ public class ShooterComponents{
     public void setSpeed(double speed){
         try{
             shooterLeftJaguar.setX(-1*speed);
-            shooterRightJaguar.setX(-1*shooterLeftJaguar.getOutputVoltage());
+            shooterRightJaguar.setX(speed);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -110,7 +117,7 @@ public class ShooterComponents{
     public void setShooterControlMode(CANJaguar.ControlMode controlMode){
         try{
             shooterLeftJaguar.changeControlMode(controlMode);
-            shooterRightJaguar.changeControlMode(CANJaguar.ControlMode.kVoltage);
+            System.out.println("Set control mode.");
         }catch(Exception e){
             e.printStackTrace();
             Zephyr.exceptionProblem = true;
