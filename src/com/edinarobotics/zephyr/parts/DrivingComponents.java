@@ -28,7 +28,7 @@ public class DrivingComponents {
      * @param right sets the rightMotors jaguar
      */
     public void setDrivingSpeed(double left, double right){
-        leftMotors.set(left);
+        leftMotors.set(-1*left);
         rightMotors.set(-1*right);
     }
     /**
