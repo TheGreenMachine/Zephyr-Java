@@ -6,6 +6,7 @@
 package com.edinarobotics.Zephyr.subsystems;
 
 import com.edinarobotics.Zephyr.commands.SetDrivetrainCommand;
+import com.edinarobotics.utils.math.Math1816;
 import com.edinarobotics.utils.subsystems.Subsystem1816;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.command.Command;
@@ -17,7 +18,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class Drivetrain extends Subsystem1816{
 
     public RobotDrive robotDrive;
-
+    public double verticalStrafe, rotation;
     private double leftMotor, rightMotor, backLeftMotor, backRightMotor;
     
     public Drivetrain(int leftMotor, int rightMotor, int backLeftMotor, int backRightMotor){
@@ -25,21 +26,23 @@ public class Drivetrain extends Subsystem1816{
         this.rightMotor = rightMotor;
         this.backLeftMotor = backLeftMotor;
         this.backRightMotor = backRightMotor;
-        this.robotDrive = new RobotDrive(leftMotor, rightMotor, backLeftMotor, backRightMotor);
+        this.robotDrive = new RobotDrive(leftMotor, backLeftMotor, rightMotor, backRightMotor);
     }
     
-    public void setValues(double leftMotor, double rightMotor){
-        this.leftMotor = leftMotor;
-        this.rightMotor = rightMotor;
+    public void setValues(double verticalStrafe, double rotation){
+        this.verticalStrafe = verticalStrafe;
+        this.rotation = rotation;
         update();
     }
     
     protected void initDefaultCommand() {
-        setDefaultCommand(new SetDrivetrainCommand(leftMotor, rightMotor));
+        setDefaultCommand(new SetDrivetrainCommand(verticalStrafe, rotation));
     }
     
     public void update(){
-        robotDrive.tankDrive(leftMotor, rightMotor);
+        double vertical = Math1816.coerceValue(1, -1, verticalStrafe);
+        double rotate = Math1816.coerceValue(1, -1, rotation);
+        robotDrive.arcadeDrive(-vertical, rotation);
     }
     
     public void setDefaultCommand(Command command){

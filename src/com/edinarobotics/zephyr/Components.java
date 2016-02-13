@@ -35,9 +35,9 @@ public class Components {
             private static final int SHOOTER_LEFT_TALON = 4;
             private static final int SHOOTER_RELAY_CHANNEL = 1;
         //Collector
-            private static final int COLLECTOR_TALON = 5;
+            private static final int COLLECTOR_TALON = 6;
         //Conveyor
-            private static final int CONVEYOR_TALON = 6;
+            private static final int CONVEYOR_TALON = 5;
         
     //Solenoid Values
         private static final int SHOOTER_FOWARD_SOLENOID = 1;

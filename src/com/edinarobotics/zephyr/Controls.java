@@ -39,15 +39,15 @@ public class Controls {
         gamepad.leftBumper().whileHeld(new CollectorCommand(true, false));
         gamepad.leftBumper().whenReleased(new CollectorCommand(false, false));
         
-        gamepad.leftTrigger().whileHeld(new CollectorCommand(false, true));
-        gamepad.leftTrigger().whenReleased(new CollectorCommand(false, false));
+        gamepad.leftTrigger().whileHeld(new CollectorCommand(false, true)); //Turning right
+        gamepad.leftTrigger().whenReleased(new CollectorCommand(false, false)); //Turning right
         
         gamepad.dPadLeft().whileHeld(new SetShooterRotateCommand(Relay.Value.kForward));
         gamepad.dPadRight().whileHeld(new SetShooterRotateCommand(Relay.Value.kReverse));
         gamepad.dPadLeft().whenReleased(new SetShooterRotateCommand(Relay.Value.kOff));
         gamepad.dPadRight().whenReleased(new SetShooterRotateCommand(Relay.Value.kOff));
         
-        
+    
         gamepad.diamondUp().whileHeld(new ChangeShooterSpeedCommand(50));
         gamepad.diamondDown().whileHeld(new ChangeShooterSpeedCommand(-50));
         
